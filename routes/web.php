@@ -34,10 +34,14 @@ Route::get('/StockTransactions',[StockTransactionsController::class, 'show'])->m
 Route::post('/StockTransactions',[StockTransactionsController::class, 'store'])->middleware('auth')->name('storeStock');
 //show add form
 Route::get('/distributeStock',[distributeStockController::class, 'show'])->middleware('auth')->name('procurer.distributeStock');
+//search main stock
+Route::get('/mainstock/search',[mainStockController::class,  'searchmain'])->middleware('auth')->name('searchmainstock');
 //show mainstock
 Route::get('/mainstock',[mainStockController::class, 'showmain'])->middleware('auth')->name('mainstock');
 //update to mainstock
 Route::patch('/mainstock/{stock_item}',[mainStockController::class, 'updatemain'])->middleware('auth')->name('updateStock');
+//Add new stock item
+Route::post('/mainstock',[mainStockController::class, 'addnewitem'])->middleware('auth')->name('addnewitem');
 
 //update frommainstock
 Route::patch('/mainstock/dis/{stock_item}',[mainStockController::class, 'distributemain'])->middleware('auth')->name('distributeStock');

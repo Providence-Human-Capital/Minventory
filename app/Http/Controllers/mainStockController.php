@@ -7,7 +7,9 @@ use App\Models\pending_stock;
 use App\Models\pending_stocks;
 use App\Models\StockItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Redis;
 
 class mainStockController extends Controller
 {
@@ -21,6 +23,31 @@ class mainStockController extends Controller
                 'stock' => $stock
             ]
         );
+    }
+
+    public function addnewitem(Request $request)
+    {
+       $request->validate(
+        [
+            'item_name'=>'required',
+            'item_quantity'=>'required',
+            'item_number'=>'required',
+        ]);
+        $items['item_name']=$request->item_name;
+        $items['item_number']=$request->item_number;
+        $items['item_quantity']=$request->item_quantity;
+        StockItem::create($items);
+
+        return redirect()->route('mainstock')->with('success','Product Added.');
+
+
+    }
+    public function searchmain(Request $request)
+    {
+        $pending = DB::table('stock_items')->where('item_name', 'LIKE','%'.$request->isearch.'%')->get();
+
+        return view('Mainstock.search',['search'=>$pending]);
+
     }
 
     public function updatemain(Request $request,StockItem $stockItem)

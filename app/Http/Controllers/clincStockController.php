@@ -42,7 +42,7 @@ class clincStockController extends Controller
         DB::table('avenue81_stocks')
             ->where('item_number', 'like', $approve->item_number)
             ->update(['avenue81_stocks.item_quantity' => $newstock]);
-        return redirect()->route('clinicstock.pendingstock');
+        return redirect()->route('pendingstock')->with('success','Stock recieved.');
     }
 
     public function avenue81()

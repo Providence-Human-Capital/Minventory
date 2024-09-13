@@ -8,30 +8,12 @@
                     </h2>
                 </div>
                 <div class="col-sm">
-                    <div style="display:inline">
-                        @if (count($errors) >0)
-                        <div class="alert alert-danger">
-                            <ul>
-                                @foreach($errors->all() as $error)
-                                <li>{{$error}}</li>
-                                @endforeach
-
-                            </ul>
-                        </div>
-                        @endif
-
-
-
-                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addModal">
-                            Add New Stock
-                        </button>
-                    </div>
                 </div>
                 <div class="col-sm">
                     <form action="{{route ('searchmainstock')}}" method="GET">
                         <input type="text" name="isearch" id="isearch" placeholder="Search items"
-                            value="{{ old('isearch') }}">
-                        <button type="submit">Search</button>
+                            value="{{ old('isearch')}}">
+                        <button type="submit" class="btn btn-primary">Search</button>
                     </form>
                 </div>
             </div>
@@ -53,11 +35,13 @@
             @endif
         </div>
     </center>
-
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
+                    @if($search->isEmpty())
+                    <h1>No match Found.</h1>
+                    @else
                     <table style="border-collapse: collapse;width: 100%;">
                         <tr style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
                             <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Item Name</th>
@@ -67,16 +51,16 @@
                         </tr>
 
 
-                        @foreach ($stock as $stocks)
+                        @foreach ($search as $searchs)
                         <tr style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
                             <td style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                {{$stocks->item_name}}
+                                {{$searchs->item_name}}
                             </td>
                             <td style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                {{$stocks->item_number}}
+                                {{$searchs->item_number}}
                             </td>
                             <td style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                {{$stocks->item_quantity}}
+                                {{$searchs->item_quantity}}
                             </td>
                             <td style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
                                 {{--modal button to Add--}}
@@ -95,7 +79,7 @@
 
 
                                     <button type="button" class="btn btn-success" data-toggle="modal"
-                                        data-target="#addStockModal{{$stocks->id}}">
+                                        data-target="#addStockModal{{$searchs->id}}">
                                         Add Stock
                                     </button>
                                 </div>
@@ -115,21 +99,24 @@
 
 
                                     <button type="button" class="btn btn-primary" data-toggle="modal"
-                                        data-target="#distributeStockModal{{$stocks->id}}">
+                                        data-target="#distributeStockModal{{$searchs->id}}">
                                         Distribute Stock
                                     </button>
                                 </div>
                             </td>
                         </tr>
+                        @endforeach
+                    </table>
+                    @endif
 
                         {{-- addStock model design start here --}}
-                        <div class="modal fade" id="addStockModal{{$stocks->id}}" tabindex="-1" role="dialog"
-                            aria-labelledby="addStockModalLabel{{$stocks->id}}" aria-hidden="true">
+                        <div class="modal fade" id="addStockModal{{$searchs->id}}" tabindex="-1" role="dialog"
+                            aria-labelledby="addStockModalLabel{{$searchs->id}}" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header" style="padding: 0px;height:50px">
                                         <div style="color:white;width:100%;height:100%;background-color:green;top:0px;text-align:center"
-                                            class="modal-title" id="addStockModalLabel{{$stocks->id}}">
+                                            class="modal-title" id="addStockModalLabel{{$searchs->id}}">
                                             <p style="padding-top:10px;display:inline">ADD TO STOCK</p>
                                             <button style="display:inline" type="button" class="close"
                                                 data-dismiss="modal" aria-label="Close">
@@ -137,14 +124,14 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <form method="POST" action="/mainstock/{{$stocks->id}}">
+                                    <form method="POST" action="/mainstock/{{$searchs->id}}">
                                         <div style="padding-left:10px;padding-right:10px;width:100%">
                                             @csrf
                                             @method('patch')
                                             <div>
                                                 <label for='item_name'>Item Name</label><br>
                                                 <input type="text" id="item_name" name="item_name"
-                                                    value={{$stocks->item_name}}
+                                                    value={{$searchs->item_name}}
                                                 style="width: 100%;"><br>
                                                 @error('item_name')
                                                 <p style="color:red;size:13px">{{ $message }}</p>
@@ -161,7 +148,7 @@
                                             <div>
                                                 <label for='item_number'>Item Number</label><br>
                                                 <input type="text" id="item_number" name="item_number"
-                                                    value={{$stocks->item_number}}
+                                                    value={{$searchs->item_number}}
                                                 style="width: 100%;"><br>
                                                 @error('item_number')
                                                 <p style="color:red;size:13px">{{ $message }}</p>
@@ -195,25 +182,26 @@
                         </div>
 
                         {{-- DistributeStock model design start here --}}
-                        <div class="modal fade" id="distributeStockModal{{$stocks->id}}" tabindex="-1" role="dialog"
-                            aria-labelledby="distributeStockModalLabel{{$stocks->id}}" aria-hidden="true">
+                        <div class="modal fade" id="distributeStockModal{{$searchs->id}}" tabindex="-1" role="dialog"
+                            aria-labelledby="distributeStockModalLabel{{$searchs->id}}" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="distributeModalLabel{{$stocks->id}}">Distribute</h5>
+                                        <h5 class="modal-title" id="distributeModalLabel{{$searchs->id}}">Distribute
+                                        </h5>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
 
-                                    <form method="POST" action="/mainstock/dis/{{$stocks->id}}">
+                                    <form method="POST" action="/mainstock/dis/{{$searchs->id}}">
                                         <div style="padding-left:10px;padding-right:10px;width:100%">
                                             @csrf
                                             @method('patch')
                                             <div>
                                                 <label for='item_name'>Item Name</label><br>
                                                 <input type="text" id="item_name" name="item_name"
-                                                    value={{$stocks->item_name}}
+                                                    value={{$searchs->item_name}}
                                                 style="width: 100%;"><br>
                                                 @error('item_name')
                                                 <p style="color:red;size:13px">{{ $message }}</p>
@@ -222,8 +210,7 @@
                                             <div>
                                                 <label for='quantity'>Quantity </label><br>
                                                 <input type="number" id="item_quantity" name="item_quantity"
-                                                    placeholder="Must not exceed existing Stock" style="width: 100%;"
-                                                    max="{{$stocks->item_quantity}}"><br>
+                                                    placeholder="1000" style="width: 100%;"><br>
                                                 @error('item_quantity')
                                                 <p style="color:red;size:13px">{{ $message }}</p>
                                                 @enderror
@@ -231,7 +218,7 @@
                                             <div>
                                                 <label for='item_number'>Item Number</label><br>
                                                 <input type="text" id="item_number" name="item_number"
-                                                    value={{$stocks->item_number}}
+                                                    value={{$searchs->item_number}}
                                                 style="width: 100%;"><br>
                                                 @error('item_number')
                                                 <p style="color:red;size:13px">{{ $message }}</p>
@@ -275,65 +262,8 @@
                                 </div>
                             </div>
                         </div>
-                        @endforeach
-                    </table>
-
-                    {{-- add newStock model design start here --}}
-                    <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModal"
-                        aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header" style="padding: 0px;height:50px">
-                                    <div style="color:white;width:100%;height:100%;background-color:green;top:0px;text-align:center"
-                                        class="modal-title" id="addModal">
-                                        <p style="padding-top:10px;display:inline">ADD TO STOCK</p>
-                                        <button style="display:inline" type="button" class="close" data-dismiss="modal"
-                                            aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                </div>
-                                <form method="POST" action="/mainstock">
-                                    <div style="padding-left:10px;padding-right:10px;width:100%">
-                                        @csrf
-                                        <div>
-                                            <label for='item_name'>Item Name</label><br>
-                                            <input type="text" id="item_name" name="item_name" style="width: 100%;"><br>
-                                            @error('item_name')
-                                            <p style="color:red;size:13px">{{ $message }}</p>
-                                            @enderror
-                                        </div>
-                                        <div>
-                                            <label for='quantity'>Quantity </label><br>
-                                            <input type="number" id="item_quantity" name="item_quantity"
-                                                placeholder="1000" style="width: 100%;"><br>
-                                            @error('item_quantity')
-                                            <p style="color:red;size:13px">{{ $message }}</p>
-                                            @enderror
-                                        </div>
-                                        <div>
-                                            <label for='item_number'>Item Number</label><br>
-                                            <input type="text" id="item_number" name="item_number"
-                                                style="width: 100%;"><br>
-                                            @error('item_number')
-                                            <p style="color:red;size:13px">{{ $message }}</p>
-                                            @enderror
-                                        </div>
-
-                                        <input type="submit"
-                                            style="background-color: green;color:white;size:10pt;padding:5pt;margin:15pt;border-radius:5px;border-style:outset;border-color:black"
-                                            value="ADD TO STOCK">
-                                    </div>
-                                </form>
-
-
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
-
-
 </x-app-layout>

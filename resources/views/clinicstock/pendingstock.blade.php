@@ -1,10 +1,23 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Dashboard') }}
+            {{ __('Pendin Stocks') }}
         </h2>
         
     </x-slot>
+
+    <center>
+        <div style="width:80%;margin-top:30px">
+            
+    
+            @if (\Session::has('success'))
+            <div class="alert alert-success">
+                <p>{{ \Session::get('success') }}</p>
+    
+            </div>
+            @endif
+        </div>
+        </center>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 ">
@@ -34,12 +47,6 @@
                                     Sent at:
                                 </th>
                                 <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                     Reciever:
-                                </th>
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                    Recieved at:
-                                </th>
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
                                     Action
                                 </th>
                             </tr>
@@ -52,8 +59,6 @@
                                 <th>{{$pstock->status}}</th>
                                 <th>{{$pstock->procurer}}</th>
                                 <th>{{$pstock->created_at}}</th>
-                                <th>{{$pstock->reciever}}</th>
-                                <th>{{$pstock->updated_at}}</th>
                                 <th>
                                     <form action="{{ route('changestatus') }}" method="POST">
                                         @method('PATCH')

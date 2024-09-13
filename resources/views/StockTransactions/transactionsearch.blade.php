@@ -24,10 +24,10 @@
             @endif
 
             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#searchModal">
-                Add Stock
+                Transaction Search
             </button>
         </div>
-
+            {{--modal design--}}
         <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel"
             aria-hidden="true">
             <div class="modal-dialog" role="document">
