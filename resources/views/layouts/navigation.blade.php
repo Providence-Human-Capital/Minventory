@@ -48,10 +48,11 @@
                         </x-nav-link>
                     </div>
                     <div class=" hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" style="display:inline">
-                        <x-nav-link :href="route('mainstock')" :active="request()->routeIs('mainstock')">
+                        <x-nav-link :href="route('requeststock')" :active="request()->routeIs('requeststock')">
                             {{ __('Request Stock') }}
                         </x-nav-link>
                     </div>
+                    
 
                     @endif
                 </div>

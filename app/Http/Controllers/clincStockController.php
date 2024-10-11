@@ -51,4 +51,31 @@ class clincStockController extends Controller
         $avenue81 = DB::table('avenue81_stocks')->get();
         return view('clinicstock.clinicstock', ['avenue81' => $avenue81]);
     }
+
+
+    public function requeststock()
+    {
+        $drugs =DB::table('stock_items')->pluck('item_name');      
+        return view('clinicstock.requeststock',['drugs'=>$drugs]);
+    }
+
+    public function saverequest(Request $request)
+    {
+        $things=$request->clinics;
+        StockItem::where('item_name','=',)
+        $things['item_name']= 
+        $things['item_quantity'] =
+        $things['item_number']=
+        $things['clinic']=
+        $things['requester']=
+        $things['status']=
+        $things['approver']=
+        $things['Date_approved']=
+        $things['Date_requested']=
+
+
+
+        $drugs =DB::table('stock_items')->pluck('item_name');      
+        return view('clinicstock.requeststock',['drugs'=>$drugs]);
+    }
 }

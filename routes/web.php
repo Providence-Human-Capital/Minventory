@@ -8,6 +8,7 @@ use App\Http\Controllers\distributeStock;
 use App\Http\Controllers\distributeStockController;
 use App\Http\Controllers\mainStockController;
 use App\Http\Controllers\ProfileController;
+use Illuminate\Routing\RouteRegistrar;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -50,9 +51,12 @@ Route::post('/StockTransactions/search',[StockTransactionsController::class, 'se
     
 Route::get('/registered',[RegisteredUserController::class, 'create'])->middleware('auth');
 Route::post('/registered',[RegisteredUserController::class, 'store'])->middleware('auth')->name('registered');
-
+//recieve stock
 Route::get('/clinicstock/pendingstock',[clincStockController::class, 'showpending'])->middleware('auth')->name('pendingstock');
 Route::patch('/clinicstock/pendingstock/update',[clincStockController::class, 'changestatus'])->middleware('auth')->name('changestatus');
+//requesting stock
+Route::get('/requeststock',[clincStockController:: class, 'requeststock'])->middleware('auth')->name('requeststock');
+Route::post('/requeststock',[clincStockController::class, 'saverequest'])->middleware('auth')->name('saverequest');
 
 Route::get('/clinicstock',[clincStockController::class, 'avenue81'])->middleware('auth')->name('avenue81');
 
