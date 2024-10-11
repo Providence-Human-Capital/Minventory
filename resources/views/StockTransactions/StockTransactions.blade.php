@@ -120,26 +120,10 @@
                         <div class="container">
                             <div class="row align-items-start">
                                 <div class="col">
-                                    <p>Item Name</p>
-                                </div>
-                                <div class="col">
-                                    <p>Item Number</p>
-                                </div>
-                            </div>
-                            <div class="row align-items-start">
-                                <div class="col">
                                     <input type="text" id="item_name" name="item_name" placeholder="ITEM NAME">
                                 </div>
                                 <div class="col">
                                     <input type="text" id="item_number" name="item_number" placeholder="ITEM NUMBER">
-                                </div>
-                            </div>
-                            <div class="row align-items-start">
-                                <div class="col">
-                                    <p>Main Stock</p>
-                                </div>
-                                <div class="col">
-                                    <p>Procurer</p>
                                 </div>
                             </div>
                             <div class="row align-items-start">
@@ -173,51 +157,6 @@
                                     <input type="text" id="procurer" name="procurer" placeholder="PROCURER"><br>
                                 </div>
                             </div><br>
-                            <div class="row align-items-start">
-                                <div class="col">
-                                    <p>Amount Procured</p>
-                                </div>
-                            </div>
-                            <div class="row align-items-start">
-                                <div class="col">
-                                    <input type="number" id="item_quantity_min" name="item_quantity_min"
-                                        placeholder="PROCURER MIN" placeholder="Min">
-                                </div>
-                                <p>-</p>
-                                <div class="col">
-                                    <input type="number" id="item_quantity_max" name="item_quantity_max"
-                                        placeholder="procurer MAX" placeholder="Max">
-                                </div>
-                            </div>
-                            <div class="row align-items-start">
-                                <div class="col">
-                                    <p>Price of Procurement</p>
-                                </div>
-                            </div>
-                            <div class="row align-items-start">
-                                <div class="col">
-                                    <input type="number" id="price_min" name="price_min" placeholder="priceMax">
-                                </div>
-                                <p>-</p>
-                                <div class="col">
-                                    <input type="number" id="price_max" name="price_max" placeholder="priceMin">
-                                </div>
-                            </div>
-                            <div class="row align-items-start">
-                                <div class="col">
-                                    <p>Expiration date</p>
-                                </div>
-                            </div>
-                            <div class="row align-items-start">
-                                <p>From</p>
-                                <div class="col">
-                                    <input type="date" id="expiry_date_from" name="expiry_date_from">
-                                </div>
-                                <p>To</p>
-                                <div class="col">
-                                    <input type="date" id="expiry_date_to" name="expiry_date_to">
-                                </div>
-                            </div>
                             <div class="row align-items-start">
                                 <div class="col">
                                     <p>Transaction date</p>

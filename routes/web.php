@@ -63,7 +63,7 @@ Route::post('/requests/view',[requestController::class, 'viewrequest'])->middlew
 Route::get('/clinicstock',[clincStockController::class, 'avenue81'])->middleware('auth')->name('avenue81');
 //distribute stock
 Route::patch('/mainstock/dis/{stock_item}',[requestController::class, 'approverequest'])->middleware('auth')->name('approverequest');
-Route::post('/send-email', [MailerController::class, 'sendEmail'])->name('sendEmail');
+Route::post('/sendemail', [MailerController::class, 'sendEmail'])->name('sendEmail');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -8,6 +8,7 @@ use App\Models\avenue81_stock;
 use App\Models\pending_stocks;
 use App\Models\stock_request;
 use App\Models\StockItem;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\mainstock_journal;
@@ -80,23 +81,24 @@ class requestController extends Controller
             'item_number' => 'required',
 
         ]);
-
-
-
         $items['item_number'] = $request->item_number;
-        $items['price'] = $request->price;
         $items['expiry_date'] = date('Y/m/d', strtotime($request->expiry_date));
         $search = $request->item_number;
         $currenstock = StockItem::where('item_number', 'like', $search)->get()->first()->item_quantity;
 
         $disributestock = $request->item_quantity;
-        if ($request->item_quantity > $currenstock) {
+        if ($disributestock > $currenstock) {
             $pending = DB::table('stock_items')->where('item_number', '=', '%' . $request->item_number . '%')->get();
             return redirect()->route('searchmainstock', ['search' => $pending])->with('error', 'Not Enough Stock.');
         } else {
             $newstock = $currenstock - $disributestock;
             $items['item_quantity'] = $newstock;
-            $stockItem->update($items);
+            DB::table('stock_items')
+                ->where('item_number', $request->item_number)
+                ->update([
+                    'item_quantity' => $newstock,
+                    // Add any other fields as necessary
+                ]);
             $journal['item_name'] = $request->item_name;
             $journal['item_quantity'] = $request->item_quantity;
             $journal['item_number'] = $request->item_number;
@@ -120,13 +122,41 @@ class requestController extends Controller
 
                 ]);
 
+            $stockRequest = stock_request::where('id', $request->requestid)->first();
 
-            Mail::to('kingchemz@gmail.com')->send(new StockDeliveryMail([
-                'title' => 'Request Approved',
-                'body' => 'The Body',
-            ]));
+            if (!$stockRequest || !$stockRequest->requester) {
+                // Handle the case where the requester is not found or doesn't exist
+                $data = [
+                    'subject' => "Request has been approved",
+                    'messages' => "Stock of {$request->item_name}. Amount: {$request->item_quantity} shall be delivered.",
 
-            return redirect()->route('mainstock')->with('success', 'Send  to clinic.');
+                    
+                ];
+
+                Mail::send('delivery-mail', $data, function ($message) use ($data) {
+                    $message->to('kingchemz@gmail.com') // Change to the recipient's email address
+                        ->subject($data['subject']);
+                });
+            } else {
+                // Proceed to get the requester details
+                $requester = $stockRequest->requester;
+                $requesterEmail = User::where('name', $requester)->first()->email;
+
+                $data = [
+                    'subject' => "Request has been approved",
+                    'messages' => "Stock of {$request->item_name}. Amount: {$request->item_quantity} shall be delivered.",
+                    'requestedId' => $request->requestedId,
+                    'requester' => $requester,
+                ];
+
+                Mail::send('stocksend', $data, function ($message) use ($data, $requesterEmail) {
+                    $message->to($requesterEmail) // Change to the recipient's email address
+                        ->subject($data['subject']);
+                });
+            }
         }
+
+
+        return redirect()->route('mainstock')->with('success', 'Send  to clinic.');
     }
 }
