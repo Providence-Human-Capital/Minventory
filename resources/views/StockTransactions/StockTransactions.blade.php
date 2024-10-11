@@ -8,25 +8,29 @@
                     </h2>
                 </div>
                 <div class="col-sm">
-                    
+
                     <div class="col-sm">
                         <div class="py-1" style="float:right;">
-                            @if (count($errors) >0)
-                            <div class="alert alert-danger">
-                                <ul>
-                                    @foreach($errors->all() as $error)
-                                    <li>{{$error}}</li>
-                                    @endforeach
+                            @if (count($errors) > 0)
+                                <div class="alert alert-danger">
+                                    <ul>
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
 
-                                </ul>
-                            </div>
+                                    </ul>
+                                </div>
                             @endif
-
+                            @if (session('error'))
+                                <div class="alert alert-danger">
+                                    {{ session('error') }}
+                                </div>
+                            @endif
                             @if (\Session::has('success'))
-                            <div class="alert alert-success">
-                                <p>{{ \Session::get('success') }}</p>
+                                <div class="alert alert-success">
+                                    <p>{{ \Session::get('success') }}</p>
 
-                            </div>
+                                </div>
                             @endif
 
                             <button type="button" class="btn btn-success" data-toggle="modal"
@@ -71,19 +75,16 @@
                             </tr>
                             <tr>
                                 @foreach ($entries as $entry)
-                                <th>{{$entry->item_name}}</th>
-                                <th>{{$entry->item_number}}</th>
-                                <th>{{$entry->item_quantity}}</th>
-                                <th>{{$entry->price}}</th>
-                                <th>{{$entry->clinics}}</th>
-                                <th>{{$entry->expiry_date}}</th>
-                                <th>{{$entry->procurer}}</th>
-                                <th>{{$entry->created_at}}</th>
+                                    <th>{{ $entry->item_name }}</th>
+                                    <th>{{ $entry->item_number }}</th>
+                                    <th>{{ $entry->item_quantity }}</th>
+                                    <th>{{ $entry->price }}</th>
+                                    <th>{{ $entry->clinics }}</th>
+                                    <th>{{ $entry->expiry_date }}</th>
+                                    <th>{{ $entry->procurer }}</th>
+                                    <th>{{ $entry->created_at }}</th>
 
                             </tr>
-
-
-
                             @endforeach
                             </tr>
                         </table>
@@ -94,11 +95,11 @@
     </div>
 
 
-    {{--modal design--}}
+    {{-- modal design --}}
 
     </div>
 
-    {{--modal design search--}}
+    {{-- modal design search --}}
     <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -164,7 +165,7 @@
                                             street(Masvingo)</option>
                                     </select><br>
                                     @error('clinics')
-                                    <p style="color:red;size:13px">{{ $message }}</p>
+                                        <p style="color:red;size:13px">{{ $message }}</p>
                                     @enderror
                                     </label><br>
                                 </div>

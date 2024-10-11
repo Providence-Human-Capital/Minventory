@@ -3,31 +3,35 @@
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Dashboard') }}
         </h2>
-        {{--add modal button--}}
+        {{-- add modal button --}}
         <div class="py-1" style="float:right;">
-            @if (count($errors) >0)
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach($errors->all() as $error)
-                    <li>{{$error}}</li>
-                    @endforeach
+            @if (count($errors) > 0)
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
 
-                </ul>
-            </div>
+                    </ul>
+                </div>
             @endif
-
+            @if (session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+            @endif
             @if (\Session::has('success'))
-            <div class="alert alert-success">
-                <p>{{ \Session::get('success') }}</p>
+                <div class="alert alert-success">
+                    <p>{{ \Session::get('success') }}</p>
 
-            </div>
+                </div>
             @endif
 
             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#searchModal">
                 Transaction Search
             </button>
         </div>
-            {{--modal design--}}
+        {{-- modal design --}}
         <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel"
             aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -73,24 +77,30 @@
                                 </div>
                                 <div class="row align-items-start">
                                     <div class="col">
-                                            <label for="clinics">Choose a Clinic</label><br>
-                                                <select name="clinics" id="clinics" style="width: 100%;">
-                                                    <option value=></option>
-                                                    <option value="81 Baines Avenue(Harare)">81 Baines Avenue(Harare)</option>
-                                                    <option value="52 Baines Avenue(Harare)">52 Baines Avenue(Harare)</option>
-                                                    <option value="64 Cork road Avondale(Harare)">64 Cork road Avondale(Harare)</option>
-                                                    <option value="40 Josiah Chinamano Avenue(Harare)">40 Josiah Chinamano Avenue(Harare)</option>
-                                                    <option value="Epworth Clinic(Harare)">Epworth Clinic(Harare)</option>
-                                                    <option value="Fort Street and 9th Avenue(Bulawayo)">Fort Street and 9th Avenue(Bulawayo)</option>
-                                                    <option value="Royal Arcade Complex(Bulawayo)">Royal Arcade Complex(Bulawayo)</option>
-                                                    <option value="39 6th street(GWERU)">39 6th street(GWERU)</option>
-                                                    <option value="126 Herbert Chitepo Street(Mutare)">126 Herbert Chitepo Street(Mutare)</option>
-                                                    <option value="13 Shuvai Mahofa street(Masvingo)">13 Shuvai Mahofa street(Masvingo)</option>
-                                                  </select><br>
-                                                @error('clinics')
-                                                <p style="color:red;size:13px">{{ $message }}</p>
-                                                @enderror
-                                            </label><br>
+                                        <label for="clinics">Choose a Clinic</label><br>
+                                        <select name="clinics" id="clinics" style="width: 100%;">
+                                            <option value=></option>
+                                            <option value="81 Baines Avenue(Harare)">81 Baines Avenue(Harare)</option>
+                                            <option value="52 Baines Avenue(Harare)">52 Baines Avenue(Harare)</option>
+                                            <option value="64 Cork road Avondale(Harare)">64 Cork road Avondale(Harare)
+                                            </option>
+                                            <option value="40 Josiah Chinamano Avenue(Harare)">40 Josiah Chinamano
+                                                Avenue(Harare)</option>
+                                            <option value="Epworth Clinic(Harare)">Epworth Clinic(Harare)</option>
+                                            <option value="Fort Street and 9th Avenue(Bulawayo)">Fort Street and 9th
+                                                Avenue(Bulawayo)</option>
+                                            <option value="Royal Arcade Complex(Bulawayo)">Royal Arcade
+                                                Complex(Bulawayo)</option>
+                                            <option value="39 6th street(GWERU)">39 6th street(GWERU)</option>
+                                            <option value="126 Herbert Chitepo Street(Mutare)">126 Herbert Chitepo
+                                                Street(Mutare)</option>
+                                            <option value="13 Shuvai Mahofa street(Masvingo)">13 Shuvai Mahofa
+                                                street(Masvingo)</option>
+                                        </select><br>
+                                        @error('clinics')
+                                            <p style="color:red;size:13px">{{ $message }}</p>
+                                        @enderror
+                                        </label><br>
                                     </div>
                                     <div class="col">
                                         <input type="text" id="procurer" name="procurer" placeholder="PROCURER"><br>
@@ -149,7 +159,8 @@
                                 <div class="row align-items-start">
                                     <p>From</p>
                                     <div class="col">
-                                        <input type="date" id="transaction_date_from" name="transaction_date_from">
+                                        <input type="date" id="transaction_date_from"
+                                            name="transaction_date_from">
                                     </div>
                                     <p>To</p>
                                     <div class="col">
@@ -180,57 +191,57 @@
                             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                                 <div class="p-3 text-gray-900 dark:text-gray-100">
                                     <center>
-                                        @if($results->isEmpty())
-                                        <p>No results found.</p>
+                                        @if ($results->isEmpty())
+                                            <p>No results found.</p>
                                         @else
-                                        <table style="border-collapse: collapse;width: 100%;">
-                                            <tr style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                                <th
+                                            <table style="border-collapse: collapse;width: 100%;">
+                                                <tr
                                                     style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                                    Item
-                                                    Name</th>
-                                                <th
-                                                    style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                                    Item
-                                                    Number
-                                                </th>
-                                                <th
-                                                    style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                                    Quantity</th>
-                                                <th
-                                                    style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                                    Price($USD)
-                                                </th>
-                                                <th
-                                                    style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                                    Clinic</th>
-                                                <th
-                                                    style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                                    Expiry
-                                                    date
-                                                </th>
-                                                <th
-                                                    style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                                    procurer</th>
-                                                <th
-                                                    style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                                    Completed at:
-                                                </th>
-                                            </tr>
-                                            <tr>
-                                                @foreach ($results as $result)
-                                                <th>{{$result->item_name}}</th>
-                                                <th>{{$result->item_number}}</th>
-                                                <th>{{$result->item_quantity}}</th>
-                                                <th>{{$result->price}}</th>
-                                                <th>{{$result->clinics}}</th>
-                                                <th>{{$result->expiry_date}}</th>
-                                                <th>{{$result->procurer}}</th>
-                                                <th>{{$result->created_at}}</th>
-                                            </tr>
-
-                                            @endforeach
-                                            </tr>
+                                                    <th
+                                                        style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                                        Item
+                                                        Name</th>
+                                                    <th
+                                                        style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                                        Item
+                                                        Number
+                                                    </th>
+                                                    <th
+                                                        style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                                        Quantity</th>
+                                                    <th
+                                                        style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                                        Price($USD)
+                                                    </th>
+                                                    <th
+                                                        style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                                        Clinic</th>
+                                                    <th
+                                                        style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                                        Expiry
+                                                        date
+                                                    </th>
+                                                    <th
+                                                        style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                                        procurer</th>
+                                                    <th
+                                                        style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                                        Completed at:
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    @foreach ($results as $result)
+                                                        <th>{{ $result->item_name }}</th>
+                                                        <th>{{ $result->item_number }}</th>
+                                                        <th>{{ $result->item_quantity }}</th>
+                                                        <th>{{ $result->price }}</th>
+                                                        <th>{{ $result->clinics }}</th>
+                                                        <th>{{ $result->expiry_date }}</th>
+                                                        <th>{{ $result->procurer }}</th>
+                                                        <th>{{ $result->created_at }}</th>
+                                                </tr>
+                                        @endforeach
+                                        </tr>
                                         </table>
                                         @endif
                                 </div>

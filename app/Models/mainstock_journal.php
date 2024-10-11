@@ -17,5 +17,4 @@ class mainstock_journal extends Model
         'clinics',
         'procurer'
     ];
-
 }

@@ -69,6 +69,7 @@ class StockTransactionsController extends Controller
 
         // Amount Procured
         if ($request->filled('item_quantity_min') && $request->filled('item_quantity_max')) {
+            dd($request->item_quantity_min, $request->item_qunatity_max);
             $query->whereBetween('item_quantity', [$request->item_quantity_min, $request->item_quantity_max]);
         }
 

@@ -11,13 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('mainstock_journal', function (Blueprint $table) {
+        Schema::create('stock_requests', function (Blueprint $table) {
             $table->id();
             $table->string('item_name');
             $table->integer('item_quantity');
-            $table->integer('item_number');
-            $table->integer('price');
-            $table->date('expiry_date');
+            $table->string('item_number');
+            $table->string('clinic');
+            $table->string('requester');
+            $table->string('status');
+            $table->string('approver')->nullable();
+            $table->dateTime('Date Requested');
+            $table->dateTime('Date approved')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('mainstock_journal');
+        Schema::dropIfExists('stock_requests');
     }
 };

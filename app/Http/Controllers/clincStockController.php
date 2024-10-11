@@ -6,6 +6,7 @@ use App\Models\avenue81_stock;
 use App\Models\clinic_stock;
 use App\Models\pending_stocks;
 use App\Models\pendingstock;
+use App\Models\stock_request;
 use App\Models\StockItem;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -19,16 +20,16 @@ class clincStockController extends Controller
 
         $pending = DB::table('pending_stocks')->where('clinic', 'LIKE', Auth::user()->clinic)
             ->where('status', 'LIKE', 'Pending')->get();
-        $recieved = DB::table('pending_stocks')->where('clinic', 'LIKE', Auth::user()->clinic)
-            ->where('status', 'LIKE', 'Recieved')->get();
+        $Received = DB::table('pending_stocks')->where('clinic', 'LIKE', Auth::user()->clinic)
+            ->where('status', 'LIKE', 'Received')->get();
 
-        return view('clinicstock.pendingstock', ['pstocks' => $pending, 'rstocks' => $recieved]);
+        return view('clinicstock.pendingstock', ['pstocks' => $pending, 'rstocks' => $Received]);
     }
 
     public function changestatus(Request $request, avenue81_stock $avenue81_stock)
     {
         $id = $request->id;
-        $update['status'] = 'Recieved';
+        $update['status'] = 'Received';
         $update['reciever'] = Auth::user()->name;
         $approve = pending_stocks::find($id);
         $approve->update($update);
@@ -42,7 +43,7 @@ class clincStockController extends Controller
         DB::table('avenue81_stocks')
             ->where('item_number', 'like', $approve->item_number)
             ->update(['avenue81_stocks.item_quantity' => $newstock]);
-        return redirect()->route('pendingstock')->with('success','Stock recieved.');
+        return redirect()->route('pendingstock')->with('success','Stock Received.');
     }
 
     public function avenue81()
@@ -55,27 +56,29 @@ class clincStockController extends Controller
 
     public function requeststock()
     {
-        $drugs =DB::table('stock_items')->pluck('item_name');      
+        $drugs = DB::table('stock_items')->select('item_number', 'item_name')->get();
         return view('clinicstock.requeststock',['drugs'=>$drugs]);
     }
 
+
+
     public function saverequest(Request $request)
     {
-        $things=$request->clinics;
-        StockItem::where('item_name','=',)
-        $things['item_name']= 
-        $things['item_quantity'] =
-        $things['item_number']=
-        $things['clinic']=
-        $things['requester']=
-        $things['status']=
+        $things['item_name']=$request->item_name;
+        $things['item_quantity'] =$request->item_quantity;
+        $things['item_number']=$request->item_number;
+        $things['clinic']=auth()->user()->clinic;
+        $things['requester']=auth()->user()->name;
+        $things['status']="Pending";
+        $things['date_requested']= Carbon::now()->toDatetimeString();
+  
+        stock_request::create($things);
         $things['approver']=
-        $things['Date_approved']=
-        $things['Date_requested']=
+        $things['date_approved']=
+       
 
 
-
-        $drugs =DB::table('stock_items')->pluck('item_name');      
+        $drugs = DB::table('stock_items')->select('item_number', 'item_name')->get();      
         return view('clinicstock.requeststock',['drugs'=>$drugs]);
     }
 }

@@ -6,8 +6,10 @@ use App\Http\Controllers\StockTransactions;
 use App\Http\Controllers\StockTransactionsController;
 use App\Http\Controllers\distributeStock;
 use App\Http\Controllers\distributeStockController;
+use App\Http\Controllers\MailerController;
 use App\Http\Controllers\mainStockController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\requestController;
 use Illuminate\Routing\RouteRegistrar;
 use Illuminate\Support\Facades\Route;
 
@@ -44,21 +46,24 @@ Route::patch('/mainstock/{stock_item}',[mainStockController::class, 'updatemain'
 //Add new stock item
 Route::post('/mainstock',[mainStockController::class, 'addnewitem'])->middleware('auth')->name('addnewitem');
 
-//update frommainstock
-Route::patch('/mainstock/dis/{stock_item}',[mainStockController::class, 'distributemain'])->middleware('auth')->name('distributeStock');
 //transaction journal search
 Route::post('/StockTransactions/search',[StockTransactionsController::class, 'seachjournal'])->middleware('auth')->name('searchStock');
     
-Route::get('/registered',[RegisteredUserController::class, 'create'])->middleware('auth');
+Route::get('/registered',[RegisteredUserController::class, 'create'])->middleware('auth')->name('registerationform');
 Route::post('/registered',[RegisteredUserController::class, 'store'])->middleware('auth')->name('registered');
 //recieve stock
 Route::get('/clinicstock/pendingstock',[clincStockController::class, 'showpending'])->middleware('auth')->name('pendingstock');
 Route::patch('/clinicstock/pendingstock/update',[clincStockController::class, 'changestatus'])->middleware('auth')->name('changestatus');
 //requesting stock
 Route::get('/requeststock',[clincStockController:: class, 'requeststock'])->middleware('auth')->name('requeststock');
-Route::post('/requeststock',[clincStockController::class, 'saverequest'])->middleware('auth')->name('saverequest');
-
+Route::post('/requeststock/save',[clincStockController::class, 'saverequest'])->middleware('auth')->name('saverequest');
+//aprroving stocks
+Route::get('/requests',[requestController::class, 'showrequests'])->middleware('auth')->name('showrequests');
+Route::post('/requests/view',[requestController::class, 'viewrequest'])->middleware('auth')->name('viewrequest');
 Route::get('/clinicstock',[clincStockController::class, 'avenue81'])->middleware('auth')->name('avenue81');
+//distribute stock
+Route::patch('/mainstock/dis/{stock_item}',[requestController::class, 'approverequest'])->middleware('auth')->name('approverequest');
+Route::post('/send-email', [MailerController::class, 'sendEmail'])->name('sendEmail');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

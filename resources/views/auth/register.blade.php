@@ -23,7 +23,6 @@
             <x-input-label for="role" :value="__('Role')" />
 
             <select name="role" id="role">
-                <option value="Admin">Admin</option>
                 <option value="Accountant">Accountant</option>
                 <option value="Pharmacist">Pharmacist</option>
             </select>

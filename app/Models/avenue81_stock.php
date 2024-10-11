@@ -14,5 +14,5 @@ class avenue81_stock extends Model
         'item_number',
     ];
 
-    public $timestamps = false;
+  
 }

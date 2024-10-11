@@ -17,6 +17,7 @@ return new class extends Migration
             $table->integer('item_quantity');
             $table->integer('item_number');
             $table->integer('price');
+            $table->string('clinics');
             $table->date('expiry_date');
             $table->string('procurer');
             $table->timestamps();

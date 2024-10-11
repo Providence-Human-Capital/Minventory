@@ -17,7 +17,7 @@ class pending_stocks extends Model
             'status',
             'clinic',
             'reciever',
-            'recieved_at',
+            'Received_at',
 
     ];
 }

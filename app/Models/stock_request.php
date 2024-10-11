@@ -18,9 +18,7 @@ class stock_request extends Model
             'requester',
             'status',
             'approver',
-            'Date Requested',
-            'Date approved',
+            'date_requested',
+            'date_approved',
     ];
-
-    public $timestamps = false;
 }

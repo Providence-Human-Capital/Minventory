@@ -26,6 +26,11 @@
     <center>
         <div style="width:80%;margin-top:30px">
 
+            @if (session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+            @endif
 
             @if (\Session::has('success'))
             <div class="alert alert-success">
@@ -39,231 +44,154 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    @if($search->isEmpty())
-                    <h1>No match Found.</h1>
-                    @else
-                    <table style="border-collapse: collapse;width: 100%;">
-                        <tr style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Item Name</th>
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Item Number</th>
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Quantity</th>
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Action</th>
-                        </tr>
-
-
-                        @foreach ($search as $searchs)
-                        <tr style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                            <td style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                {{$searchs->item_name}}
-                            </td>
-                            <td style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                {{$searchs->item_number}}
-                            </td>
-                            <td style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                {{$searchs->item_quantity}}
-                            </td>
-                            <td style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                {{--modal button to Add--}}
-                                <div style="display:inline">
-                                    @if (count($errors) >0)
-                                    <div class="alert alert-danger">
-                                        <ul>
-                                            @foreach($errors->all() as $error)
-                                            <li>{{$error}}</li>
-                                            @endforeach
-
-                                        </ul>
-                                    </div>
-                                    @endif
-
-
-
-                                    <button type="button" class="btn btn-success" data-toggle="modal"
-                                        data-target="#addStockModal{{$searchs->id}}">
-                                        Add Stock
-                                    </button>
-                                </div>
-                                {{--modal button to distribute--}}
-                                <div style="display:inline">
-                                    @if (count($errors) >0)
-                                    <div class="alert alert-danger">
-                                        <ul>
-                                            @foreach($errors->all() as $error)
-                                            <li>{{$error}}</li>
-                                            @endforeach
-
-                                        </ul>
-                                    </div>
-                                    @endif
-
-
-
-                                    <button type="button" class="btn btn-primary" data-toggle="modal"
-                                        data-target="#distributeStockModal{{$searchs->id}}">
-                                        Distribute Stock
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </table>
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
                     @endif
-
-                        {{-- addStock model design start here --}}
-                        <div class="modal fade" id="addStockModal{{$searchs->id}}" tabindex="-1" role="dialog"
-                            aria-labelledby="addStockModalLabel{{$searchs->id}}" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header" style="padding: 0px;height:50px">
-                                        <div style="color:white;width:100%;height:100%;background-color:green;top:0px;text-align:center"
-                                            class="modal-title" id="addStockModalLabel{{$searchs->id}}">
-                                            <p style="padding-top:10px;display:inline">ADD TO STOCK</p>
-                                            <button style="display:inline" type="button" class="close"
-                                                data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <form method="POST" action="/mainstock/{{$searchs->id}}">
-                                        <div style="padding-left:10px;padding-right:10px;width:100%">
-                                            @csrf
-                                            @method('patch')
-                                            <div>
-                                                <label for='item_name'>Item Name</label><br>
-                                                <input type="text" id="item_name" name="item_name"
-                                                    value={{$searchs->item_name}}
-                                                style="width: 100%;"><br>
-                                                @error('item_name')
-                                                <p style="color:red;size:13px">{{ $message }}</p>
-                                                @enderror
-                                            </div>
-                                            <div>
-                                                <label for='quantity'>Quantity </label><br>
-                                                <input type="number" id="item_quantity" name="item_quantity"
-                                                    placeholder="1000" style="width: 100%;"><br>
-                                                @error('item_quantity')
-                                                <p style="color:red;size:13px">{{ $message }}</p>
-                                                @enderror
-                                            </div>
-                                            <div>
-                                                <label for='item_number'>Item Number</label><br>
-                                                <input type="text" id="item_number" name="item_number"
-                                                    value={{$searchs->item_number}}
-                                                style="width: 100%;"><br>
-                                                @error('item_number')
-                                                <p style="color:red;size:13px">{{ $message }}</p>
-                                                @enderror
-                                            </div>
-                                            <div>
-                                                <label for='price'>Price</label><br>
-                                                <label for="$">
-                                                    <input type="number" id="price" name="price" placeholder="1000"
-                                                        style="width: 100%;">
-                                                    @error('price')
-                                                    <p style="color:red;size:13px">{{ $message }}</p>
-                                                    @enderror
-                                                </label><br>
-                                            </div>
-                                            <div>
-                                                <label for='expiry_date'>Expiry Date</label><br>
-                                                <input type="date" id="expiry_date" name="expiry_date"
-                                                    placeholder="B1992XC" style="width: 100%;"><br>
-                                            </div>
-
-                                            <input type="submit"
-                                                style="background-color: green;color:white;size:10pt;padding:5pt;margin:15pt;border-radius:5px;border-style:outset;border-color:black"
-                                                value="ADD TO STOCK">
-                                        </div>
-                                    </form>
-
-
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- DistributeStock model design start here --}}
-                        <div class="modal fade" id="distributeStockModal{{$searchs->id}}" tabindex="-1" role="dialog"
-                            aria-labelledby="distributeStockModalLabel{{$searchs->id}}" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="distributeModalLabel{{$searchs->id}}">Distribute
-                                        </h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
+    
+                    <table style="border-collapse: collapse;width: 100%;">
+                        <thead>
+                            <tr style="text-align: left; border-bottom: 1px solid #DDD;">
+                                <th style="padding: 8px;">Item Name</th>
+                                <th style="padding: 8px;">Item Number</th>
+                                <th style="padding: 8px;">Quantity</th>
+                                <th style="padding: 8px;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($search as $searchs)
+                                <tr style="border-bottom: 1px solid #DDD;">
+                                    <td style="padding: 8px;">{{ $searchs->item_name }}</td>
+                                    <td style="padding: 8px;">{{ $searchs->item_number }}</td>
+                                    <td style="padding: 8px;">{{ $searchs->item_quantity }}</td>
+                                    <td style="padding: 8px;">
+                                        <button type="button" class="btn btn-success" data-toggle="modal"
+                                                data-target="#addStockModal{{ $searchs->id }}">
+                                            Add Stock
                                         </button>
-                                    </div>
-
-                                    <form method="POST" action="/mainstock/dis/{{$searchs->id}}">
-                                        <div style="padding-left:10px;padding-right:10px;width:100%">
-                                            @csrf
-                                            @method('patch')
-                                            <div>
-                                                <label for='item_name'>Item Name</label><br>
-                                                <input type="text" id="item_name" name="item_name"
-                                                    value={{$searchs->item_name}}
-                                                style="width: 100%;"><br>
-                                                @error('item_name')
-                                                <p style="color:red;size:13px">{{ $message }}</p>
-                                                @enderror
+                                        <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                data-target="#distributeStockModal{{ $searchs->id }}">
+                                            Distribute Stock
+                                        </button>
+                                    </td>
+                                </tr>
+    
+                                {{-- Add Stock Modal --}}
+                                <div class="modal fade" id="addStockModal{{ $searchs->id }}" tabindex="-1" role="dialog"
+                                     aria-labelledby="addStockModalLabel{{ $searchs->id }}" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header" style="background-color: green; color: white;">
+                                                <h5 class="modal-title" id="addStockModalLabel{{ $searchs->id }}">
+                                                    ADD TO STOCK
+                                                </h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
                                             </div>
-                                            <div>
-                                                <label for='quantity'>Quantity </label><br>
-                                                <input type="number" id="item_quantity" name="item_quantity"
-                                                    placeholder="1000" style="width: 100%;"><br>
-                                                @error('item_quantity')
-                                                <p style="color:red;size:13px">{{ $message }}</p>
-                                                @enderror
-                                            </div>
-                                            <div>
-                                                <label for='item_number'>Item Number</label><br>
-                                                <input type="text" id="item_number" name="item_number"
-                                                    value={{$searchs->item_number}}
-                                                style="width: 100%;"><br>
-                                                @error('item_number')
-                                                <p style="color:red;size:13px">{{ $message }}</p>
-                                                @enderror
-                                            </div>
-                                            <div>
-                                                <label for="clinics">Choose a Clinic</label><br>
-                                                <select name="clinics" id="clinics" style="width: 100%;">
-                                                    <option value="81 Baines Avenue(Harare)">81 Baines Avenue(Harare)
-                                                    </option>
-                                                    <option value="52 Baines Avenue(Harare)">52 Baines Avenue(Harare)
-                                                    </option>
-                                                    <option value="64 Cork road Avondale(Harare)">64 Cork road
-                                                        Avondale(Harare)</option>
-                                                    <option value="40 Josiah Chinamano Avenue(Harare)">40 Josiah
-                                                        Chinamano Avenue(Harare)</option>
-                                                    <option value="Epworth Clinic(Harare)">Epworth Clinic(Harare)
-                                                    </option>
-                                                    <option value="Fort Street and 9th Avenue(Bulawayo)">Fort Street and
-                                                        9th Avenue(Bulawayo)</option>
-                                                    <option value="Royal Arcade Complex(Bulawayo)">Royal Arcade
-                                                        Complex(Bulawayo)</option>
-                                                    <option value="39 6th street(GWERU)">39 6th street(GWERU)</option>
-                                                    <option value="126 Herbert Chitepo Street(Mutare)">126 Herbert
-                                                        Chitepo Street(Mutare)</option>
-                                                    <option value="13 Shuvai Mahofa street(Masvingo)">13 Shuvai Mahofa
-                                                        street(Masvingo)</option>
-                                                </select><br>
-                                                @error('clinics')
-                                                <p style="color:red;size:13px">{{ $message }}</p>
-                                                @enderror
-                                                </label><br>
-                                            </div>
-
-                                            <input type="submit"
-                                                style="background-color: green;color:white;size:10pt;padding:5pt;margin:15pt;border-radius:5px;border-style:outset;border-color:black"
-                                                value="Distribute TO STOCK">
+                                            <form method="POST" action="/mainstock/{{ $searchs->id }}">
+                                                @csrf
+                                                @method('patch')
+                                                <div class="modal-body">
+                                                    <div class="form-group">
+                                                        <label for="item_name">Item Name</label>
+                                                        <input type="text" id="item_name" name="item_name"
+                                                               value="{{ $searchs->item_name }}" class="form-control">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="item_quantity">Quantity</label>
+                                                        <input type="number" id="item_quantity" name="item_quantity"
+                                                               class="form-control" placeholder="1000">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="item_number">Item Number</label>
+                                                        <input type="text" id="item_number" name="item_number"
+                                                               value="{{ $searchs->item_number }}" class="form-control">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="price">Price</label>
+                                                        <input type="number" id="price" name="price" class="form-control"
+                                                               placeholder="1000">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="expiry_date">Expiry Date</label>
+                                                        <input type="date" id="expiry_date" name="expiry_date" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-success">ADD TO STOCK</button>
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                </div>
+                                            </form>
                                         </div>
-                                    </form>
-
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
+    
+                                {{-- Distribute Stock Modal --}}
+                                <div class="modal fade" id="distributeStockModal{{ $searchs->id }}" tabindex="-1" role="dialog"
+                                     aria-labelledby="distributeStockModalLabel{{ $searchs->id }}" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Distribute Stock</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <form method="POST" action="/mainstock/dis/{{ $searchs->id }}">
+                                                @csrf
+                                                @method('patch')
+                                                <div class="modal-body">
+                                                    <div class="form-group">
+                                                        <label for="item_name">Item Name</label>
+                                                        <input type="text" id="item_name" name="item_name"
+                                                               value="{{ $searchs->item_name }}" class="form-control">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="item_quantity">Quantity</label>
+                                                        <input type="number" id="item_quantity" name="item_quantity"
+                                                               class="form-control" placeholder="1000">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="item_number">Item Number</label>
+                                                        <input type="text" id="item_number" name="item_number"
+                                                               value="{{ $searchs->item_number }}" class="form-control">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="clinics">Choose a Clinic</label>
+                                                        <select name="clinics" id="clinics" class="form-control">
+                                                            <option value="81 Baines Avenue(Harare)">81 Baines Avenue(Harare)</option>
+                                                            <option value="52 Baines Avenue(Harare)">52 Baines Avenue(Harare)</option>
+                                                            <option value="64 Cork road Avondale(Harare)">64 Cork road Avondale(Harare)</option>
+                                                            <option value="40 Josiah Chinamano Avenue(Harare)">40 Josiah Chinamano Avenue(Harare)</option>
+                                                            <option value="Epworth Clinic(Harare)">Epworth Clinic(Harare)</option>
+                                                            <option value="Fort Street and 9th Avenue(Bulawayo)">Fort Street and 9th Avenue(Bulawayo)</option>
+                                                            <option value="Royal Arcade Complex(Bulawayo)">Royal Arcade Complex(Bulawayo)</option>
+                                                            <option value="39 6th street(GWERU)">39 6th street(GWERU)</option>
+                                                            <option value="126 Herbert Chitepo Street(Mutare)">126 Herbert Chitepo Street(Mutare)</option>
+                                                            <option value="13 Shuvai Mahofa street(Masvingo)">13 Shuvai Mahofa street(Masvingo)</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-success">Distribute TO STOCK</button>
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
+    
 </x-app-layout>

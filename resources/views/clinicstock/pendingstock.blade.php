@@ -8,7 +8,11 @@
 
     <center>
         <div style="width:80%;margin-top:30px">
-            
+            @if (session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+            @endif
     
             @if (\Session::has('success'))
             <div class="alert alert-success">
@@ -64,7 +68,7 @@
                                         @method('PATCH')
                                         @csrf
                                         <input type="hidden" name="id" value="{{ $pstock->id }}">
-                                        <input type="submit" class="btn btn-success " value="Recieved" style="margin: 6pt">
+                                        <input type="submit" class="btn btn-success " value="Received" style="margin: 6pt">
                                     </form>
                                 </th>
                             </tr>
@@ -108,7 +112,7 @@
                                      Reciever:
                                 </th>
                                 <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                    Recieved at:
+                                    Received at:
                                 </th>
                             </tr>
                            

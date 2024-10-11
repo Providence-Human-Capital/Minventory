@@ -44,9 +44,21 @@ class mainStockController extends Controller
     }
     public function searchmain(Request $request)
     {
-        $pending = DB::table('stock_items')->where('item_name', 'LIKE','%'.$request->isearch.'%')->get();
 
-        return view('Mainstock.search',['search'=>$pending]);
+        $searchTerm = $request->input('isearch'); // Get the search query from the request
+        $pending = [];
+        $pending = DB::table('stock_items')->where('item_name', 'LIKE',"%{$searchTerm}%")->get();
+        if($pending->isEmpty())
+        {
+            return redirect()->route('mainstock')->with('error','Product could not be found');
+        }
+        else
+        {
+            return view('Mainstock.search',['search'=>$pending]);
+
+        }
+
+        
 
     }
 
@@ -59,7 +71,7 @@ class mainStockController extends Controller
             'price'=>'required'
 
         ]);     
-        $items['item_name']=$request->item_name;
+     
         $items['item_number']=$request->item_number;
         $items['price']=$request->price;
         $items['expiry_date']=date('Y/m/d',strtotime($request->expiry_date));
@@ -69,7 +81,7 @@ class mainStockController extends Controller
         $newstock= $currenstock + $addstock;
         $items['item_quantity']=$newstock;  
         $stockItem->update($items);
-        $journal['item_name']=$request->item_name;
+        $journal['item_name']=StockItem::where('item_number','like',$search)->get()->first()->item_name;
         $journal['item_quantity']=$request->item_quantity;
         $journal['item_number']=$request->item_number;
         $journal['price']=$request->price;
@@ -81,42 +93,7 @@ class mainStockController extends Controller
     }
 
 
-    public function distributemain(Request $request,StockItem $stockItem)
-    {
-        $request->validate([
-            'item_name'=>'required',
-            'item_quantity'=>'required',
-            'item_number'=>'required',
-
-        ]);     
-        $items['item_name']=$request->item_name;
-        $items['item_number']=$request->item_number;
-        $items['price']=$request->price;
-        $items['expiry_date']=date('Y/m/d',strtotime($request->expiry_date));
-        $search=$request->item_number;
-        $currenstock =StockItem::where('item_number','like',$search)->get()->first()->item_quantity;
-        
-        $disributestock= $request->item_quantity;
-        $newstock= $currenstock - $disributestock;
-        $items['item_quantity']=$newstock;  
-        $stockItem->update($items);
-        $journal['item_name']=$request->item_name;
-        $journal['item_quantity']=$request->item_quantity;
-        $journal['item_number']=$request->item_number;
-        $journal['price']=$request->price;
-        $journal['procurer']=auth()->user()->name;
-        $journal['clinics']=$request->clinics;
-        $journal['expiry_date']=date('Y/m/d',strtotime($request->expiry_date));
-        mainstock_journal::create($journal);
-        $pending['item_name']=$request->item_name;
-        $pending['item_quantity']=$request->item_quantity;
-        $pending['item_number']=$request->item_number;
-        $pending['procurer']=auth()->user()->name;
-        $pending['status']='Pending';
-        $pending['clinic']=$request->clinics;
-        pending_stocks::create($pending);
-        return redirect()->route('mainstock')->with('success','Send  to clinic.');
-    }
+    
 }
 
 

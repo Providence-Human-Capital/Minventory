@@ -17,45 +17,83 @@
                             {{ __('Dashboard') }}
                         </x-nav-link>
                     </div>
-                    @if(Auth::user()->Role == 'Accountant')
-
-                    <div class=" hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" style="display:inline">
-                        <x-nav-link :href="route('StockTransactions')"
-                            :active="request()->routeIs('StockTransactions')">
-                            {{ __('StockTransactions') }}
-                        </x-nav-link>
-                    </div>
-                    <div class=" hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" style="display:inline">
-                        <x-nav-link :href="route('procurer.distributeStock')"
-                            :active="request()->routeIs('procurer.distributeStock')">
-                            {{ __('Requests') }}
-                        </x-nav-link>
-                    </div>
-                    <div class=" hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" style="display:inline">
-                        <x-nav-link :href="route('mainstock')" :active="request()->routeIs('mainstock')">
-                            {{ __('Main Stock') }}
-                        </x-nav-link>
-                    </div>
-                    @else
-                    <div class=" hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" style="display:inline">
-                        <x-nav-link :href="route('pendingstock')" :active="request()->routeIs('pendingstock')">
-                            {{ __('Pending Stock') }}
-                        </x-nav-link>
-                    </div>
-                    <div class=" hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" style="display:inline">
-                        <x-nav-link :href="route('avenue81')" :active="request()->routeIs('avenue81')">
-                            {{ __('Clinic Stock') }}
-                        </x-nav-link>
-                    </div>
-                    <div class=" hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" style="display:inline">
-                        <x-nav-link :href="route('requeststock')" :active="request()->routeIs('requeststock')">
-                            {{ __('Request Stock') }}
-                        </x-nav-link>
-                    </div>
-                    
-
-                    @endif
+                
+                    @switch(Auth::user()->Role)
+                        @case('Admin')
+                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" style="display:inline">
+                                <x-nav-link :href="route('StockTransactions')" :active="request()->routeIs('StockTransactions')">
+                                    {{ __('Stock Transactions') }}
+                                </x-nav-link>
+                            </div>
+                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" style="display:inline">
+                                <x-nav-link :href="route('showrequests')" :active="request()->routeIs('showrequests')">
+                                    {{ __('Requests') }}
+                                </x-nav-link>
+                            </div>
+                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" style="display:inline">
+                                <x-nav-link :href="route('mainstock')" :active="request()->routeIs('mainstock')">
+                                    {{ __('Main Stock') }}
+                                </x-nav-link>
+                            </div>
+                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" style="display:inline">
+                                <x-nav-link :href="route('pendingstock')" :active="request()->routeIs('pendingstock')">
+                                    {{ __('Pending Stock') }}
+                                </x-nav-link>
+                            </div>
+                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" style="display:inline">
+                                <x-nav-link :href="route('avenue81')" :active="request()->routeIs('avenue81')">
+                                    {{ __('Clinic Stock') }}
+                                </x-nav-link>
+                            </div>
+                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" style="display:inline">
+                                <x-nav-link :href="route('requeststock')" :active="request()->routeIs('requeststock')">
+                                    {{ __('Request Stock') }}
+                                </x-nav-link>
+                            </div>
+                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" style="display:inline">
+                                <x-nav-link :href="route('registerationform')" :active="request()->routeIs('registerationform')">
+                                    {{ __('New user') }}
+                                </x-nav-link>
+                            </div>
+                            @break
+                
+                        @case('Accountant')
+                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" style="display:inline">
+                                <x-nav-link :href="route('StockTransactions')" :active="request()->routeIs('StockTransactions')">
+                                    {{ __('Stock Transactions') }}
+                                </x-nav-link>
+                            </div>
+                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" style="display:inline">
+                                <x-nav-link :href="route('showrequests')" :active="request()->routeIs('showrequests')">
+                                    {{ __('Requests') }}
+                                </x-nav-link>
+                            </div>
+                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" style="display:inline">
+                                <x-nav-link :href="route('mainstock')" :active="request()->routeIs('mainstock')">
+                                    {{ __('Main Stock') }}
+                                </x-nav-link>
+                            </div>
+                            @break
+                
+                        @default
+                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" style="display:inline">
+                                <x-nav-link :href="route('pendingstock')" :active="request()->routeIs('pendingstock')">
+                                    {{ __('Pending Stock') }}
+                                </x-nav-link>
+                            </div>
+                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" style="display:inline">
+                                <x-nav-link :href="route('avenue81')" :active="request()->routeIs('avenue81')">
+                                    {{ __('Clinic Stock') }}
+                                </x-nav-link>
+                            </div>
+                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" style="display:inline">
+                                <x-nav-link :href="route('requeststock')" :active="request()->routeIs('requeststock')">
+                                    {{ __('Request Stock') }}
+                                </x-nav-link>
+                            </div>
+                    @endswitch
                 </div>
+                
 
                 <!-- Settings Dropdown -->
 
