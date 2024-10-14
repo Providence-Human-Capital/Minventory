@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\avenue81_stock;
 use App\Models\clinic_stock;
+use App\Models\mainstock_journal;
 use App\Models\pending_stocks;
 use App\Models\pendingstock;
 use App\Models\stock_request;
@@ -31,8 +32,20 @@ class clincStockController extends Controller
         $id = $request->id;
         $update['status'] = 'Received';
         $update['reciever'] = Auth::user()->name;
+        $approved = pending_stocks::where('id','like',$id)->get()->first();
+        $journal = mainstock_journal::where('item_number','like',$approved->item_number)
+                        ->where('clinics','like',$approved->clinic)
+                        ->where('created_at','like',$approved->created_at)
+                        ->where('item_quantity','like',$approved->item_quantity)
+                        ->where('item_number','like',$approved->item_number)
+                        ->update([
+                            'recieved_by' => auth()->user()->name,
+                            // Add any other fields as necessary
+                        ]);;
         $approve = pending_stocks::find($id);
         $approve->update($update);
+
+
 
 
         $stockitemz=avenue81_stock::where('item_number', 'like', $approve->item_number)->get()->first();

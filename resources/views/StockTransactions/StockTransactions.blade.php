@@ -72,6 +72,12 @@
                                 <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
                                     Completed at:
                                 </th>
+                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                    Recieved by:
+                                </th>
+                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                    Recieved at:
+                                </th>
                             </tr>
                             <tr>
                                 @foreach ($entries as $entry)
@@ -83,6 +89,11 @@
                                     <th>{{ $entry->expiry_date }}</th>
                                     <th>{{ $entry->procurer }}</th>
                                     <th>{{ $entry->created_at }}</th>
+                                    <th>{{ $entry->recieved_by}}</th>
+                                    <th>{{ $entry->updated_at }}</th>
+                                    
+
+
 
                             </tr>
                             @endforeach
@@ -94,94 +105,71 @@
         </div>
     </div>
 
-
-    {{-- modal design --}}
-
-    </div>
-
     {{-- modal design search --}}
-    <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header" style="padding: 0px;height:50px">
-                    <div style="color:white;width:100%;height:100%;background-color:green;top:0px;text-align:center"
-                        class="modal-title" id="searchModalLabel">
-                        <p style="padding-top:10px;display:inline">SEARCH</p>
-                        <button style="display:inline" type="button" class="close" data-dismiss="modal"
-                            aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
+                <div class="modal-header" style="background-color: green; color: white;">
+                    <h5 class="modal-title" id="searchModalLabel">SEARCH</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <form method="POST" action="/StockTransactions/search">
-                    <div style="padding-left:10px;padding-right:10px;width:100%">
+                    <div class="modal-body">
                         @csrf
                         <div class="container">
-                            <div class="row align-items-start">
+                            <div class="row mb-3">
                                 <div class="col">
-                                    <input type="text" id="item_name" name="item_name" placeholder="ITEM NAME">
+                                    <label for="item_name">Item Name</label>
+                                    <input type="text" id="item_name" name="item_name" placeholder="Item Name" class="form-control">
                                 </div>
                                 <div class="col">
-                                    <input type="text" id="item_number" name="item_number" placeholder="ITEM NUMBER">
+                                    <label for="item_number">Item Number</label>
+                                    <input type="text" id="item_number" name="item_number" placeholder="Item Number" class="form-control">
                                 </div>
                             </div>
-                            <div class="row align-items-start">
+                            <div class="row mb-3">
                                 <div class="col">
-                                    <label for="clinics">Choose a Clinic</label><br>
-                                    <select name="clinics" id="clinics" style="width: 100%;">
-                                        <option value=></option>
+                                    <label for="clinics">Choose a Clinic</label>
+                                    <select name="clinics" id="clinics" class="form-control">
+                                        <option value="">Select a clinic</option>
                                         <option value="81 Baines Avenue(Harare)">81 Baines Avenue(Harare)</option>
                                         <option value="52 Baines Avenue(Harare)">52 Baines Avenue(Harare)</option>
-                                        <option value="64 Cork road Avondale(Harare)">64 Cork road Avondale(Harare)
-                                        </option>
-                                        <option value="40 Josiah Chinamano Avenue(Harare)">40 Josiah Chinamano
-                                            Avenue(Harare)</option>
+                                        <option value="64 Cork road Avondale(Harare)">64 Cork road Avondale(Harare)</option>
+                                        <option value="40 Josiah Chinamano Avenue(Harare)">40 Josiah Chinamano Avenue(Harare)</option>
                                         <option value="Epworth Clinic(Harare)">Epworth Clinic(Harare)</option>
-                                        <option value="Fort Street and 9th Avenue(Bulawayo)">Fort Street and 9th
-                                            Avenue(Bulawayo)</option>
-                                        <option value="Royal Arcade Complex(Bulawayo)">Royal Arcade
-                                            Complex(Bulawayo)</option>
+                                        <option value="Fort Street and 9th Avenue(Bulawayo)">Fort Street and 9th Avenue(Bulawayo)</option>
+                                        <option value="Royal Arcade Complex(Bulawayo)">Royal Arcade Complex(Bulawayo)</option>
                                         <option value="39 6th street(GWERU)">39 6th street(GWERU)</option>
-                                        <option value="126 Herbert Chitepo Street(Mutare)">126 Herbert Chitepo
-                                            Street(Mutare)</option>
-                                        <option value="13 Shuvai Mahofa street(Masvingo)">13 Shuvai Mahofa
-                                            street(Masvingo)</option>
-                                    </select><br>
+                                        <option value="126 Herbert Chitepo Street(Mutare)">126 Herbert Chitepo Street(Mutare)</option>
+                                        <option value="13 Shuvai Mahofa street(Masvingo)">13 Shuvai Mahofa street(Masvingo)</option>
+                                    </select>
                                     @error('clinics')
-                                        <p style="color:red;size:13px">{{ $message }}</p>
+                                        <p class="text-danger">{{ $message }}</p>
                                     @enderror
-                                    </label><br>
                                 </div>
                                 <div class="col">
-                                    <input type="text" id="procurer" name="procurer" placeholder="PROCURER"><br>
-                                </div>
-                            </div><br>
-                            <div class="row align-items-start">
-                                <div class="col">
-                                    <p>Transaction date</p>
+                                    <label for="procurer">Procurer</label>
+                                    <input type="text" id="procurer" name="procurer" placeholder="Procurer" class="form-control">
                                 </div>
                             </div>
-                            <div class="row align-items-start">
-                                <p>From</p>
+                            <div class="row mb-3">
                                 <div class="col">
-                                    <input type="date" id="transaction_date_from" name="transaction_date_from">
-                                </div>
-                                <p>To</p>
-                                <div class="col">
-                                    <input type="date" id="transaction_date_to" name="transaction_date_to">
+                                    <label for="transaction_date_from">Transaction Date</label>
+                                    <div class="d-flex justify-content-between">
+                                        <input type="date" id="transaction_date_from" name="transaction_date_from" class="form-control">
+                                        <span class="mx-2 align-self-center">-</span>
+                                        <input type="date" id="transaction_date_to" name="transaction_date_to" class="form-control">
+                                    </div>
                                 </div>
                             </div>
-
                         </div>
-
-                        <input type="submit"
-                            style="background-color: rgb(0, 17, 128);color:white;size:10pt;padding:5pt;margin:15pt;border-radius:5px;border-style:outset;border-color:black;width:70%"
-                            value="Search">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Search</button>
                     </div>
                 </form>
-
-
             </div>
         </div>
     </div>

@@ -35,8 +35,6 @@ Route::get('/dashboard', function () {
 Route::get('/StockTransactions',[StockTransactionsController::class, 'show'])->middleware('auth')->name('StockTransactions');
 //store item
 Route::post('/StockTransactions',[StockTransactionsController::class, 'store'])->middleware('auth')->name('storeStock');
-//show add form
-Route::get('/distributeStock',[distributeStockController::class, 'show'])->middleware('auth')->name('procurer.distributeStock');
 //search main stock
 Route::get('/mainstock/search',[mainStockController::class,  'searchmain'])->middleware('auth')->name('searchmainstock');
 //show mainstock
@@ -54,11 +52,17 @@ Route::post('/registered',[RegisteredUserController::class, 'store'])->middlewar
 //recieve stock
 Route::get('/clinicstock/pendingstock',[clincStockController::class, 'showpending'])->middleware('auth')->name('pendingstock');
 Route::patch('/clinicstock/pendingstock/update',[clincStockController::class, 'changestatus'])->middleware('auth')->name('changestatus');
-//requesting stock
+//making requesting stock
 Route::get('/requeststock',[clincStockController:: class, 'requeststock'])->middleware('auth')->name('requeststock');
 Route::post('/requeststock/save',[clincStockController::class, 'saverequest'])->middleware('auth')->name('saverequest');
-//aprroving stocks
+//handling requests stocks
 Route::get('/requests',[requestController::class, 'showrequests'])->middleware('auth')->name('showrequests');
+Route::get('/requests/approved',[requestController::class, 'showarequests'])->middleware('auth')->name('showarequests');
+Route::get('/requests/denied',[requestController::class, 'showdrequests'])->middleware('auth')->name('showdrequests');
+Route::get('/requests/all',[requestController::class, 'showallrequests'])->middleware('auth')->name('showallrequests');
+//search request
+Route::post('/requests/search',[requestController::class, 'searchrequests'])->middleware('auth')->name('searchrequests');
+
 Route::post('/requests/view',[requestController::class, 'viewrequest'])->middleware('auth')->name('viewrequest');
 Route::get('/clinicstock',[clincStockController::class, 'avenue81'])->middleware('auth')->name('avenue81');
 //distribute stock

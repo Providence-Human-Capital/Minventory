@@ -1,8 +1,25 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
+        <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" style="display:inline">
+            <x-nav-link :href="route('showrequests')" :active="request()->routeIs('showrequests')">
+                {{ __('Pending Requests') }}
+            </x-nav-link>
+        </div>
+        <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" style="display:inline">
+            <x-nav-link :href="route('showarequests')" :active="request()->routeIs('showarequests')">
+                {{ __('Approved Requests') }}
+            </x-nav-link>
+        </div>
+        <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" style="display:inline">
+            <x-nav-link :href="route('showdrequests')" :active="request()->routeIs('showdrequests')">
+                {{ __('Denied Requests') }}
+            </x-nav-link>
+        </div>
+        <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" style="display:inline">
+            <x-nav-link :href="route('showallrequests')" :active="request()->routeIs('showallrequests')">
+                {{ __('Search Requests') }}
+            </x-nav-link>
+        </div>
         
     </x-slot>
 
@@ -28,6 +45,12 @@
                             <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
                                 Requested at:
                             </th>
+                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                               Denied by
+                            </th>
+                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                Denied at:
+                            </th>
                         </tr>
                         <tr>
                             @foreach ($requests as $request)
@@ -38,16 +61,8 @@
                             <th>{{$request->status}}</th>
                             <th>{{$request->requester}}</th>
                             <th>{{$request->created_at}}</th>
-                            <th>
-                                <form action="{{ route('viewrequest') }}" method="POST">
-                                    @csrf
-                                    <input type="hidden" name="id" value="{{ $request->id }}">
-                                    <button type="submit" class="btn" style="background: none; border: none; padding: 0; cursor: pointer;">
-                                        <i class="fas fa-eye" style="color: blue; font-size: 24px;" title="Approve"></i>
-                                    </button>
-                                </form> 
-
-                            </th>
+                            <th>{{$request->approver}}</th>
+                            <th>{{$request->date_approved}}</th>
                         </tr>
 
 

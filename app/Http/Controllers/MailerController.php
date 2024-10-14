@@ -38,8 +38,6 @@ class MailerController extends Controller
         'date_approved' => Carbon::now()->toDatetimeString(),
     ]);
 
-
-
     return redirect()->route('mainstock')->with('success','Email sent successfully!');
 }
 }
