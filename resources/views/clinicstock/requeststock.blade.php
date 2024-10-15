@@ -1,44 +1,25 @@
 <x-app-layout>
     <x-slot name="header">
-        {{-- add SEARCH modal button --}}
         <div class="py-1" style="float:left;">
-            @if (count($errors) > 0)
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-
-                    </ul>
-                </div>
-            @endif
-
-            @if (\Session::has('success'))
-                <div class="alert alert-success">
-                    <p>{{ \Session::get('success') }}</p>
-
-                </div>
-            @endif
-            @if (session('error'))
-                <div class="alert alert-danger">
-                    {{ session('error') }}
-                </div>
-            @endif
-
             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#searchrModal">
                 Search
             </button>
-
         </div>
-        {{-- add modal button --}}
+
         <div class="py-1" style="float:right;">
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#searchModal">
+                Request stock
+            </button>
+        </div>
+        
+        {{-- Consolidated error and success messages --}}
+        <div class="py-1" style="clear:both;">
             @if (count($errors) > 0)
                 <div class="alert alert-danger">
                     <ul>
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
-
                     </ul>
                 </div>
             @endif
@@ -46,22 +27,15 @@
             @if (\Session::has('success'))
                 <div class="alert alert-success">
                     <p>{{ \Session::get('success') }}</p>
-
                 </div>
             @endif
+
             @if (session('error'))
                 <div class="alert alert-danger">
                     {{ session('error') }}
                 </div>
             @endif
-
-            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#searchModal">
-                Request stock
-            </button>
-
         </div>
-
-
     </x-slot>
 
 
