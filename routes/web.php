@@ -8,6 +8,7 @@ use App\Http\Controllers\distributeStock;
 use App\Http\Controllers\distributeStockController;
 use App\Http\Controllers\MailerController;
 use App\Http\Controllers\mainStockController;
+use App\Http\Controllers\printcontroller;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\requestController;
 use Illuminate\Routing\RouteRegistrar;
@@ -46,6 +47,8 @@ Route::post('/mainstock',[mainStockController::class, 'addnewitem'])->middleware
 
 //transaction journal search
 Route::post('/StockTransactions/search',[StockTransactionsController::class, 'seachjournal'])->middleware('auth')->name('searchStock');
+//printing report routes
+Route::post('/StockTransactions/search/print',[printcontroller::class, 'printstransactionresults'])->middleware('auth')->name('printstransactionresults');
     
 Route::get('/registered',[RegisteredUserController::class, 'create'])->middleware('auth')->name('registerationform');
 Route::post('/registered',[RegisteredUserController::class, 'store'])->middleware('auth')->name('registered');
