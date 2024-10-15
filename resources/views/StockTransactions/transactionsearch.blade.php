@@ -138,24 +138,30 @@
                                                         Expiry
                                                         date
                                                     </th>
-                                                    <th
-                                                        style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                                    <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
                                                         procurer</th>
-                                                    <th
-                                                        style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                                    <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
                                                         Completed at:
+                                                    </th>
+                                                    <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                                        Recieved by:
+                                                    </th>
+                                                    <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                                        Recieved at:
                                                     </th>
                                                 </tr>
                                                 <tr>
                                                     @foreach ($results as $result)
-                                                        <th>{{ $result->item_name }}</th>
-                                                        <th>{{ $result->item_number }}</th>
-                                                        <th>{{ $result->item_quantity }}</th>
-                                                        <th>{{ $result->price }}</th>
-                                                        <th>{{ $result->clinics }}</th>
-                                                        <th>{{ $result->expiry_date }}</th>
-                                                        <th>{{ $result->procurer }}</th>
-                                                        <th>{{ $result->created_at }}</th>
+                                                    <th>{{ $result->item_name }}</th>
+                                                    <th>{{ $result->item_number }}</th>
+                                                    <th>{{ $result->item_quantity }}</th>
+                                                    <th>{{ $result->price }}</th>
+                                                    <th>{{ $result->clinics }}</th>
+                                                    <th>{{ $result->expiry_date }}</th>
+                                                    <th>{{ $result->procurer }}</th>
+                                                    <th>{{ $result->created_at }}</th>
+                                                    <th>{{ $result->recieved_by}}</th>
+                                                    <th>{{ $result->updated_at }}</th>
                                                 </tr>
                                         @endforeach
                                         </tr>

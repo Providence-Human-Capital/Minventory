@@ -40,7 +40,7 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     {{ __("Pending stocks") }}
-                    @if ($pstocks->isEmpty())
+                    @if ($search->isEmpty())
                         <p>No pending request</p>
                     @else
                     <center>
@@ -67,7 +67,7 @@
                                 </th>
                             </tr>
                             <tr>
-                                @foreach ($pstocks as $pstock)
+                                @foreach ($search as $pstock)
                                 <th>{{$pstock->item_name}}</th>
                                 <th>{{$pstock->item_number}}</th>
                                 <th>{{$pstock->item_quantity}}</th>

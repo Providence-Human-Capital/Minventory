@@ -98,14 +98,7 @@
                                                 Requested at:
                                             </th>
                                         </tr>
-                                        <?php $mypendingrequest = [];
-                                        $pastrequests = [];
-                                        $mypendingrequest = DB::table('stock_requests')
-                                            ->where('requester', '=', auth()->user()->name)
-                                            ->get();
-                                        
-                                        ?>
-                                        @if ($mypendingrequest->isEmpty())
+                                        @if ($results->isEmpty())
                                             <tr>
                                                 <td colspan="7"
                                                     style="text-align: center; padding: 16px; color: red;">
@@ -113,7 +106,7 @@
                                                 </td>
                                             </tr>
                                         @else
-                                            @foreach ($mypendingrequest as $prequest)
+                                            @foreach ($results as $prequest)
                                                 <tr>
                                                     <td>{{ $prequest->item_name }}</td>
                                                     <td>{{ $prequest->item_number }}</td>

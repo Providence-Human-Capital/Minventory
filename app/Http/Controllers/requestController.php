@@ -152,7 +152,7 @@ class requestController extends Controller
                     'subject' => "Request has been approved",
                     'messages' => "Stock of {$request->item_name}. Amount: {$request->item_quantity} shall be delivered.",
 
-                    
+
                 ];
 
                 Mail::send('delivery-mail', $data, function ($message) use ($data) {
@@ -184,56 +184,56 @@ class requestController extends Controller
 
     public function searchrequests(Request $request)
     {
-    $request->validate([
-        'item_name' => 'nullable|string|max:255',
-        'item_number' => 'nullable|string|max:255',
-        'clinics' => 'nullable|string|max:255',
-        'requester' => 'nullable|string|max:255',
-        'approver' => 'nullable|string|max:255',
-        'transaction_date_from' => 'nullable|date',
-        'transaction_date_to' => 'nullable|date',
-    ]);
+        $request->validate([
+            'item_name' => 'nullable|string|max:255',
+            'item_number' => 'nullable|string|max:255',
+            'clinics' => 'nullable|string|max:255',
+            'requester' => 'nullable|string|max:255',
+            'approver' => 'nullable|string|max:255',
+            'transaction_date_from' => 'nullable|date',
+            'transaction_date_to' => 'nullable|date',
+        ]);
 
-    // Start the query
-    $query = stock_request::query(); // Adjust the model name
+        // Start the query
+        $query = stock_request::query(); // Adjust the model name
 
-    // Apply filters based on input
-    if ($request->filled('item_name')) {
-        $query->where('item_name', 'like', '%' . $request->item_name . '%');
+        // Apply filters based on input
+        if ($request->filled('item_name')) {
+            $query->where('item_name', 'like', '%' . $request->item_name . '%');
+        }
+
+        if ($request->filled('item_number')) {
+            $query->where('item_number', 'like', '%' . $request->item_number . '%');
+        }
+
+        if ($request->filled('clinics')) {
+            $query->where('clinic', $request->clinics);
+        }
+
+        if ($request->filled('requester')) {
+            $query->where('requester', 'like', '%' . $request->requester . '%');
+        }
+
+        if ($request->filled('handler')) {
+            $query->where('handler', 'like', '%' . $request->handler . '%');
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', 'like', '%' . $request->status . '%');
+        }
+
+        if ($request->filled('transaction_date_from')) {
+            $query->where('date_requested', '>=', $request->transaction_date_from);
+        }
+
+        if ($request->filled('transaction_date_to')) {
+            $query->where('date_requested', '<=', $request->transaction_date_to);
+        }
+
+        // Execute the query and get the results
+        $results = $query->get();
+
+        // Return the results to a view or as a JSON response
+        return view('Requests.Requestsearch', compact('results')); // Adjust view name as needed
     }
-
-    if ($request->filled('item_number')) {
-        $query->where('item_number', 'like', '%' . $request->item_number . '%');
-    }
-
-    if ($request->filled('clinics')) {
-        $query->where('clinic', $request->clinics);
-    }
-
-    if ($request->filled('requester')) {
-        $query->where('requester', 'like', '%' . $request->requester . '%');
-    }
-
-    if ($request->filled('handler')) {
-        $query->where('handler', 'like', '%' . $request->handler . '%');
-    }
-
-    if ($request->filled('status')) {
-        $query->where('status', 'like', '%' . $request->status . '%');
-    }
-
-    if ($request->filled('transaction_date_from')) {
-        $query->where('date_requested', '>=', $request->transaction_date_from);
-    }
-
-    if ($request->filled('transaction_date_to')) {
-        $query->where('date_requested', '<=', $request->transaction_date_to);
-    }
-
-    // Execute the query and get the results
-    $results = $query->get();
-
-    // Return the results to a view or as a JSON response
-    return view('Requests.Requestsearch', compact('results')); // Adjust view name as needed
-}
 }

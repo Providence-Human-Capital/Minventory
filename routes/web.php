@@ -51,7 +51,11 @@ Route::get('/registered',[RegisteredUserController::class, 'create'])->middlewar
 Route::post('/registered',[RegisteredUserController::class, 'store'])->middleware('auth')->name('registered');
 //recieve stock
 Route::get('/clinicstock/pendingstock',[clincStockController::class, 'showpending'])->middleware('auth')->name('pendingstock');
+Route::get('/clinicstock/receivedstock',[clincStockController::class, 'receivedstock'])->middleware('auth')->name('receivedstock');
 Route::patch('/clinicstock/pendingstock/update',[clincStockController::class, 'changestatus'])->middleware('auth')->name('changestatus');
+Route::get('/clinicstock/search',[clincStockController::class,  'searchpstock'])->middleware('auth')->name('searchpstock');
+Route::post('/clinicstock/search/rstock',[clincStockController::class, 'searchrstock'])->middleware('auth')->name('searchrstock');
+
 //making requesting stock
 Route::get('/requeststock',[clincStockController:: class, 'requeststock'])->middleware('auth')->name('requeststock');
 Route::post('/requeststock/save',[clincStockController::class, 'saverequest'])->middleware('auth')->name('saverequest');
