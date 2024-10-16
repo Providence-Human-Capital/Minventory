@@ -57,6 +57,7 @@ Route::get('/clinicstock/pendingstock',[clincStockController::class, 'showpendin
 Route::get('/clinicstock/receivedstock',[clincStockController::class, 'receivedstock'])->middleware('auth')->name('receivedstock');
 Route::patch('/clinicstock/pendingstock/update',[clincStockController::class, 'changestatus'])->middleware('auth')->name('changestatus');
 Route::get('/clinicstock/search',[clincStockController::class,  'searchpstock'])->middleware('auth')->name('searchpstock');
+Route::get('/clinicstock/search/item',[clincStockController::class,  'searchclinicstock'])->middleware('auth')->name('searchclinicstock');
 Route::post('/clinicstock/search/rstock',[clincStockController::class, 'searchrstock'])->middleware('auth')->name('searchrstock');
 
 //making requesting stock

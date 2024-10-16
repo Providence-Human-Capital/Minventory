@@ -75,7 +75,7 @@
                             @endif
 
                             <button type="button" class="btn btn-success" data-toggle="modal"
-                                data-target="#searchModal">
+                                data-target="#searchrModal">
                                 Search Requests
                             </button>
         </div>
@@ -143,8 +143,8 @@
                                 <input type="text" id="requester" name="requester" placeholder="Enter Requester Name" class="form-control">
                             </div>
                             <div class="col-md-6">
-                                <label for="approver" class="form-label">Approver</label>
-                                <input type="text" id="approver" name="approver" placeholder="Enter Approver Name" class="form-control">
+                                <label for="approver" class="form-label">handler</label>
+                                <input type="text" id="approver" name="approver" placeholder="Enter handler Name" class="form-control">
                             </div>
                         </div>
     
@@ -180,49 +180,37 @@
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <div id="printArea" class="print-area">
 
-                    <table style="border-collapse: collapse;width: 100%;">
-
-                        <tr style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Item
-                                Name</th>
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Item
-                                Number
-                            </th>
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                Quantity</th>
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Clinic</th>
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Status
-                            </th>
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                Requester</th>
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                Requested at:
-                            </th>
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                              Handled by
-                            </th>
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                Handled at:
-                            </th>
-                        </tr>
-                        <tr>
-                            @foreach ($results as $request)
-                            <th>{{$request->item_name}}</th>
-                            <th>{{$request->item_number}}</th>
-                            <th>{{$request->item_quantity}}</th>
-                            <th>{{$request->clinic}}</th>
-                            <th>{{$request->status}}</th>
-                            <th>{{$request->requester}}</th>
-                            <th>{{$request->created_at}}</th>
-                            <th>{{$request->approver}}</th>
-                            <th>{{$request->date_approved}}</th>
-                        </tr>
-
-
-
-                        @endforeach
-                        </tr>
-                    </table>
+                        <table style="border-collapse: collapse; width: 100%; margin-top: 20px;">
+                            <thead>
+                                <tr style="background-color: #f2f2f2;">
+                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Item Name</th>
+                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Item Number</th>
+                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Quantity</th>
+                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Clinic</th>
+                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Status</th>
+                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Requester</th>
+                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Requested At</th>
+                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Handled By</th>
+                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Handled At</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($results as $request)
+                                <tr>
+                                    <td style="padding: 12px; border: 1px solid #ddd;">{{ $request->item_name }}</td>
+                                    <td style="padding: 12px; border: 1px solid #ddd;">{{ $request->item_number }}</td>
+                                    <td style="padding: 12px; border: 1px solid #ddd;">{{ $request->item_quantity }}</td>
+                                    <td style="padding: 12px; border: 1px solid #ddd;">{{ $request->clinic }}</td>
+                                    <td style="padding: 12px; border: 1px solid #ddd;">{{ $request->status }}</td>
+                                    <td style="padding: 12px; border: 1px solid #ddd;">{{ $request->requester }}</td>
+                                    <td style="padding: 12px; border: 1px solid #ddd;">{{ $request->created_at }}</td>
+                                    <td style="padding: 12px; border: 1px solid #ddd;">{{ $request->approver }}</td>
+                                    <td style="padding: 12px; border: 1px solid #ddd;">{{ $request->date_approved }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        
                 </div>
                 </div>
             </div>

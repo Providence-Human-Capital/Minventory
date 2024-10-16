@@ -93,6 +93,26 @@ class mainStockController extends Controller
     }
 
 
+    public function searchitem(Request $request)
+    {
+
+        $searchTerm = $request->input('isearch'); // Get the search query from the request
+        $pending = [];
+        $pending = DB::table('stock_items')->where('item_name', 'LIKE',"%{$searchTerm}%")->get();
+        if($pending->isEmpty())
+        {
+            return redirect()->route('mainstock')->with('error','Product could not be found');
+        }
+        else
+        {
+            return view('Mainstock.search',['search'=>$pending]);
+
+        }
+
+        
+
+    }
+
     
 }
 

@@ -49,50 +49,79 @@ class requestController extends Controller
 
     public function viewrequest(Request $request)
     {
+       
         $requested = stock_request::where('id', 'like', $request->id)->get()->first();
         $requestedid = $request->id;
         $requestedname = $requested->item_name;
         $requestednumber = $requested->item_number;
         $requestedclinic = $requested->clinic;
+        $requestedquantity = $requested->item_quantity;
 
         $maincurrentstock = StockItem::where('item_name', 'like', $requestedname)->get()->first()->item_quantity;
+        $sentstock = DB::table("pending_stocks")
+
+            ->select(DB::raw('DATE_FORMAT(updated_at, "%M-%y") as date'), DB::raw('SUM(item_quantity) as monthsum'))
+            ->where('item_name', 'like', $requestedname)
+            ->where('clinic', 'like', $requestedclinic)
+            ->where('status', 'like', 'Received')
+            ->groupBy(DB::raw('MONTH(updated_at)'))
+            ->orderBy('updated_at', 'asc')
+            ->get();
+
+
+        $date = [];
+        $sent = [];
+
+
+        foreach ($sentstock as $sentstocks) {
+            $date[] = $sentstocks->date;
+            $sent[] = intval($sentstocks->monthsum);
+        }
+
+        $chart = LarapexChart::setType('line')
+            ->setTitle($requestedclinic)
+            ->setLabels($date)
+            ->setDataset([
+                'name' => 'Amount Sent',
+                'data' => $sent
+            ])
+            ->setColors(['#ffc73c']);
+
+
         switch ($requestedclinic) {
             case "81 Baines Avenue(Harare)":
-                $currentclinicstock = avenue81_stock::where('item_name', 'like', $requestedname)->get()->first()->item_quantity;
-                $sentstock = DB::table("pending_stocks")
-
-                    ->select(DB::raw('DATE_FORMAT(updated_at, "%M-%y") as date'), DB::raw('SUM(item_quantity) as monthsum'))
-                    ->where('item_name', 'like', $requestedname)
-                    ->where('clinic', 'like', $requestedclinic)
-                    ->where('status', 'like', 'Received')
-                    ->groupBy(DB::raw('MONTH(updated_at)'))
-                    ->orderBy('updated_at', 'asc')
-                    ->get();
-
-
-                $date = [];
-                $sent = [];
-
-
-                foreach ($sentstock as $sentstocks) {
-                    $date[] = $sentstocks->date;
-                    $sent[] = intval($sentstocks->monthsum);
-                }
-
-
-                $chart = LarapexChart::setType('line')
-                    ->setTitle($requestedclinic)
-                    ->setLabels($date)
-                    ->setDataset([
-                        'name' => 'Amount Sent',
-                        'data' => $sent
-                    ])
-                    ->setColors(['#ffc73c']);
-
-
-
-                return view('requestchart',  compact('chart', 'currentclinicstock', 'maincurrentstock', 'requestedclinic', 'requestedname', 'requestednumber', 'requestedid'));
+                $currentclinicstock = DB::table('avenue81_stocks')->where('item_number', 'like', $requestednumber)->get()->first()->item_quantity;
+                break;
+            case '52 Baines Avenue(Harare)':
+                $currentclinicstock = DB::table('avenue52_stocks')->where('item_number', 'like', $requestednumber)->get()->first()->item_quantity;
+                break;
+            case '64 Cork road Avondale(Harare)':
+                $currentclinicstock = DB::table('avondale64_stocks')->where('item_number', 'like', $requestednumber)->get()->first()->item_quantity;
+                break;
+            case '40 Josiah Chinamano Avenue(Harare)':
+                $currentclinicstock = DB::table('chimano40_stocks')->where('item_number', 'like', $requestednumber)->get()->first()->item_quantity;
+                break;
+            case 'Epworth Clinic(Harare)':
+                $currentclinicstock = DB::table('epworth_stocks')->where('item_number', 'like', $requestednumber)->get()->first()->item_quantity;
+                break;
+            case 'Fort Street and 9th Avenue(Bulawayo)':
+                $currentclinicstock = DB::table('fortstreet_stocks')->where('item_number', 'like', $requestednumber)->get()->first()->item_quantity;
+                break;
+            case 'Royal Arcade Complex(Bulawayo)':
+                $currentclinicstock = DB::table('royalarcade_stocks')->where('item_number', 'like', $requestednumber)->get()->first()->item_quantity;
+                break;
+            case '39 6th street(GWERU)':
+                $currentclinicstock = DB::table('street6gweru_stocks')->where('item_number', 'like', $requestednumber)->get()->first()->item_quantity;
+                break;
+            case '126 Herbert Chitepo Street(Mutare)':
+                $currentclinicstock = DB::table('chitepo126mutare_stock')->where('item_number', 'like', $requestednumber)->get()->first()->item_quantity;
+                break;
+            case '13 Shuvai Mahofa street(Masvingo)':
+                $currentclinicstock = DB::table('shuvaimahofa13masvingo_stocks')->where('item_number', 'like', $requestednumber)->get()->first()->item_quantity;
+                break;
         }
+
+        return view('requestchart',  compact('chart', 'currentclinicstock', 'maincurrentstock', 'requestedclinic', 'requestedname', 'requestednumber', 'requestedid','requestedquantity'));
     }
 
     public function approverequest(Request $request, StockItem $stockItem)
@@ -110,8 +139,8 @@ class requestController extends Controller
 
         $disributestock = $request->item_quantity;
         if ($disributestock > $currenstock) {
-            $pending = DB::table('stock_items')->where('item_number', '=', '%' . $request->item_number . '%')->get();
-            return redirect()->route('searchmainstock', ['search' => $pending])->with('error', 'Not Enough Stock.');
+            $pending = DB::table('stock_items')->where('item_number',$request->item_number)->get();
+            return view('Requests/requestitemsearch', ['search' => $pending] )->with('error', 'Not Enough Stock.');
         } else {
             $newstock = $currenstock - $disributestock;
             $items['item_quantity'] = $newstock;

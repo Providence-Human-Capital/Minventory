@@ -49,49 +49,41 @@
                                 <div class="p-6 text-gray-900 dark:text-gray-100">
 
                                     <div id="printArea" class="print-area">
-                                        <table style="border-collapse: collapse;width: 100%;">
-                                            <tr style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                                    Item
-                                                    Name</th>
-                                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                                    Item
-                                                    Number
-                                                </th>
-                                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                                    Quantity</th>
-                                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                                    Clinic</th>
-                                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                                    Status
-                                                </th>
-                                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                                    recieved_by</th>
-                                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                                    Requested at:
-                                                </th>
-                                            </tr>
-                                            @if ($results->isEmpty())
-                                                <tr>
-                                                    <td colspan="7"
-                                                        style="text-align: center; padding: 16px; color: red;">
-                                                        No pending requests available.
-                                                    </td>
+                                        <table style="border-collapse: collapse; width: 100%; margin-top: 20px;">
+                                            <thead>
+                                                <tr style="background-color: #f2f2f2;">
+                                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Item Name</th>
+                                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Item Number</th>
+                                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Quantity</th>
+                                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Clinic</th>
+                                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Status</th>
+                                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Received By</th>
+                                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Requested At</th>
                                                 </tr>
-                                            @else
-                                                @foreach ($results as $prequest)
+                                            </thead>
+                                            <tbody>
+                                                @if ($results->isEmpty())
                                                     <tr>
-                                                        <td>{{ $prequest->item_name }}</td>
-                                                        <td>{{ $prequest->item_number }}</td>
-                                                        <td>{{ $prequest->item_quantity }}</td>
-                                                        <td>{{ $prequest->clinic }}</td>
-                                                        <td>{{ $prequest->status }}</td>
-                                                        <td>{{ $prequest->requester }}</td>
-                                                        <td>{{ $prequest->updated_at }}</td>
+                                                        <td colspan="7" style="text-align: center; padding: 16px; color: red;">
+                                                            No pending requests available.
+                                                        </td>
                                                     </tr>
-                                                @endforeach
-                                            @endif
+                                                @else
+                                                    @foreach ($results as $prequest)
+                                                        <tr>
+                                                            <td style="padding: 12px; border: 1px solid #ddd;">{{ $prequest->item_name }}</td>
+                                                            <td style="padding: 12px; border: 1px solid #ddd;">{{ $prequest->item_number }}</td>
+                                                            <td style="padding: 12px; border: 1px solid #ddd;">{{ $prequest->item_quantity }}</td>
+                                                            <td style="padding: 12px; border: 1px solid #ddd;">{{ $prequest->clinic }}</td>
+                                                            <td style="padding: 12px; border: 1px solid #ddd;">{{ $prequest->status }}</td>
+                                                            <td style="padding: 12px; border: 1px solid #ddd;">{{ $prequest->requester }}</td>
+                                                            <td style="padding: 12px; border: 1px solid #ddd;">{{ $prequest->updated_at }}</td>
+                                                        </tr>
+                                                    @endforeach
+                                                @endif
+                                            </tbody>
                                         </table>
+                                        
                                     </div>
                                 </div>
                             </div>

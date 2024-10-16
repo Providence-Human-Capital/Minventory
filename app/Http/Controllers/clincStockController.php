@@ -2,13 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\avenue81_stock;
-use App\Models\clinic_stock;
 use App\Models\mainstock_journal;
 use App\Models\pending_stocks;
-use App\Models\pendingstock;
 use App\Models\stock_request;
-use App\Models\StockItem;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -46,7 +42,7 @@ class clincStockController extends Controller
     }
 
 
-    public function changestatus(Request $request, avenue81_stock $avenue81_stock)
+    public function changestatus(Request $request)
     {
         $id = $request->id;
         $update['status'] = 'Received';
@@ -65,19 +61,138 @@ class clincStockController extends Controller
         $approve->update($update);
 
 
-
-
-        $stockitemz = avenue81_stock::where('item_number', 'like', $approve->item_number)->get()->first();
-        $currenstock = $stockitemz->item_quantity;
         $addstock = $approve->item_quantity;
-        $newstock = $addstock + $currenstock;
+        switch ($approved->clinic) {
+            case '81 Baines Avenue(Harare)':
+                $currenstock = DB::table('avenue81_stocks')->where('item_number', 'like', $approve->item_number)->get()->first()->item_quantity;;
+                $newstock = $addstock + $currenstock;
+                DB::table('avenue81_stocks')
+                    ->where('item_number', 'like', $approve->item_number)
+                    ->update(['avenue81_stocks.item_quantity' => $newstock]);
+                break;
+            case '52 Baines Avenue(Harare)':
+                $currenstock = DB::table('avenue52_stocks')->where('item_number', 'like', $approve->item_number)->get()->first()->item_quantity;;
+                $newstock = $addstock + $currenstock;
+                DB::table('avenue52_stocks')
+                    ->where('item_number', 'like', $approve->item_number)
+                    ->update(['avenue52_stocks.item_quantity' => $newstock]);
+                break;
+            case '64 Cork road Avondale(Harare)':
+                $currenstock = DB::table('avondale64_stocks')->where('item_number', 'like', $approve->item_number)->get()->first()->item_quantity;;
+                $newstock = $addstock + $currenstock;
+                DB::table('avondale64_stocks')
+                    ->where('item_number', 'like', $approve->item_number)
+                    ->update(['avondale64_stocks.item_quantity' => $newstock]);
+                break;
+            case '40 Josiah Chinamano Avenue(Harare)':
+                $currenstock = DB::table('chimano40_stocks')->where('item_number', 'like', $approve->item_number)->get()->first()->item_quantity;;
+                $newstock = $addstock + $currenstock;
+                DB::table('chimano40_stocks')
+                    ->where('item_number', 'like', $approve->item_number)
+                    ->update(['chimano40_stocks.item_quantity' => $newstock]);
+                break;
+            case 'Epworth Clinic(Harare)':
+                $currenstock = DB::table('epworth_stocks')->where('item_number', 'like', $approve->item_number)->get()->first()->item_quantity;;
+                $newstock = $addstock + $currenstock;
+                DB::table('epworth_stocks')
+                    ->where('item_number', 'like', $approve->item_number)
+                    ->update(['epworth_stocks.item_quantity' => $newstock]);
+                break;
+            case 'Fort Street and 9th Avenue(Bulawayo)':
+                $currenstock = DB::table('fortstreet_stocks')->where('item_number', 'like', $approve->item_number)->get()->first()->item_quantity;;
+                $newstock = $addstock + $currenstock;
+                DB::table('fortstreet_stocks')
+                    ->where('item_number', 'like', $approve->item_number)
+                    ->update(['fortstreet_stocks.item_quantity' => $newstock]);
+                break;
+            case 'Royal Arcade Complex(Bulawayo)':
+                $currenstock = DB::table('royalarcade_stocks')->where('item_number', 'like', $approve->item_number)->get()->first()->item_quantity;;
+                $newstock = $addstock + $currenstock;
+                DB::table('royalarcade_stocks')
+                    ->where('item_number', 'like', $approve->item_number)
+                    ->update(['royalarcade_stocks.item_quantity' => $newstock]);
+                break;
+            case '39 6th street(GWERU)':
+                $currenstock = DB::table('street6gweru_stocks')->where('item_number', 'like', $approve->item_number)->get()->first()->item_quantity;;
+                $newstock = $addstock + $currenstock;
+                DB::table('street6gweru_stocks')
+                    ->where('item_number', 'like', $approve->item_number)
+                    ->update(['street6gweru_stocks.item_quantity' => $newstock]);
+                break;
+            case '126 Herbert Chitepo Street(Mutare)':
+                $currenstock = DB::table('chitepo126mutare_stock')->where('item_number', 'like', $approve->item_number)->get()->first()->item_quantity;;
+                $newstock = $addstock + $currenstock;
+                DB::table('chitepo126mutare_stock')
+                    ->where('item_number', 'like', $approve->item_number)
+                    ->update(['chitepo126mutare_stock.item_quantity' => $newstock]);
+                break;
+            case '13 Shuvai Mahofa street(Masvingo)':
+                $currenstock = DB::table('shuvaimahofa13masvingo_stocks')->where('item_number', 'like', $approve->item_number)->get()->first()->item_quantity;;
+                $newstock = $addstock + $currenstock;
+                DB::table('shuvaimahofa13masvingo_stocks')
+                    ->where('item_number', 'like', $approve->item_number)
+                    ->update(['shuvaimahofa13masvingo_stocks.item_quantity' => $newstock]);
+                break;
+        }
 
-        DB::table('avenue81_stocks')
-            ->where('item_number', 'like', $approve->item_number)
-            ->update(['avenue81_stocks.item_quantity' => $newstock]);
         return redirect()->route('pendingstock')->with('success', 'Stock Received.');
     }
 
+
+    public function searchclinicstock(Request $request)
+    {
+
+        $searchTerm = $request->input('isearch'); // Get the search query from the request
+        $pending = [];
+        switch (auth()->user()->clinic) {
+            case '81 Baines Avenue(Harare)':
+                $pending = DB::table('avenue81_stocks')->where('item_name', 'LIKE', "%{$searchTerm}%")->get();
+
+                break;
+            case '52 Baines Avenue(Harare)':
+                $pending = DB::table('avenue52_stocks')->where('item_name', 'LIKE', "%{$searchTerm}%")->get();
+
+                break;
+            case '64 Cork road Avondale(Harare)':
+                $pending = DB::table('avondale64_stocks')->where('item_name', 'LIKE', "%{$searchTerm}%")->get();
+
+                break;
+            case '40 Josiah Chinamano Avenue(Harare)':
+                $pending = DB::table('chimano40_stocks')->where('item_name', 'LIKE', "%{$searchTerm}%")->get();
+
+                break;
+            case 'Epworth Clinic(Harare)':
+                $pending = DB::table('epworth_stocks')->where('item_name', 'LIKE', "%{$searchTerm}%")->get();
+
+                break;
+            case 'Fort Street and 9th Avenue(Bulawayo)':
+                $pending = DB::table('fortstreet_stocks')->where('item_name', 'LIKE', "%{$searchTerm}%")->get();
+
+                break;
+            case 'Royal Arcade Complex(Bulawayo)':
+                $pending = DB::table('royalarcade_stocks')->where('item_name', 'LIKE', "%{$searchTerm}%")->get();
+
+                break;
+            case '39 6th street(GWERU)':
+                $pending = DB::table('street6gweru_stocks')->where('item_name', 'LIKE', "%{$searchTerm}%")->get();
+
+                break;
+            case '126 Herbert Chitepo Street(Mutare)':
+                $pending = DB::table('chitepo126mutare_stock')->where('item_name', 'LIKE', "%{$searchTerm}%")->get();
+
+                break;
+            case '13 Shuvai Mahofa street(Masvingo)':
+                $pending = DB::table('shuvaimahofa13masvingo_stocks')->where('item_name', 'LIKE', "%{$searchTerm}%")->get();
+
+                break;
+        }
+        if ($pending->isEmpty()) {
+            return redirect()->route('getclinicstock')->with('error', 'Product could not be found');
+        } else {
+
+            return view('clinicstock.clinicstocksearch', ['clinicstock' => $pending]);
+        }
+    }
     public function getclinicstock()
     {
 
@@ -87,39 +202,39 @@ class clincStockController extends Controller
                 return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
                 break;
             case '52 Baines Avenue(Harare)':
-                $clinicstock = DB::table('clinicstock_stocks')->get();
+                $clinicstock = DB::table('avenue52_stocks')->get();
                 return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
                 break;
             case '64 Cork road Avondale(Harare)':
-                $clinicstock = DB::table('clinicstock_stocks')->get();
+                $clinicstock = DB::table('avondale64_stocks')->get();
                 return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
                 break;
             case '40 Josiah Chinamano Avenue(Harare)':
-                $clinicstock = DB::table('clinicstock_stocks')->get();
+                $clinicstock = DB::table('chimano40_stocks')->get();
                 return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
                 break;
             case 'Epworth Clinic(Harare)':
-                $clinicstock = DB::table('clinicstock_stocks')->get();
+                $clinicstock = DB::table('epworth_stocks')->get();
                 return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
                 break;
             case 'Fort Street and 9th Avenue(Bulawayo)':
-                $clinicstock = DB::table('clinicstock_stocks')->get();
+                $clinicstock = DB::table('fortstreet_stocks')->get();
                 return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
                 break;
             case 'Royal Arcade Complex(Bulawayo)':
-                $clinicstock = DB::table('clinicstock_stocks')->get();
+                $clinicstock = DB::table('royalarcade_stocks')->get();
                 return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
                 break;
             case '39 6th street(GWERU)':
-                $clinicstock = DB::table('clinicstock_stocks')->get();
+                $clinicstock = DB::table('street6gweru_stocks')->get();
                 return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
                 break;
             case '126 Herbert Chitepo Street(Mutare)':
-                $clinicstock = DB::table('clinicstock_stocks')->get();
+                $clinicstock = DB::table('chitepo126mutare_stock')->get();
                 return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
                 break;
             case '13 Shuvai Mahofa street(Masvingo)':
-                $clinicstock = DB::table('clinicstock_stocks')->get();
+                $clinicstock = DB::table('shuvaimahofa13masvingo_stocks')->get();
                 return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
                 break;
         }

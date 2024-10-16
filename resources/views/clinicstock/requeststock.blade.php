@@ -50,63 +50,51 @@
                         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                                    <table style="border-collapse: collapse;width: 100%;">
-                                        <tr style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                                Item
-                                                Name</th>
-                                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                                Item
-                                                Number
-                                            </th>
-                                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                                Quantity</th>
-                                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                                Clinic</th>
-                                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                                Status
-                                            </th>
-                                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                                Requester</th>
-                                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                                Requested at:
-                                            </th>
-                                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                                Handled by
-                                            </th>
-                                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                                Handled at:
-                                            </th>
-                                        </tr>
-                                        <?php $mypendingrequest = [];
-                                        $pastrequests = [];
-                                        $mypendingrequest = DB::table('stock_requests')
-                                            ->where('requester', '=', auth()->user()->name)
-                                            ->get();
-                                        
-                                        ?>
-                                        @if ($mypendingrequest->isEmpty())
-                                            <tr>
-                                                <td colspan="7"
-                                                    style="text-align: center; padding: 16px; color: red;">
-                                                    No pending requests available.
-                                                </td>
+                                    <table style="border-collapse: collapse; width: 100%; margin-top: 20px;">
+                                        <thead>
+                                            <tr style="background-color: #f2f2f2;">
+                                                <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Item Name</th>
+                                                <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Item Number</th>
+                                                <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Quantity</th>
+                                                <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Clinic</th>
+                                                <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Status</th>
+                                                <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Requester</th>
+                                                <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Requested At</th>
+                                                <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Handled By</th>
+                                                <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Handled At</th>
                                             </tr>
-                                        @else
-                                            @foreach ($mypendingrequest as $prequest)
+                                        </thead>
+                                        <tbody>
+                                            <?php 
+                                            $mypendingrequest = DB::table('stock_requests')
+                                                ->where('requester', '=', auth()->user()->name)
+                                                ->get();
+                                            ?>
+                                            
+                                            @if ($mypendingrequest->isEmpty())
                                                 <tr>
-                                                    <td>{{ $prequest->item_name }}</td>
-                                                    <td>{{ $prequest->item_number }}</td>
-                                                    <td>{{ $prequest->item_quantity }}</td>
-                                                    <td>{{ $prequest->clinic }}</td>
-                                                    <td>{{ $prequest->status }}</td>
-                                                    <td>{{ $prequest->requester }}</td>
-                                                    <td>{{ $prequest->created_at }}</td>
-                                                    <th>{{ $prequest->approver }}</th>
-                                                    <th>{{ $prequest->date_approved }}</th>
-                                            @endforeach
-                                        @endif
+                                                    <td colspan="9" style="text-align: center; padding: 16px; color: red;">
+                                                        No pending requests available.
+                                                    </td>
+                                                </tr>
+                                            @else
+                                                @foreach ($mypendingrequest as $prequest)
+                                                    <tr>
+                                                        <td style="padding: 12px; border: 1px solid #ddd;">{{ $prequest->item_name }}</td>
+                                                        <td style="padding: 12px; border: 1px solid #ddd;">{{ $prequest->item_number }}</td>
+                                                        <td style="padding: 12px; border: 1px solid #ddd;">{{ $prequest->item_quantity }}</td>
+                                                        <td style="padding: 12px; border: 1px solid #ddd;">{{ $prequest->clinic }}</td>
+                                                        <td style="padding: 12px; border: 1px solid #ddd;">{{ $prequest->status }}</td>
+                                                        <td style="padding: 12px; border: 1px solid #ddd;">{{ $prequest->requester }}</td>
+                                                        <td style="padding: 12px; border: 1px solid #ddd;">{{ $prequest->created_at }}</td>
+                                                        <td style="padding: 12px; border: 1px solid #ddd;">{{ $prequest->approver }}</td>
+                                                        <td style="padding: 12px; border: 1px solid #ddd;">{{ $prequest->date_approved }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            @endif
+                                        </tbody>
                                     </table>
+                                    
                                 </div>
                             </div>
                         </div>

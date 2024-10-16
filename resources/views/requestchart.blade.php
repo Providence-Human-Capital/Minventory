@@ -121,7 +121,7 @@
                                     <div>
                                         <label for='quantity'>Quantity </label><br>
                                         <input type="number" id="item_quantity" name="item_quantity"
-                                            placeholder="Must not exceed existing Stock" style="width: 100%;"
+                                            value="{{$requestedquantity}}" style="width: 100%;"
                                             ><br>
                                         @error('item_quantity')
                                         <p style="color:red;size:13px">{{ $message }}</p>
@@ -137,28 +137,8 @@
                                         @enderror
                                     </div>
                                     <div>
-                                        <label for="clinics">Choose a Clinic</label><br>
-                                        <select name="clinics" id="clinics" style="width: 100%;">
-                                            <option value="81 Baines Avenue(Harare)">81 Baines Avenue(Harare)
-                                            </option>
-                                            <option value="52 Baines Avenue(Harare)">52 Baines Avenue(Harare)
-                                            </option>
-                                            <option value="64 Cork road Avondale(Harare)">64 Cork road
-                                                Avondale(Harare)</option>
-                                            <option value="40 Josiah Chinamano Avenue(Harare)">40 Josiah
-                                                Chinamano Avenue(Harare)</option>
-                                            <option value="Epworth Clinic(Harare)">Epworth Clinic(Harare)
-                                            </option>
-                                            <option value="Fort Street and 9th Avenue(Bulawayo)">Fort Street and
-                                                9th Avenue(Bulawayo)</option>
-                                            <option value="Royal Arcade Complex(Bulawayo)">Royal Arcade
-                                                Complex(Bulawayo)</option>
-                                            <option value="39 6th street(GWERU)">39 6th street(GWERU)</option>
-                                            <option value="126 Herbert Chitepo Street(Mutare)">126 Herbert
-                                                Chitepo Street(Mutare)</option>
-                                            <option value="13 Shuvai Mahofa street(Masvingo)">13 Shuvai Mahofa
-                                                street(Masvingo)</option>
-                                        </select><br>
+                                        <label for="clinics">Clinic</label>:
+                                        <input type="text " id="clinics" value="{{$requestedclinic}}" readonly>
                                         @error('clinics')
                                         <p style="color:red;size:13px">{{ $message }}</p>
                                         @enderror
