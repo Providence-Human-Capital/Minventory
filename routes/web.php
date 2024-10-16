@@ -62,6 +62,7 @@ Route::post('/clinicstock/search/rstock',[clincStockController::class, 'searchrs
 //making requesting stock
 Route::get('/requeststock',[clincStockController:: class, 'requeststock'])->middleware('auth')->name('requeststock');
 Route::post('/requeststock/save',[clincStockController::class, 'saverequest'])->middleware('auth')->name('saverequest');
+
 //handling requests stocks
 Route::get('/requests',[requestController::class, 'showrequests'])->middleware('auth')->name('showrequests');
 Route::get('/requests/approved',[requestController::class, 'showarequests'])->middleware('auth')->name('showarequests');

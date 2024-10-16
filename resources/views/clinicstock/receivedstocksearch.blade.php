@@ -1,67 +1,37 @@
 <x-app-layout>
     <x-slot name="header">
-        {{-- add SEARCH modal button --}}
-        <div class="py-1" style="float:left;">
-            @if (count($errors) > 0)
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
+        <div>
+            {{-- add SEARCH modal button --}}
+            <div class="py-1" style="float:left;">
+                @if (count($errors) > 0)
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
 
-                    </ul>
-                </div>
-            @endif
+                        </ul>
+                    </div>
+                @endif
 
-            @if (\Session::has('success'))
-                <div class="alert alert-success">
-                    <p>{{ \Session::get('success') }}</p>
+                @if (\Session::has('success'))
+                    <div class="alert alert-success">
+                        <p>{{ \Session::get('success') }}</p>
 
-                </div>
-            @endif
-            @if (session('error'))
-                <div class="alert alert-danger">
-                    {{ session('error') }}
-                </div>
-            @endif
+                    </div>
+                @endif
+                @if (session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                @endif
 
-            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#searchrModal">
-                Search
-            </button>
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#searchrModal">
+                    Search
+                </button>
 
+            </div>
         </div>
-        {{-- add modal button --}}
-        <div class="py-1" style="float:right;">
-            @if (count($errors) > 0)
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-
-                    </ul>
-                </div>
-            @endif
-
-            @if (\Session::has('success'))
-                <div class="alert alert-success">
-                    <p>{{ \Session::get('success') }}</p>
-
-                </div>
-            @endif
-            @if (session('error'))
-                <div class="alert alert-danger">
-                    {{ session('error') }}
-                </div>
-            @endif
-
-            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#searchModal">
-                Request stock
-            </button>
-
-        </div>
-
-
     </x-slot>
 
 
@@ -69,56 +39,60 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-
-
-
+                    <!-- Button to print results -->
+                    <button class="btn btn-primary mb-3" onclick="printResults()">
+                        <i class="fa fa-print"></i> Print Results
+                    </button>
                     <div class="py-12">
                         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                                    <table style="border-collapse: collapse;width: 100%;">
-                                        <tr style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                                Item
-                                                Name</th>
-                                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                                Item
-                                                Number
-                                            </th>
-                                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                                Quantity</th>
-                                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                                Clinic</th>
-                                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                                Status
-                                            </th>
-                                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                                Requester</th>
-                                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                                Requested at:
-                                            </th>
-                                        </tr>
-                                        @if ($results->isEmpty())
-                                            <tr>
-                                                <td colspan="7"
-                                                    style="text-align: center; padding: 16px; color: red;">
-                                                    No pending requests available.
-                                                </td>
+
+                                    <div id="printArea" class="print-area">
+                                        <table style="border-collapse: collapse;width: 100%;">
+                                            <tr style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                                    Item
+                                                    Name</th>
+                                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                                    Item
+                                                    Number
+                                                </th>
+                                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                                    Quantity</th>
+                                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                                    Clinic</th>
+                                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                                    Status
+                                                </th>
+                                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                                    recieved_by</th>
+                                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                                    Requested at:
+                                                </th>
                                             </tr>
-                                        @else
-                                            @foreach ($results as $prequest)
+                                            @if ($results->isEmpty())
                                                 <tr>
-                                                    <td>{{ $prequest->item_name }}</td>
-                                                    <td>{{ $prequest->item_number }}</td>
-                                                    <td>{{ $prequest->item_quantity }}</td>
-                                                    <td>{{ $prequest->clinic }}</td>
-                                                    <td>{{ $prequest->status }}</td>
-                                                    <td>{{ $prequest->requester }}</td>
-                                                    <td>{{ $prequest->created_at }}</td>
+                                                    <td colspan="7"
+                                                        style="text-align: center; padding: 16px; color: red;">
+                                                        No pending requests available.
+                                                    </td>
                                                 </tr>
-                                            @endforeach
-                                        @endif
-                                    </table>
+                                            @else
+                                                @foreach ($results as $prequest)
+                                                    <tr>
+                                                        <td>{{ $prequest->item_name }}</td>
+                                                        <td>{{ $prequest->item_number }}</td>
+                                                        <td>{{ $prequest->item_quantity }}</td>
+                                                        <td>{{ $prequest->clinic }}</td>
+                                                        <td>{{ $prequest->status }}</td>
+                                                        <td>{{ $prequest->requester }}</td>
+                                                        <td>{{ $prequest->updated_at }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            @endif
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -260,4 +234,19 @@
             </div>
         </div>
     </div>
+
+    {{--print script--}}
+    <script>
+        function printResults() {
+            var printContents = document.getElementById('printArea').innerHTML;
+            var originalContents = document.body.innerHTML;
+
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </x-app-layout>
