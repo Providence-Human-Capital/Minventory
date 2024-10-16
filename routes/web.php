@@ -72,7 +72,7 @@ Route::get('/requests/all',[requestController::class, 'showallrequests'])->middl
 Route::post('/requests/search',[requestController::class, 'searchrequests'])->middleware('auth')->name('searchrequests');
 
 Route::post('/requests/view',[requestController::class, 'viewrequest'])->middleware('auth')->name('viewrequest');
-Route::get('/clinicstock',[clincStockController::class, 'avenue81'])->middleware('auth')->name('avenue81');
+Route::get('/clinicstock',[clincStockController::class, 'getclinicstock'])->middleware('auth')->name('getclinicstock');
 //distribute stock
 Route::patch('/mainstock/dis/{stock_item}',[requestController::class, 'approverequest'])->middleware('auth')->name('approverequest');
 Route::post('/sendemail', [MailerController::class, 'sendEmail'])->name('sendEmail');

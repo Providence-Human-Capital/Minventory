@@ -78,11 +78,51 @@ class clincStockController extends Controller
         return redirect()->route('pendingstock')->with('success', 'Stock Received.');
     }
 
-    public function avenue81()
+    public function getclinicstock()
     {
 
-        $avenue81 = DB::table('avenue81_stocks')->get();
-        return view('clinicstock.clinicstock', ['avenue81' => $avenue81]);
+        switch (auth()->user()->clinic) {
+            case '81 Baines Avenue(Harare)':
+                $clinicstock = DB::table('avenue81_stocks')->get();
+                return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
+                break;
+            case '52 Baines Avenue(Harare)':
+                $clinicstock = DB::table('clinicstock_stocks')->get();
+                return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
+                break;
+            case '64 Cork road Avondale(Harare)':
+                $clinicstock = DB::table('clinicstock_stocks')->get();
+                return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
+                break;
+            case '40 Josiah Chinamano Avenue(Harare)':
+                $clinicstock = DB::table('clinicstock_stocks')->get();
+                return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
+                break;
+            case 'Epworth Clinic(Harare)':
+                $clinicstock = DB::table('clinicstock_stocks')->get();
+                return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
+                break;
+            case 'Fort Street and 9th Avenue(Bulawayo)':
+                $clinicstock = DB::table('clinicstock_stocks')->get();
+                return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
+                break;
+            case 'Royal Arcade Complex(Bulawayo)':
+                $clinicstock = DB::table('clinicstock_stocks')->get();
+                return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
+                break;
+            case '39 6th street(GWERU)':
+                $clinicstock = DB::table('clinicstock_stocks')->get();
+                return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
+                break;
+            case '126 Herbert Chitepo Street(Mutare)':
+                $clinicstock = DB::table('clinicstock_stocks')->get();
+                return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
+                break;
+            case '13 Shuvai Mahofa street(Masvingo)':
+                $clinicstock = DB::table('clinicstock_stocks')->get();
+                return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
+                break;
+        }
     }
 
 
@@ -136,7 +176,7 @@ class clincStockController extends Controller
         $results = $query->get();
 
         // Return the results to a view or as a JSON response
-        return view('clinicstock.receivedstocksearch', compact('results','drugs')); // Adjust view name as needed
+        return view('clinicstock.receivedstocksearch', compact('results', 'drugs')); // Adjust view name as needed
     }
 
     public function saverequest(Request $request)
@@ -156,6 +196,6 @@ class clincStockController extends Controller
 
 
             $drugs = DB::table('stock_items')->select('item_number', 'item_name')->get();
-            return redirect()->route('requeststock', ['drugs' => $drugs])->with('success', 'Stock Requested.');
+        return redirect()->route('requeststock', ['drugs' => $drugs])->with('success', 'Stock Requested.');
     }
 }
