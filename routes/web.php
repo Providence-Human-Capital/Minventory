@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admincontroller;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\clincStockController;
+use App\Http\Controllers\DispenseController;
 use App\Http\Controllers\StockTransactions;
 use App\Http\Controllers\StockTransactionsController;
 use App\Http\Controllers\distributeStock;
@@ -72,7 +73,6 @@ Route::get('/requests/denied', [requestController::class, 'showdrequests'])->mid
 Route::get('/requests/all', [requestController::class, 'showallrequests'])->middleware('auth')->name('showallrequests');
 //search request
 Route::post('/requests/search', [requestController::class, 'searchrequests'])->middleware('auth')->name('searchrequests');
-
 Route::post('/requests/view', [requestController::class, 'viewrequest'])->middleware('auth')->name('viewrequest');
 Route::get('/clinicstock', [clincStockController::class, 'getclinicstock'])->middleware('auth')->name('getclinicstock');
 //distribute stock
@@ -85,6 +85,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('admin/user', [Admincontroller::class, 'deleteuser'])->middleware('auth')->name('deleteuser');
 });
 
+//dispense stock to patientss
+Route::post('/Dispense/dispense', [DispenseController::class, 'dispenseform'])->middleware('auth')->name('showdispenseform');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

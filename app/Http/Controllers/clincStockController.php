@@ -313,4 +313,7 @@ class clincStockController extends Controller
             $drugs = DB::table('stock_items')->select('item_number', 'item_name')->get();
         return redirect()->route('requeststock', ['drugs' => $drugs])->with('success', 'Stock Requested.');
     }
+
+
+    
 }
