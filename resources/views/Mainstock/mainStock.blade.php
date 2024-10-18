@@ -83,42 +83,16 @@
                                 </td>
                                 <td style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
                                     {{-- modal button to Add --}}
-                                    <div style="display:inline">
-                                        @if (count($errors) > 0)
-                                            <div class="alert alert-danger">
-                                                <ul>
-                                                    @foreach ($errors->all() as $error)
-                                                        <li>{{ $error }}</li>
-                                                    @endforeach
-
-                                                </ul>
-                                            </div>
-                                        @endif
-
-
 
                                         <button type="button" class="btn btn-success" data-toggle="modal"
-                                            data-target="#addStockModal{{ $stocks->id }}">
+                                            data-target="#addStockModal{{ $stocks->id }}"><i class="fas fa-warehouse"></i>
                                             Add Stock
                                         </button>
                                     </div>
                                     {{-- modal button to distribute --}}
                                     <div style="display:inline">
-                                        @if (count($errors) > 0)
-                                            <div class="alert alert-danger">
-                                                <ul>
-                                                    @foreach ($errors->all() as $error)
-                                                        <li>{{ $error }}</li>
-                                                    @endforeach
-
-                                                </ul>
-                                            </div>
-                                        @endif
-
-
-
                                         <button type="button" class="btn btn-primary" data-toggle="modal"
-                                            data-target="#distributeStockModal{{ $stocks->id }}">
+                                            data-target="#distributeStockModal{{ $stocks->id }}"><i class="fas fa-shipping-fast"></i>
                                             Distribute Stock
                                         </button>
                                     </div>

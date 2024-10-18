@@ -20,6 +20,8 @@
                             <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Item Name</th>
                             <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Item Number</th>
                             <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Quantity</th>
+                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;"></th>
+
                         </tr>
 
 
@@ -34,6 +36,12 @@
                                 <td style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
                                     {{ $stock->item_quantity }}
                                 </td>
+                                <td style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                    <a><i class="fas fa-hand-holding-medical"></i></a>
+                                </td>
+                                  
+
+                                
                             </tr>
                         @endforeach
                     </table>

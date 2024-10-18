@@ -1,10 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Charts\MonthlyDistribution;
-use App\Mail\StockDeliveryMail;
-use App\Models\avenue81_stock;
 use App\Models\pending_stocks;
 use App\Models\stock_request;
 use App\Models\StockItem;
@@ -15,6 +11,7 @@ use App\Models\mainstock_journal;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use ArielMejiaDev\LarapexCharts\Facades\LarapexChart;
+use IcehouseVentures\LaravelChartjs\Facades\Chartjs;
 
 class requestController extends Controller
 {
@@ -78,16 +75,25 @@ class requestController extends Controller
             $sent[] = intval($sentstocks->monthsum);
         }
 
-        $chart = LarapexChart::setType('line')
-            ->setTitle($requestedclinic)
-            ->setLabels($date)
-            ->setDataset([
-                'name' => 'Amount Sent',
-                'data' => $sent
-            ])
-            ->setColors(['#ffc73c']);
-
-
+        $chart = Chartjs::build()
+            ->name("UserRegistrationsChart")
+            ->type("line")
+            ->size(["width" => 400, "height" => 200])
+            ->labels($date)
+            ->datasets([
+                [
+                    "label" => "Dristriubtion",
+                    "backgroundColor" => "rgba(38, 185, 154, 0.31)",
+                    "borderColor" => "rgba(38, 185, 154, 0.7)",
+                    "data" => $sent
+                ]
+            ]);
+            
+            $data = [
+                'labels' => $date,
+                'data' => $sent,
+            ];
+            
         switch ($requestedclinic) {
             case "81 Baines Avenue(Harare)":
                 $currentclinicstock = DB::table('avenue81_stocks')->where('item_number', 'like', $requestednumber)->get()->first()->item_quantity;
@@ -121,7 +127,7 @@ class requestController extends Controller
                 break;
         }
 
-        return view('requestchart',  compact('chart', 'currentclinicstock', 'maincurrentstock', 'requestedclinic', 'requestedname', 'requestednumber', 'requestedid','requestedquantity'));
+        return view('requestchart',  compact('chart', 'currentclinicstock', 'maincurrentstock', 'requestedclinic', 'requestedname', 'requestednumber', 'requestedid','requestedquantity','data'));
     }
 
     public function approverequest(Request $request, StockItem $stockItem)
