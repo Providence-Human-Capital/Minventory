@@ -10,6 +10,22 @@
         </center>
 
     </x-slot>
+    <center>
+        <div style="width:80%;margin-top:30px">
+            @if (session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+            @endif
+
+            @if (\Session::has('success'))
+                <div class="alert alert-success">
+                    <p>{{ \Session::get('success') }}</p>
+
+                </div>
+            @endif
+        </div>
+    </center>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -37,22 +53,21 @@
                                     {{ $stock->item_quantity }}
                                 </td>
                                 <td style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                    <form method="POST" action="{{route('showdispenseform')}}">
-                                        @csrf
-                                       
-                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#searchrModal">
+                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#searchrModal{{$stock->item_number}}">
                                             <i class="fas fa-pills"></i>
                                          </button>
-                                    </form>
-                                    <div class="modal fade" id="searchrModal" tabindex="-1" role="dialog" aria-labelledby="searchrModalLabel" aria-hidden="true">
+
+                                    {{--modal desgin--}}
+                                    <div class="modal fade" id="searchrModal{{$stock->item_number}}" tabindex="-1" role="dialog" aria-labelledby="searchrModalLabel{{$stock->item_number}}" aria-hidden="true">
                                         <div class="modal-dialog" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header" style="background-color: green; color: white;">
-                                                    <h5 class="modal-title" id="searchrModalLabel">SEARCH</h5>
+                                                    <h5 class="modal-title" id="searchrModalLabel{{$stock->item_number}}">Enter UIN</h5>
                                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                         <span aria-hidden="true">&times;</span>
                                                     </button>
                                                 </div>
+                                                
                                                 <form method="POST" action="{{route('showdispenseform')}}">
                                                     <div class="modal-body">
                                                         @csrf
@@ -62,14 +77,10 @@
                                                                     <label for="uin">UIN</label>
                                                                     <input type="text" id="uin" name="uin" class="form-control" placeholder="Enter UIN">
                                                                 </div>
-                                                                <input value="{{$stock->item_number}}" id="item_name" name="item_name" hidden>
+                                                                <input value="{{$stock->item_name}}" id="item_name" name="item_name" hidden>
+                                                                <input value="{{$stock->item_number}}" id="item_number" name="item_number" hidden>
                                                             </div>
-                                                            <div class="row mb-3">
-                                                                <div class="col">
-                                                                    <label for="checkbox">Are you a dependant? :</label>
-                                                                    <input type="checkbox" id="checkbox" name="checkbox">
-                                                                </div>
-                                                            </div>
+                                                            
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">

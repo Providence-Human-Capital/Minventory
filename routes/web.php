@@ -15,6 +15,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\requestController;
 use Illuminate\Routing\RouteRegistrar;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PatientController;
 
 /*
 |--------------------------------------------------------------------------
@@ -87,6 +88,13 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
 //dispense stock to patientss
 Route::post('/Dispense/dispense', [DispenseController::class, 'dispenseform'])->middleware('auth')->name('showdispenseform');
+Route::post('/Dispense/dispense/save',[DispenseController::class, 'dispense'])->middleware('auth')->name('savedispense');
+Route::get('/Dispense/dispense/save',[DispenseController::class, 'dispensehistory'])->middleware('auth')->name('dishistory');
+Route::post('/Dispense/dispense/his', [DispenseController::class, 'searchhis'])->middleware('auth')->name('searchhis');
+//patients
+Route::get('/patients',[PatientController::class, 'showform'])->middleware('auth')->name('patientform');
+Route::post('/patients/search', [PatientController::class, 'searchhis'])->middleware('auth')->name('showpatients');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

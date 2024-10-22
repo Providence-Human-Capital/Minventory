@@ -54,6 +54,12 @@
                             <x-nav-link :href="route('requeststock')" :active="request()->routeIs('requeststock')">
                                 {{ __('Request Stock') }}
                             </x-nav-link>
+                            <x-nav-link :href="route('dishistory')" :active="request()->routeIs('dishistory')">
+                                {{ __('Dispense History') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('patientform')" :active="request()->routeIs('patientform')">
+                                {{ __('Patients') }}
+                            </x-nav-link>
                     @endswitch
                 </div>
             </div>
