@@ -24,38 +24,38 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <table style="border-collapse: collapse;width: 100%;">
+                <div class="p-6 text-gray-900 dark:bg-gray-800">
+                    <table style="border-collapse: collapse;width: 100%;" class="dark:bg-gray-800 dark:text-gray-200">
 
-                        <tr style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Item
+                        <tr style="padding: 8px;text-align: center;border-bottom: 1px solid #DDD;">
+                            <th style="padding: 8px;text-align: center;border-bottom: 1px solid #DDD; font-size: 18px">Item
                                 Name</th>
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Item
+                            <th style="padding: 8px;text-align: center;border-bottom: 1px solid #DDD; font-size: 18px">Item
                                 Number
                             </th>
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                            <th style="padding: 8px;text-align: center;border-bottom: 1px solid #DDD; font-size: 18px">
                                 Quantity</th>
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Clinic</th>
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Status
+                            <th style="padding: 8px;text-align: center;border-bottom: 1px solid #DDD; font-size: 18px">Clinic</th>
+                            <th style="padding: 8px;text-align: center;border-bottom: 1px solid #DDD; font-size: 18px">Status
                             </th>
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                            <th style="padding: 8px;text-align: center;border-bottom: 1px solid #DDD; font-size: 18px">
                                 Requester</th>
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                Requested at:
+                            <th style="padding: 8px;text-align: center;border-bottom: 1px solid #DDD; font-size: 18px">
+                                Requested At:
                             </th>
                         </tr>
                         <tr>
                             @foreach ($requests as $request)
-                            <th>{{$request->item_name}}</th>
-                            <th>{{$request->item_number}}</th>
-                            <th>{{$request->item_quantity}}</th>
-                            <th>{{$request->clinic}}</th>
-                            <th>{{$request->status}}</th>
-                            <th>{{$request->requester}}</th>
-                            <th>{{$request->created_at}}</th>
-                            <th>
+                            <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD;  border-left: 1px solid #DDD; text-align: center">{{$request->item_name}}</th>
+                            <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: center">{{$request->item_number}}</th>
+                            <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: center">{{$request->item_quantity}}</th>
+                            <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: center">{{$request->clinic}}</th>
+                            <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: center">{{$request->status}}</th>
+                            <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: center">{{$request->requester}}</th>
+                            <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: center">{{$request->created_at}}</th>
+                            <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: center">
                                 <form action="{{ route('viewrequest') }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="id" value="{{ $request->id }}">
