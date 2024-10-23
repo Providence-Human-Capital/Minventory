@@ -1,5 +1,5 @@
 <x-app-layout >
-    <x-slot name="header" class="bg-red-400">
+    <x-slot name="header" class="bg-gray-400 dark:bg-green-950">
             <div class="container ">
             <div class="row " >
                 <div class="col-sm">
@@ -51,7 +51,7 @@
                     <center>
                         <table style="border-collapse: collapse;width: 100%;" class=" dark:bg-gray-800 dark:text-gray-200">
 
-                            <tr style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                            <tr style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;" class="bg-gray-400 dark:bg-zinc-900 dark:text-white text-black">
                                 <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD; text-align: center; font-size: 18px">Item
                                     Name</th>
                                 <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD; text-align: center; font-size: 18px">Item
@@ -77,18 +77,18 @@
                                     Recieved At:
                                 </th>
                             </tr>
-                            <tr>
+                            <tr class="dark:text-gray-200">
                                 @foreach ($entries as $entry)
-                                    <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; border-left: 1px solid #DDD; text-align: center">{{ $entry->item_name }}</th>
-                                    <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: center">{{ $entry->item_number }}</th>
-                                    <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: center">{{ $entry->item_quantity }}</th>
-                                    <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: center">{{ $entry->price }}</th>
-                                    <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: center">{{ $entry->clinics }}</th>
-                                    <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: center">{{ $entry->expiry_date }}</th>
-                                    <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: center">{{ $entry->procurer }}</th>
-                                    <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: center">{{ $entry->created_at }}</th>
-                                    <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: center">{{ $entry->recieved_by}}</th>
-                                    <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: center">{{ $entry->updated_at }}</th>
+                                    <th style="border-bottom: 1px solid #DDD; padding: 5px; border-right: 1px solid #DDD; border-left: 1px solid #DDD; text-align: left; padding-left: 10px">{{ $entry->item_name }}</th>
+                                    <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: left; padding-left: 10px">{{ $entry->item_number }}</th>
+                                    <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: left; padding-left: 10px">{{ $entry->item_quantity }}</th>
+                                    <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: left; padding-left: 10px">{{ $entry->price }}</th>
+                                    <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: left; padding-left: 10px">{{ $entry->clinics }}</th>
+                                    <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: left; padding-left: 10px">{{ $entry->expiry_date }}</th>
+                                    <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: left; padding-left: 10px">{{ $entry->procurer }}</th>
+                                    <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: left; padding-left: 10px">{{ $entry->created_at }}</th>
+                                    <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: left; padding-left: 10px">{{ $entry->recieved_by}}</th>
+                                    <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: left; padding-left: 10px">{{ $entry->updated_at }}</th>
                                 
                             </tr>
                             @endforeach
