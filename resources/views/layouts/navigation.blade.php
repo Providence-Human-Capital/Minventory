@@ -1,16 +1,17 @@
-<nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
+<nav x-data="{ open: false }" class="bg-white dark:bg-red-800 border-b border-gray-100 dark:border-gray-700">
     <!-- Primary Navigation Menu -->
-    <div class="dark:bg-gray-800">
+    <div class="dark:bg-emerald-950 bg-green-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
         <div class="flex justify-between h-16">
             <div class="flex items-center">
                 <!-- Logo -->
                 <a href="{{ route('dashboard') }}">
-                    <img src='blimage-9129-370-photo.png' alt="Logo" style="width:150px;height:140px">
+                    <img src='PHC_Logo_White.png' alt="Logo" style="width:110px;height:60px" class="ml-2 dark:block">
+                    <img src='blimage-9129-370-photo.png' alt="Logo" style="width:110px;height:60px" class="ml-2 mb-14 dark:hidden">
                 </a>
 
                 <!-- Navigation Links -->
-                <div class="hidden sm:flex sm:items-center space-x-8 ml-10 text-gray-800">
+                <div class="hidden sm:flex space-x-9 ml-10 text-gray-900 ">
                     @switch(Auth::user()->Role)
                         @case('Admin')
                             <x-nav-link :href="route('StockTransactions')" :active="request()->routeIs('StockTransactions')">
