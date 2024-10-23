@@ -29,7 +29,7 @@
                 <div class="p-6 text-gray-900 dark:bg-gray-800">
                     <table style="border-collapse: collapse;width: 100%;" class="dark:bg-gray-800 dark:text-gray-200">
 
-                        <tr style="padding: 8px;text-align: center;border-bottom: 1px solid #DDD;">
+                        <tr style="padding: 8px;text-align: center;border-bottom: 1px solid #DDD;" class="bg-gray-400 dark:bg-zinc-900 dark:text-white text-black">
                             <th style="padding: 8px;text-align: center;border-bottom: 1px solid #DDD; font-size: 18px">Item
                                 Name</th>
                             <th style="padding: 8px;text-align: center;border-bottom: 1px solid #DDD; font-size: 18px">Item
@@ -45,17 +45,20 @@
                             <th style="padding: 8px;text-align: center;border-bottom: 1px solid #DDD; font-size: 18px">
                                 Requested At:
                             </th>
+                            <th style="padding: 8px;text-align: center;border-bottom: 1px solid #DDD; font-size: 18px">
+                                View
+                            </th>
                         </tr>
                         <tr>
                             @foreach ($requests as $request)
-                            <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD;  border-left: 1px solid #DDD; text-align: center">{{$request->item_name}}</th>
-                            <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: center">{{$request->item_number}}</th>
-                            <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: center">{{$request->item_quantity}}</th>
-                            <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: center">{{$request->clinic}}</th>
-                            <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: center">{{$request->status}}</th>
-                            <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: center">{{$request->requester}}</th>
-                            <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: center">{{$request->created_at}}</th>
-                            <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: center">
+                            <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD;  border-left: 1px solid #DDD; text-align: left; padding-left: 10px">{{$request->item_name}}</th>
+                            <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: left; padding-left: 10px">{{$request->item_number}}</th>
+                            <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: left; padding-left: 10px">{{$request->item_quantity}}</th>
+                            <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: left; padding-left: 10px">{{$request->clinic}}</th>
+                            <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: left; padding-left: 10px">{{$request->status}}</th>
+                            <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: left; padding-left: 10px">{{$request->requester}}</th>
+                            <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: left; padding-left: 10px">{{$request->created_at}}</th>
+                            <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: left; padding-left: 10px">
                                 <form action="{{ route('viewrequest') }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="id" value="{{ $request->id }}">
