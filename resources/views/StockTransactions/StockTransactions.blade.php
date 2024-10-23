@@ -1,9 +1,9 @@
-<x-app-layout>
-    <x-slot name="header">
-        <div class="container">
-            <div class="row">
+<x-app-layout >
+    <x-slot name="header" class="bg-red-400">
+            <div class="container ">
+            <div class="row " >
                 <div class="col-sm">
-                    <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                    <h2 class="font-semibold text-xl text-black dark:text-gray-700 leading-tight mt-2">
                         {{ __('Main Stock Transactions') }}
                     </h2>
                 </div>
@@ -41,60 +41,55 @@
                     </div>
                 </div>
             </div>
-
-
-
-
+            </div>
     </x-slot>
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-3 text-gray-900 dark:text-gray-100">
+
+    <div class="py-8">
+        <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white dark:bg-blue-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-3 text-gray-900 dark:bg-gray-800">
                     <center>
-                        <table style="border-collapse: collapse;width: 100%;">
+                        <table style="border-collapse: collapse;width: 100%;" class=" dark:bg-gray-800 dark:text-gray-200">
 
                             <tr style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Item
+                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD; text-align: center; font-size: 18px">Item
                                     Name</th>
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Item
+                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD; text-align: center; font-size: 18px">Item
                                     Number
                                 </th>
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD; text-align: center; font-size: 18px">
                                     Quantity</th>
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Price($USD)
+                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD; text-align: center; font-size: 18px">Price ($USD)
                                 </th>
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Clinic</th>
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Expiry
-                                    date
+                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD; text-align: center; font-size: 18px">Clinic</th>
+                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD; text-align: center; font-size: 18px">Expiry
+                                    Date
                                 </th>
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                    procurer</th>
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                    Completed at:
+                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD; text-align: center; font-size: 18px">
+                                    Procurer</th>
+                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD; text-align: center; font-size: 18px">
+                                    Completed At:
                                 </th>
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                    Recieved by:
+                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD; text-align: center; font-size: 18px">
+                                    Recieved By:
                                 </th>
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                    Recieved at:
+                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD; text-align: center; font-size: 18px">
+                                    Recieved At:
                                 </th>
                             </tr>
                             <tr>
                                 @foreach ($entries as $entry)
-                                    <th>{{ $entry->item_name }}</th>
-                                    <th>{{ $entry->item_number }}</th>
-                                    <th>{{ $entry->item_quantity }}</th>
-                                    <th>{{ $entry->price }}</th>
-                                    <th>{{ $entry->clinics }}</th>
-                                    <th>{{ $entry->expiry_date }}</th>
-                                    <th>{{ $entry->procurer }}</th>
-                                    <th>{{ $entry->created_at }}</th>
-                                    <th>{{ $entry->recieved_by}}</th>
-                                    <th>{{ $entry->updated_at }}</th>
-                                    
-
-
-
+                                    <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; border-left: 1px solid #DDD; text-align: center">{{ $entry->item_name }}</th>
+                                    <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: center">{{ $entry->item_number }}</th>
+                                    <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: center">{{ $entry->item_quantity }}</th>
+                                    <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: center">{{ $entry->price }}</th>
+                                    <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: center">{{ $entry->clinics }}</th>
+                                    <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: center">{{ $entry->expiry_date }}</th>
+                                    <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: center">{{ $entry->procurer }}</th>
+                                    <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: center">{{ $entry->created_at }}</th>
+                                    <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: center">{{ $entry->recieved_by}}</th>
+                                    <th style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: center">{{ $entry->updated_at }}</th>
+                                
                             </tr>
                             @endforeach
                             </tr>
@@ -106,9 +101,9 @@
     </div>
 
     {{-- modal design search --}}
-    <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal fade mt-11 " id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
-            <div class="modal-content">
+            <div class="modal-content dark:bg-gray-800">
                 <div class="modal-header" style="background-color: green; color: white;">
                     <h5 class="modal-title" id="searchModalLabel">SEARCH</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -121,18 +116,18 @@
                         <div class="container">
                             <div class="row mb-3">
                                 <div class="col">
-                                    <label for="item_name">Item Name</label>
-                                    <input type="text" id="item_name" name="item_name" placeholder="Item Name" class="form-control">
+                                    <label for="item_name" class="dark:text-white">Item Name</label>
+                                    <input type="text" id="item_name" name="item_name" placeholder="Item Name" class="form-control" style="border-radius: 9px">
                                 </div>
                                 <div class="col">
-                                    <label for="item_number">Item Number</label>
-                                    <input type="text" id="item_number" name="item_number" placeholder="Item Number" class="form-control">
+                                    <label for="item_number" class="dark:text-white">Item Number</label>
+                                    <input type="text" id="item_number" name="item_number" placeholder="Item Number" class="form-control" style="border-radius: 9px">
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col">
-                                    <label for="clinics">Choose a Clinic</label>
-                                    <select name="clinics" id="clinics" class="form-control">
+                                    <label for="clinics" class="dark:text-white">Choose a Clinic</label>
+                                    <select name="clinics" id="clinics" class="form-control" style="border-radius: 9px">
                                         <option value="">Select a clinic</option>
                                         <option value="81 Baines Avenue(Harare)">81 Baines Avenue(Harare)</option>
                                         <option value="52 Baines Avenue(Harare)">52 Baines Avenue(Harare)</option>
@@ -150,17 +145,17 @@
                                     @enderror
                                 </div>
                                 <div class="col">
-                                    <label for="procurer">Procurer</label>
-                                    <input type="text" id="procurer" name="procurer" placeholder="Procurer" class="form-control">
+                                    <label for="procurer" class="dark:text-white">Procurer</label>
+                                    <input type="text" id="procurer" name="procurer" placeholder="Procurer" class="form-control" style="border-radius: 9px">
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col">
-                                    <label for="transaction_date_from">Transaction Date</label>
+                                    <label for="transaction_date_from" class="dark:text-white">Transaction Date</label>
                                     <div class="d-flex justify-content-between">
-                                        <input type="date" id="transaction_date_from" name="transaction_date_from" class="form-control">
+                                        <input type="date" id="transaction_date_from" name="transaction_date_from" class="form-control" style="border-radius: 9px">
                                         <span class="mx-2 align-self-center">-</span>
-                                        <input type="date" id="transaction_date_to" name="transaction_date_to" class="form-control">
+                                        <input type="date" id="transaction_date_to" name="transaction_date_to" class="form-control" style="border-radius: 9px">
                                     </div>
                                 </div>
                             </div>
