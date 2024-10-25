@@ -240,7 +240,6 @@ class clincStockController extends Controller
         }
     }
 
-
     public function requeststock()
     {
         $drugs = DB::table('stock_items')->select('item_number', 'item_name')->get();

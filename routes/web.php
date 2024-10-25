@@ -63,6 +63,7 @@ Route::get('/clinicstock/search', [clincStockController::class,  'searchpstock']
 Route::get('/clinicstock/search/item', [clincStockController::class,  'searchclinicstock'])->middleware('auth')->name('searchclinicstock');
 Route::post('/clinicstock/search/rstock', [clincStockController::class, 'searchrstock'])->middleware('auth')->name('searchrstock');
 
+
 //making requesting stock
 Route::get('/requeststock', [clincStockController::class, 'requeststock'])->middleware('auth')->name('requeststock');
 Route::post('/requeststock/save', [clincStockController::class, 'saverequest'])->middleware('auth')->name('saverequest');
@@ -84,6 +85,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('admin/user', [Admincontroller::class, 'getuseroptions'])->middleware('auth')->name('getuseroptions');
     //delete users
     Route::post('admin/user', [Admincontroller::class, 'deleteuser'])->middleware('auth')->name('deleteuser');
+    //adimnget all clinics
+    Route::get('/admin/allclincistock',[Admincontroller::class, 'allclinicstocks'])->middleware('auth')->name('getallstocks'); 
+    Route::post('/admin/selecteclinic', [Admincontroller::class, 'showclinicchart'])->middleware('auth')->name('showclinicchart');
+    Route::post('/admin/selecteclinic/test', [Admincontroller::class, 'test'])->middleware('auth')->name('test');
 });
 
 //dispense stock to patientss
