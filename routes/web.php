@@ -17,6 +17,7 @@ use Illuminate\Routing\RouteRegistrar;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PatientController;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -53,8 +54,7 @@ Route::post('/StockTransactions/search', [StockTransactionsController::class, 's
 //printing report routes
 Route::post('/StockTransactions/search/print', [printcontroller::class, 'printstransactionresults'])->middleware('auth')->name('printstransactionresults');
 
-Route::get('/registered', [RegisteredUserController::class, 'create'])->middleware('auth')->name('registerationform');
-Route::post('/registered', [RegisteredUserController::class, 'store'])->middleware('auth')->name('registered');
+
 //recieve stock
 Route::get('/clinicstock/pendingstock', [clincStockController::class, 'showpending'])->middleware('auth')->name('pendingstock');
 Route::get('/clinicstock/receivedstock', [clincStockController::class, 'receivedstock'])->middleware('auth')->name('receivedstock');
@@ -82,22 +82,33 @@ Route::patch('/mainstock/dis/{stock_item}', [requestController::class, 'approver
 Route::post('/sendemail', [MailerController::class, 'sendEmail'])->name('sendEmail');
 //admin options
 Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('admin/user', [Admincontroller::class, 'getuseroptions'])->middleware('auth')->name('getuseroptions');
-    //delete users
-    Route::post('admin/user', [Admincontroller::class, 'deleteuser'])->middleware('auth')->name('deleteuser');
-    //adimnget all clinics
-    Route::get('/admin/allclincistock',[Admincontroller::class, 'allclinicstocks'])->middleware('auth')->name('getallstocks'); 
-    Route::post('/admin/selecteclinic', [Admincontroller::class, 'showclinicchart'])->middleware('auth')->name('showclinicchart');
-    Route::post('/admin/selecteclinic/test', [Admincontroller::class, 'test'])->middleware('auth')->name('test');
-});
+    Route::get('/registered', [RegisteredUserController::class, 'create'])->middleware('auth')->name('registerationform');
+    Route::post('/registered', [RegisteredUserController::class, 'store'])->middleware('auth')->name('registered');
+    Route::get('register', [RegisteredUserController::class, 'create'])
+        ->name('register');
 
+    Route::post('register', [RegisteredUserController::class, 'store']);
+    //get all users
+    Route::get('admin/user', [Admincontroller::class, 'getuseroptions'])->name('getuseroptions');
+    //delete users
+    Route::post('admin/user', [Admincontroller::class, 'deleteuser'])->name('deleteuser');
+    //reset user password
+    Route::patch('/admin/user/reset/{id}', [Admincontroller::class, 'resetpassword'])->name(('resetpassword'));
+    //adimnget all clinics
+    Route::get('/admin/allclincistock', [Admincontroller::class, 'allclinicstocks'])->name('getallstocks');
+    Route::post('/admin/selecteclinic', [Admincontroller::class, 'showclinicchart'])->name('showclinicchart');
+    Route::post('/admin/selecteclinic/test', [Admincontroller::class, 'test'])->name('test');
+});
+Route::get('/forbidden', function () {
+    return view('layouts.forbidden');
+})->name('forbidden');
 //dispense stock to patientss
 Route::post('/Dispense/dispense', [DispenseController::class, 'dispenseform'])->middleware('auth')->name('showdispenseform');
-Route::post('/Dispense/dispense/save',[DispenseController::class, 'dispense'])->middleware('auth')->name('savedispense');
-Route::get('/Dispense/dispense/save',[DispenseController::class, 'dispensehistory'])->middleware('auth')->name('dishistory');
+Route::post('/Dispense/dispense/save', [DispenseController::class, 'dispense'])->middleware('auth')->name('savedispense');
+Route::get('/Dispense/dispense/save', [DispenseController::class, 'dispensehistory'])->middleware('auth')->name('dishistory');
 Route::post('/Dispense/dispense/his', [DispenseController::class, 'searchhis'])->middleware('auth')->name('searchhis');
 //patients
-Route::get('/patients',[PatientController::class, 'showform'])->middleware('auth')->name('patientform');
+Route::get('/patients', [PatientController::class, 'showform'])->middleware('auth')->name('patientform');
 Route::post('/patients/search', [PatientController::class, 'searchhis'])->middleware('auth')->name('showpatients');
 
 

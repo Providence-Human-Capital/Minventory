@@ -15,9 +15,9 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!auth()->check() || auth()->user()->Role !== 'Admin') {
-            return redirect('/'); // Redirect to home or any other page
+        if (auth()->check() && auth()->user()->Role === 'Admin') {
+            return $next($request);
         }
-        return $next($request);
+        return redirect()->route('forbidden');
     }
 }

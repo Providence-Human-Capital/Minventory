@@ -15,6 +15,20 @@ class Admincontroller extends Controller
         return view('admin.alluser', ['user' => $user]);
     }
 
+    public function resetpassword(Request $request)
+    {
+        $request->validate([
+            'password' => 'required|string|min:8', // You can adjust the validation rules as needed
+        ]);
+    
+        $userId = $request->id; // Get the user ID
+        $password = $request->password; // Get the new password
+    
+        // Find the user and update the password
+        User::find($userId)->update(['password' => bcrypt($password)]);
+
+        return redirect()->route('getuseroptions')->with('success', 'Password Reset');
+    }
 
     /**
      * Delete the user's account.
