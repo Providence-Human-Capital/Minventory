@@ -43,7 +43,7 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
+                <div class="p-6 text-gray-900 dark:text-gray-800">
                     @if ($errors->any())
                         <div class="alert alert-danger">
                             <ul>
@@ -57,10 +57,10 @@
                     <table style="border-collapse: collapse;width: 100%;">
                         <thead>
                             <tr style="text-align: left; border-bottom: 1px solid #DDD;">
-                                <th style="padding: 8px;">Item Name</th>
-                                <th style="padding: 8px;">Item Number</th>
-                                <th style="padding: 8px;">Quantity</th>
-                                <th style="padding: 8px;">Action</th>
+                                <th style="padding: 8px; text-align: left;border-bottom: 1px solid #DDD; font-size: 18px">Item Names</th>
+                                <th style="padding: 8px; text-align: left;border-bottom: 1px solid #DDD; font-size: 18px">Item Number</th>
+                                <th style="padding: 8px; text-align: left;border-bottom: 1px solid #DDD; font-size: 18px">Quantity</th>
+                                <th style="padding: 8px; text-align: left;border-bottom: 1px solid #DDD; font-size: 18px">Action</th>
                             </tr>
                         </thead>
                         <tbody>

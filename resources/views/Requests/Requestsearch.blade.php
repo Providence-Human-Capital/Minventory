@@ -88,8 +88,8 @@
     {{-- modal design search --}}
     <div class="modal fade" id="searchrModal" tabindex="-1" role="dialog" aria-labelledby="searchrModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header" style="height: 50px; background-color: green; color: white; text-align: center;">
+            <div class="modal-content dark:bg-gray-800">
+                <div class="modal-header dark:bg-emerald-950 bg-green-200 dark:text-white" style="height: 50px; background-color: green; color: white; text-align: center;">
                     <h5 class="modal-title" id="searchrModalLabel">SEARCH</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -160,7 +160,7 @@
                         </div>
     
                         <div class="text-center">
-                            <button type="submit" class="btn btn-primary" style="width: 70%;">Search</button>
+                            <button type="submit" class="btn bg-green-700 text-white dark:bg-green-500" style="width: 70%;">Search</button>
                         </div>
                     </div>
                 </form>
@@ -170,42 +170,45 @@
     
     
     
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-8">
+        <div class="max-w-8xl mx-auto sm:px-6 lg:px-8 ">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <!-- Button to print results -->
-        <button class="btn btn-primary mb-3" onclick="printResults()">
+        <div class="dark:bg-gray-800">
+        <button class="btn bg-green-700 dark:bg-green-500 " onclick="printResults()">
             <i class="fa fa-print"></i> Print Results
         </button>
-                <div class="p-6 text-gray-900 dark:text-gray-100">
+        </div>
+                <div class="p-6 text-gray-900 dark:text-gray-100 dark:bg-gray-800">
                     <div id="printArea" class="print-area">
 
-                        <table style="border-collapse: collapse; width: 100%; margin-top: 20px;">
+                        <table class=" dark:bg-gray-800 dark:text-gray-200 table table-striped table-bordered">
                             <thead>
-                                <tr style="background-color: #f2f2f2;">
-                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Item Name</th>
-                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Item Number</th>
-                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Quantity</th>
-                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Clinic</th>
-                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Status</th>
-                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Requester</th>
-                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Requested At</th>
-                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Handled By</th>
-                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Handled At</th>
+                                <tr class="bg-gray-400 dark:bg-zinc-900 dark:text-white text-black">
+                                    <th>Item Name</th>
+                                    <th>Item Number</th>
+                                    <th>Quantity</th>
+                                    <th>Clinic</th>
+                                    <th>Status</th>
+                                    <th>Requester</th>
+                                    <th>Requested At</th>
+                                    <th>Handled By</th>
+                                    <th>Handled At</th>
                                 </tr>
                             </thead>
                             <tbody>
+
                                 @foreach ($results as $request)
-                                <tr>
-                                    <td style="padding: 12px; border: 1px solid #ddd;">{{ $request->item_name }}</td>
-                                    <td style="padding: 12px; border: 1px solid #ddd;">{{ $request->item_number }}</td>
-                                    <td style="padding: 12px; border: 1px solid #ddd;">{{ $request->item_quantity }}</td>
-                                    <td style="padding: 12px; border: 1px solid #ddd;">{{ $request->clinic }}</td>
-                                    <td style="padding: 12px; border: 1px solid #ddd;">{{ $request->status }}</td>
-                                    <td style="padding: 12px; border: 1px solid #ddd;">{{ $request->requester }}</td>
-                                    <td style="padding: 12px; border: 1px solid #ddd;">{{ $request->created_at }}</td>
-                                    <td style="padding: 12px; border: 1px solid #ddd;">{{ $request->approver }}</td>
-                                    <td style="padding: 12px; border: 1px solid #ddd;">{{ $request->date_approved }}</td>
+                                <tr class="dark:bg-gray-700 bg-gray-300 dark:text-gray-200">
+                                    <td>{{ $request->item_name }}</td>
+                                    <td>{{ $request->item_number }}</td>
+                                    <td>{{ $request->item_quantity }}</td>
+                                    <td>{{ $request->clinic }}</td>
+                                    <td>{{ $request->status }}</td>
+                                    <td>{{ $request->requester }}</td>
+                                    <td>{{ $request->created_at }}</td>
+                                    <td>{{ $request->approver }}</td>
+                                    <td>{{ $request->date_approved }}</td>
                                 </tr>
                                 @endforeach
                             </tbody>

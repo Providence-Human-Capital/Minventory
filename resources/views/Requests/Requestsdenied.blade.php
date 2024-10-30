@@ -24,37 +24,39 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <table style="border-collapse: collapse;width: 100%;">
-
-                        <tr style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Item
+                <div class="p-6 text-gray-900 dark:bg-gray-800">
+                    <table class="dark:bg-gray-800 dark:text-gray-200 table table-striped table-bordered">
+                    <thead>
+                        <tr class="bg-gray-400 dark:bg-zinc-900 dark:text-white text-black">
+                            <th>Item
                                 Name</th>
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Item
+                            <th>Item
                                 Number
                             </th>
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                            <th>
                                 Quantity</th>
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Clinic</th>
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Status
+                            <th>Clinic</th>
+                            <th>Status
                             </th>
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                            <th>
                                 Requester</th>
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                            <th>
                                 Requested at:
                             </th>
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                            <th>
                                Denied by
                             </th>
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                            <th>
                                 Denied at:
                             </th>
                         </tr>
-                        <tr>
-                            @foreach ($requests as $request)
-                            <th>{{$request->item_name}}</th>
+                        </thead>
+                        
+                        @foreach ($requests as $request)
+                        <tr class="dark:bg-gray-700 bg-gray-300 dark:text-gray-200">
+                            <th >{{$request->item_name}}</th>
                             <th>{{$request->item_number}}</th>
                             <th>{{$request->item_quantity}}</th>
                             <th>{{$request->clinic}}</th>
