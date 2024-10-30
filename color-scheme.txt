@@ -1,0 +1,6 @@
+navbar-dark: dark:bg-emerald-950
+dark-buttons: dark:bg-green-500
+
+
+light-navbar: bg-green-50
+light-button: bg-green-700

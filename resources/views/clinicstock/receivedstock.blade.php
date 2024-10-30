@@ -66,42 +66,42 @@
         </center>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 ">
+        <div class="max-w-8xl mx-auto sm:px-6 lg:px-8 ">
             
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
+                <div class="p-6 text-gray-900 dark:bg-gray-800 dark:text-white">
                     {{ __("Recived stocks") }}
                  
                     <center>
-                        <table style="border-collapse: collapse;width: 100%;">
-
-                            <tr style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Item
+                        <table class="dark:bg-gray-800 dark:text-gray-200 table table-striped table-bordered">
+<thead>
+                            <tr class="bg-gray-400 dark:bg-zinc-900 dark:text-white text-black">
+                                <th >Item
                                     Name</th>
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Item
+                                <th >Item
                                     Number
                                 </th>
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                <th >
                                     Quantity</th>
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Clinic</th>
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Status
+                                <th >Clinic</th>
+                                <th >Status
                                 </th>
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                <th >
                                     procurer</th>
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                <th >
                                     Sent at:
                                 </th>
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                <th >
                                      Reciever:
                                 </th>
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                <th >
                                     Received at:
                                 </th>
                             </tr>
-                           
-                            <tr>
+                            </thead>
+                            @foreach ($rstocks as $rstock)
+                            <tr class="dark:bg-gray-700 bg-gray-300 dark:text-gray-200">
                                 
-                                @foreach ($rstocks as $rstock)
                                 <th>{{$rstock->item_name}}</th>
                                 <th>{{$rstock->item_number}}</th>
                                 <th>{{$rstock->item_quantity}}</th>

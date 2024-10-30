@@ -13,7 +13,7 @@
                     <form action="{{route ('searchmainstock')}}" method="GET">
                         <input type="text" name="isearch" id="isearch" placeholder="Search items"
                             value="{{ old('isearch')}}">
-                        <button type="submit" class="btn btn-primary">Search</button>
+                        <button type="submit" class="btn btn-success">Search</button>
                     </form>
                 </div>
             </div>
@@ -54,28 +54,30 @@
                         </div>
                     @endif
     
-                    <table style="border-collapse: collapse;width: 100%;">
+                    <table style="border-collapse: collapse;width: 100%;" class="dark:bg-gray-800 dark:text-gray-200 table table-striped table-bordered">
                         <thead>
-                            <tr style="text-align: left; border-bottom: 1px solid #DDD;">
-                                <th style="padding: 8px;">Item Name</th>
-                                <th style="padding: 8px;">Item Number</th>
-                                <th style="padding: 8px;">Quantity</th>
-                                <th style="padding: 8px;">Action</th>
+                            <tr class="bg-gray-400 dark:bg-zinc-900 dark:text-white text-black">
+                                <th>Item Name</th>
+                                <th>Item Number</th>
+                                <th>Quantity</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($search as $searchs)
-                                <tr style="border-bottom: 1px solid #DDD;">
-                                    <td style="padding: 8px;">{{ $searchs->item_name }}</td>
-                                    <td style="padding: 8px;">{{ $searchs->item_number }}</td>
-                                    <td style="padding: 8px;">{{ $searchs->item_quantity }}</td>
-                                    <td style="padding: 8px;">
+                                <tr class="dark:bg-gray-700 bg-gray-300 dark:text-gray-200">
+                                    <td>{{ $searchs->item_name }}</td>
+                                    <td>{{ $searchs->item_number }}</td>
+                                    <td>{{ $searchs->item_quantity }}</td>
+                                    <td>
                                         <button type="button" class="btn btn-success" data-toggle="modal"
-                                                data-target="#addStockModal{{ $searchs->id }}">
+                                                data-target="#addStockModal{{ $searchs->id }}" >
+                                                <i class="fas fa-warehouse"></i>
                                             Add Stock
                                         </button>
                                         <button type="button" class="btn btn-primary" data-toggle="modal"
                                                 data-target="#distributeStockModal{{ $searchs->id }}">
+                                                <i class="fas fa-shipping-fast"></i>
                                             Distribute Stock
                                         </button>
                                     </td>

@@ -10,10 +10,10 @@
                 {{ __('Received Stock') }}
             </x-nav-link>
         </div>
-        <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" style="display:inline;float:right">
+        <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex " style="display:inline;float:right">
             <form action="{{ route('searchpstock') }}" method="GET">
                 <input type="text" name="ssearch" id="ssearch" value="{{ old('ssearch') }}">
-                <button type="submit">Search</button>
+                <button type="submit" class="btn btn-success ">Search</button>
             </form>
         </div>
     </x-slot>
@@ -36,38 +36,39 @@
         </center>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 ">
+        <div class="max-w-8xl mx-auto sm:px-6 lg:px-8 ">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
+                <div class="p-6 text-gray-900 dark:bg-gray-800 dark:text-white">
                     {{ __("Pending stocks") }}
                     @if ($pstocks->isEmpty())
                         <p>No pending request</p>
                     @else
                     <center>
-                        <table style="border-collapse: collapse;width: 100%;">
-
-                            <tr style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Item
+                        <table class="dark:bg-gray-800 dark:text-gray-200 table table-striped table-bordered">
+                        <thead>
+                            <tr class="bg-gray-400 dark:bg-zinc-900 dark:text-white text-black">
+                                <th>Item
                                     Name</th>
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Item
+                                <th>Item
                                     Number
                                 </th>
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                <th>
                                     Quantity</th>
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Clinic</th>
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Status
+                                <th>Clinic</th>
+                                <th>Status
                                 </th>
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                    procurer</th>
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                <th>
+                                    Procurer</th>
+                                <th>
                                     Sent at:
                                 </th>
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                <th>
                                     Action
                                 </th>
                             </tr>
-                            <tr>
-                                @foreach ($pstocks as $pstock)
+                            </thead>
+                            @foreach ($pstocks as $pstock)
+                            <tr class="dark:bg-gray-700 bg-gray-300 dark:text-gray-200">
                                 <th>{{$pstock->item_name}}</th>
                                 <th>{{$pstock->item_number}}</th>
                                 <th>{{$pstock->item_quantity}}</th>

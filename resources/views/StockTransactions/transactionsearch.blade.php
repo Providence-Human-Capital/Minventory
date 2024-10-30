@@ -114,18 +114,18 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <div class="py-12">
+        <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white s overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900 dark:bg-gray-800">
+                    <div class="">
                         <!-- Button to print results -->
-                        <button class="btn btn-primary mb-3" onclick="printResults()">
+                        <button class="btn bg-green-500 mb-3" onclick="printResults()">
                             <i class="fa fa-print"></i> Print Results
                         </button>
 
                         <div class="max-w-full mx-auto sm:px-6 lg:px-8">
                             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                                <div class="p-3 text-gray-900 dark:text-gray-100">
+                                <div class="p-3 text-gray-900 dark:bg-gray-800">
                                     <center>
                                         @if ($results->isEmpty())
                                             <p>No results found.</p>
@@ -133,7 +133,7 @@
                                             <div id="printArea" class="print-area">
                                                 <table class="table table-striped table-bordered w-100">
                                                     <thead>
-                                                        <tr>
+                                                        <tr class="bg-gray-400 dark:bg-zinc-900 dark:text-white text-black">
                                                             <th>Item Name</th>
                                                             <th>Item Number</th>
                                                             <th>Quantity</th>
@@ -148,7 +148,7 @@
                                                     </thead>
                                                     <tbody>
                                                         @foreach ($results as $result)
-                                                            <tr>
+                                                            <tr class="dark:text-gray-200">
                                                                 <td>{{ $result->item_name }}</td>
                                                                 <td>{{ $result->item_number }}</td>
                                                                 <td>{{ $result->item_quantity }}</td>
