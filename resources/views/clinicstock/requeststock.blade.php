@@ -42,26 +42,23 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-
-
-
-                    <div class="py-12">
-                        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="p-6 text-gray-900 dark:text-gray-100 dark:bg-gray-800">
+                    <div class="py-12 ">
+                        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 ">
                             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                                <div class="p-6 text-gray-900 dark:text-gray-100">
-                                    <table style="border-collapse: collapse; width: 100%; margin-top: 20px;">
+                                <div class="p-6 text-gray-900 dark:text-gray-100 dark:bg-gray-800">
+                                    <table class=" dark:bg-gray-800 dark:text-gray-200 table table-striped table-bordered">
                                         <thead>
-                                            <tr style="background-color: #f2f2f2;">
-                                                <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Item Name</th>
-                                                <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Item Number</th>
-                                                <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Quantity</th>
-                                                <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Clinic</th>
-                                                <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Status</th>
-                                                <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Requester</th>
-                                                <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Requested At</th>
-                                                <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Handled By</th>
-                                                <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Handled At</th>
+                                            <tr class="bg-gray-400 dark:bg-zinc-900 dark:text-white text-black">
+                                                <th>Item Name</th>
+                                                <th>Item Number</th>
+                                                <th>Quantity</th>
+                                                <th>Clinic</th>
+                                                <th>Status</th>
+                                                <th>Requester</th>
+                                                <th>Requested At</th>
+                                                <th>Handled By</th>
+                                                <th>Handled At</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -73,22 +70,22 @@
                                             
                                             @if ($mypendingrequest->isEmpty())
                                                 <tr>
-                                                    <td colspan="9" style="text-align: center; padding: 16px; color: red;">
+                                                    <td colspan="9" style="text-align: center; padding: 16px;" class="text-red-700 dark:text-red-500">
                                                         No pending requests available.
                                                     </td>
                                                 </tr>
                                             @else
                                                 @foreach ($mypendingrequest as $prequest)
-                                                    <tr>
-                                                        <td style="padding: 12px; border: 1px solid #ddd;">{{ $prequest->item_name }}</td>
-                                                        <td style="padding: 12px; border: 1px solid #ddd;">{{ $prequest->item_number }}</td>
-                                                        <td style="padding: 12px; border: 1px solid #ddd;">{{ $prequest->item_quantity }}</td>
-                                                        <td style="padding: 12px; border: 1px solid #ddd;">{{ $prequest->clinic }}</td>
-                                                        <td style="padding: 12px; border: 1px solid #ddd;">{{ $prequest->status }}</td>
-                                                        <td style="padding: 12px; border: 1px solid #ddd;">{{ $prequest->requester }}</td>
-                                                        <td style="padding: 12px; border: 1px solid #ddd;">{{ $prequest->created_at }}</td>
-                                                        <td style="padding: 12px; border: 1px solid #ddd;">{{ $prequest->approver }}</td>
-                                                        <td style="padding: 12px; border: 1px solid #ddd;">{{ $prequest->date_approved }}</td>
+                                                    <tr class="dark:bg-gray-700 bg-gray-300 dark:text-gray-200">
+                                                        <td>{{ $prequest->item_name }}</td>
+                                                        <td>{{ $prequest->item_number }}</td>
+                                                        <td>{{ $prequest->item_quantity }}</td>
+                                                        <td>{{ $prequest->clinic }}</td>
+                                                        <td>{{ $prequest->status }}</td>
+                                                        <td>{{ $prequest->requester }}</td>
+                                                        <td>{{ $prequest->created_at }}</td>
+                                                        <td>{{ $prequest->approver }}</td>
+                                                        <td>{{ $prequest->date_approved }}</td>
                                                     </tr>
                                                 @endforeach
                                             @endif
@@ -105,23 +102,20 @@
                     <div class="modal fade" id="searchModal" tabindex="-1" role="dialog"
                         aria-labelledby="searchModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header" style="padding: 0px;height:50px">
-                                    <div style="color:white;width:100%;height:100%;background-color:green;top:0px;text-align:center"
-                                        class="modal-title" id="searchModalLabel">
+                            <div class="modal-content dark:bg-gray-800">
+                                    <div class="modal-header dark:bg-emerald-950 bg-green-200 dark:text-white" id="searchModalLabel">
                                         <p style="padding-top:10px;display:inline">Request</p>
-                                        <button style="display:inline" type="button" class="close"
+                                        <button style="display:inline" type="button" class="close dark:text-white"
                                             data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
-                                    </div>
                                 </div>
-                                <form method="POST" action="/requeststock/save">
+                                <form method="POST" action="/requeststock/save" class="mt-3">
                                     <div style="padding-left:10px;padding-right:10px;width:100%">
                                         @csrf
                                         <div>
                                             <label for='item_name'>Item Name</label><br>
-                                            <select name="item_name" id="item_name" style="width: 100%;"
+                                            <select name="item_name" id="item_name" class="form-control dark:bg-gray-700 dark:text-white" style="border-radius: 9px"
                                                 onchange="autofill()">
                                                 <option></option>
                                                 @foreach ($drugs as $drug)
@@ -132,24 +126,25 @@
                                                 @endforeach
                                             </select>
                                             <label for="autofillField">Item Number:</label><br>
-                                            <input type="text" id="autofillField"
+                                            <input type="text" id="autofillField" class="form-control dark:bg-gray-700 dark:text-white" style="border-radius: 9px"
                                                 placeholder="Item Number will be autofilled" readonly>
-                                            <input type="hidden" name="item_number" id="item_number">
+
+                                            <input type="hidden" name="item_number" id="item_number" class="form-control dark:bg-gray-700 dark:text-white" style="border-radius: 9px">
                                             @error('item_name')
                                                 <p style="color:red;size:13px">{{ $message }}</p>
                                             @enderror
                                         </div>
                                         <div>
                                             <label for='quantity'>Quantity</label><br>
-                                            <input type="number" id="item_quantity" name="item_quantity"
+                                            <input type="number" id="item_quantity" name="item_quantity" class="form-control dark:bg-gray-700 dark:text-white" style="border-radius: 9px"
                                                 placeholder="1000" style="width: 100%;"><br>
                                             @error('item_quantity')
                                                 <p style="color:red;size:13px">{{ $message }}</p>
                                             @enderror
                                         </div>
-                                        <input type="submit"
-                                            style="background-color: green;color:white;size:10pt;padding:5pt;margin:15pt;border-radius:5px;border-style:outset;border-color:black"
-                                            value="REQUEST STOCK">
+                                        <div class="modal-footer mt-3">
+                                            <button type="submit" class="btn bg-green-700 text-white dark:bg-green-500" style="width: 100%;">REQUEST STOCK</button>
+                                        </div>
                                     </div>
                                 </form>
 
