@@ -105,21 +105,21 @@
                                 aria-labelledby="addStockModalLabel{{ $stocks->id }}" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content dark:bg-gray-800 dark:text-white">
-                                        <div class="modal-header dark:bg-emerald-950 bg-green-200 dark:text-white">
+                                        <div class="modal-header dark:bg-green-900 bg-green-200 dark:text-white">
                                                 <h5 class="modal-title" id="searchModalLabel">ADD TO STOCK</h5>
                                                 <button style="display:inline" type="button" class="close dark:text-white"
                                                     data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                         </div>
-                                        <form method="POST" action="/mainstock/{{ $stocks->id }}">
+                                        <form method="POST" action="/mainstock/{{ $stocks->id }}" class="mt-2">
                                             <div style="padding-left:10px;padding-right:10px;width:100%">
                                                 @csrf
                                                 @method('patch')
                                                 <div>
                                                     <label for='item_name'>Item Name</label><br>
-                                                    <input type="text" id="item_name" name="item_name" class="form-control form-control-lg dark:bg-gray-700 dark:text-white"
-                                                        value={{ $stocks->item_name }} style="width: 100%;"><br>
+                                                    <input type="text" id="item_name" name="item_name" class="form-control form-control-lg dark:bg-gray-700 dark:text-white" style="border-radius: 9px;"
+                                                        value={{ $stocks->item_name }} ><br>
                                                     @error('item_name')
                                                         <p style="color:red;size:13px">{{ $message }}</p>
                                                     @enderror
@@ -127,15 +127,15 @@
                                                 <div>
                                                     <label for='quantity'>Quantity </label><br>
                                                     <input type="number" id="item_quantity" name="item_quantity" class="form-control form-control-lg dark:bg-gray-700 dark:text-white"
-                                                        placeholder="1000" style="width: 100%;"><br>
+                                                        placeholder="1000" style="border-radius: 9px;"><br>
                                                     @error('item_quantity')
                                                         <p style="color:red;size:13px">{{ $message }}</p>
                                                     @enderror
                                                 </div>
                                                 <div>
                                                     <label for='item_number'>Item Number</label><br>
-                                                    <input type="text" id="item_number" name="item_number" class="form-control form-control-lg dark:bg-gray-700 dark:text-white"
-                                                        value={{ $stocks->item_number }} style="width: 100%;"><br>
+                                                    <input type="text" id="item_number" name="item_number" class="form-control form-control-lg dark:bg-gray-700 dark:text-white" style="border-radius: 9px;"
+                                                        value={{ $stocks->item_number }} ><br>
                                                     @error('item_number')
                                                         <p style="color:red;size:13px">{{ $message }}</p>
                                                     @enderror
@@ -144,7 +144,7 @@
                                                     <label for='price'>Price</label><br>
                                                     <label for="$">
                                                         <input type="number" id="price" name="price" class="form-control form-control-lg dark:bg-gray-700 dark:text-white"
-                                                            placeholder="1000" style="width: 100%;">
+                                                            placeholder="1000" style="border-radius: 9px;">
                                                         @error('price')
                                                             <p style="color:red;size:13px">{{ $message }}</p>
                                                         @enderror
@@ -153,11 +153,11 @@
                                                 <div>
                                                     <label for='expiry_date'>Expiry Date</label><br>
                                                     <input type="date" id="expiry_date" name="expiry_date" class="form-control form-control-lg dark:bg-gray-700 dark:text-white"
-                                                        placeholder="B1992XC" style="width: 100%;"><br>
+                                                        placeholder="B1992XC" style="border-radius: 9px;"><br>
                                                 </div>
 
                                                 <div class="modal-footer">
-                                            <button type="submit" class="btn bg-green-700 text-white dark:bg-green-500 dark:text-black" style="width: 100%;">Search</button>
+                                            <button type="submit" class="btn bg-green-700 dark:bg-green-500 text-white dark:text-black" style="width: 100%;">Search</button>
                                         </div>
                                             </div>
                                         </form>
@@ -173,7 +173,7 @@
                                 aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content dark:bg-gray-800 dark:text-white">
-                                        <div class="modal-header dark:bg-emerald-950 bg-green-200 dark:text-white">
+                                        <div class="modal-header dark:bg-blue-900 bg-blue-200 dark:text-white">
                                             <h5 class="modal-title" id="distributeModalLabel{{ $stocks->id }}">
                                                 Distribute</h5>
                                             <button type="button" class="close dark:text-white" data-dismiss="modal"
@@ -189,7 +189,7 @@
                                                 <div>
                                                     <label for='item_name'>Item Name</label><br>
                                                     <input type="text" id="item_name" name="item_name" class="form-control form-control-lg dark:bg-gray-700 dark:text-white"
-                                                        value="{{ $stocks->item_name }}" style="width: 100%;"><br>
+                                                        value="{{ $stocks->item_name }}" style="border-radius: 9px;"><br>
                                                     @error('item_name')
                                                         <p style="color:red;size:13px">{{ $message }}</p>
                                                     @enderror
@@ -198,22 +198,22 @@
                                                     <label for='quantity'>Quantity </label><br>
                                                     <input type="number" id="item_quantity" name="item_quantity" class="form-control form-control-lg dark:bg-gray-700 dark:text-white"
                                                         placeholder="Must not exceed existing Stock"
-                                                        style="width: 100%;" max="{{ $stocks->item_quantity }}"><br>
+                                                        style="border-radius: 9px;" max="{{ $stocks->item_quantity }}"><br>
                                                     @error('item_quantity')
                                                         <p style="color:red;size:13px">{{ $message }}</p>
                                                     @enderror
                                                 </div>
                                                 <div>
                                                     <label for='item_number'>Item Number</label><br>
-                                                    <input type="text" id="item_number" name="item_number" class="form-control form-control-lg dark:bg-gray-700 dark:text-white"
-                                                        value={{ $stocks->item_number }} style="width: 100%;"><br>
+                                                    <input type="text" id="item_number" name="item_number" class="form-control form-control-lg dark:bg-gray-700 dark:text-white" style="border-radius: 9px;"
+                                                        value={{ $stocks->item_number }} ><br>
                                                     @error('item_number')
                                                         <p style="color:red;size:13px">{{ $message }}</p>
                                                     @enderror
                                                 </div>
                                                 <div>
                                                     <label for="clinics">Choose a Clinic</label><br>
-                                                    <select name="clinics" id="clinics" style="width: 100%;" class="form-control dark:bg-gray-700 dark:text-white">
+                                                    <select name="clinics" id="clinics" style="border-radius: 9px;" class="form-control dark:bg-gray-700 dark:text-white">
                                                         <option value="81 Baines Avenue(Harare)">81 Baines
                                                             Avenue(Harare)
                                                         </option>
@@ -246,7 +246,7 @@
                                                 </div>
 
                                                 <div class="modal-footer">
-                                            <button type="submit" class="btn bg-blue-500 text-white dark:bg-blue-700 dark:text-black" style="width: 100%;">DISTRIBUTE TO STOCK</button>
+                                            <button type="submit" class="btn bg-blue-700 dark:bg-blue-500 text-white dark:text-black" style="width: 100%;">DISTRIBUTE TO STOCK</button>
                                         </div>
                                             </div>
                                         </form>
@@ -262,14 +262,14 @@
                         aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content dark:bg-gray-800 dark:text-white">
-                                <div class="modal-header dark:bg-emerald-950 bg-green-200 dark:text-white">
+                                <div class="modal-header dark:bg-green-900 bg-green-200 dark:text-white">
                                         <h5 class="modal-title" id="searchModalLabel">ADD TO STOCK</h5>
                                         <button style="display:inline" type="button" class="close dark:text-white"
                                             data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                 </div>
-                                <form method="POST" action="/mainstock">
+                                <form method="POST" action="/mainstock" class="mt-2">
                                     <div style="padding-left:10px;padding-right:10px;width:100%">
                                         @csrf
                                         <div>
@@ -298,7 +298,7 @@
                                         </div>
 
                                         <div class="modal-footer">
-                                            <button type="submit" class="btn bg-green-700 text-white dark:bg-green-500 dark:text-black" style="width: 100%;">Search</button>
+                                            <button type="submit" class="btn bg-green-700 dark:bg-green-500 text-white dark:text-black" style="width: 100%;">Search</button>
                                         </div>
                                     </div>
                                 </form>

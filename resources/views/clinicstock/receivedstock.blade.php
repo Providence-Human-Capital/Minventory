@@ -130,10 +130,10 @@
      {{-- modal design search --}}
      <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header" style="background-color: green; color: white;">
+            <div class="modal-content dark:bg-gray-800 dark:text-white">
+                <div class="modal-header dark:bg-emerald-950 bg-green-200 dark:text-white" >
                     <h5 class="modal-title" id="searchModalLabel">SEARCH</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close dark:text-white" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -144,33 +144,33 @@
                             <div class="row mb-3">
                                 <div class="col">
                                     <label for="item_name">Item Name</label>
-                                    <input type="text" id="item_name" name="item_name" placeholder="Item Name" class="form-control">
+                                    <input type="text" id="item_name" name="item_name" placeholder="Item Name" class="form-control form-control-lg dark:bg-gray-700 dark:text-white" style="border-radius: 9px">
                                 </div>
                                 <div class="col">
                                     <label for="item_number">Item Number</label>
-                                    <input type="text" id="item_number" name="item_number" placeholder="Item Number" class="form-control">
+                                    <input type="text" id="item_number" name="item_number" placeholder="Item Number" class="form-control form-control-lg dark:bg-gray-700 dark:text-white" style="border-radius: 9px">
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col">
                                     <label for="procurer">Procurer</label>
-                                    <input type="text" id="procurer" name="procurer" placeholder="Procurer" class="form-control">
+                                    <input type="text" id="procurer" name="procurer" placeholder="Procurer" class="form-control form-control-lg dark:bg-gray-700 dark:text-white" style="border-radius: 9px">
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col">
                                     <label for="transaction_date_from">Transaction Date</label>
                                     <div class="d-flex justify-content-between">
-                                        <input type="date" id="transaction_date_from" name="transaction_date_from" class="form-control">
+                                        <input type="date" id="transaction_date_from" name="transaction_date_from" class="form-control form-control-lg dark:bg-gray-700 dark:text-white" style="border-radius: 9px">
                                         <span class="mx-2 align-self-center">-</span>
-                                        <input type="date" id="transaction_date_to" name="transaction_date_to" class="form-control">
+                                        <input type="date" id="transaction_date_to" name="transaction_date_to" class="form-control form-control-lg dark:bg-gray-700 dark:text-white" style="border-radius: 9px">
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary" style="width: 100%;">Search</button>
+                        <button type="submit" class="btn bg-green-700 text-white dark:bg-green-500 dark:text-black" style="width: 100%;">Search</button>
                     </div>
                 </form>
             </div>
