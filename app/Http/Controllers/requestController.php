@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\pending_stocks;
 use App\Models\stock_request;
 use App\Models\StockItem;
@@ -46,7 +47,7 @@ class requestController extends Controller
 
     public function viewrequest(Request $request)
     {
-       
+
         $requested = stock_request::where('id', 'like', $request->id)->get()->first();
         $requestedid = $request->id;
         $requestedname = $requested->item_name;
@@ -59,15 +60,26 @@ class requestController extends Controller
 
             ->select(DB::raw('DATE_FORMAT(updated_at, "%M-%y") as date'), DB::raw('SUM(item_quantity) as monthsum'))
             ->where('item_name', 'like', $requestedname)
-            ->where('clinic', 'like', $requestedclinic)
+            ->where('clinics', 'like', $requestedclinic)
             ->where('status', 'like', 'Received')
             ->groupBy(DB::raw('MONTH(updated_at)'))
             ->orderBy('updated_at', 'asc')
             ->get();
 
 
+        $disstock = DB::table("dispenses")
+
+            ->select(DB::raw('DATE_FORMAT(dispense_time, "%M-%y") as date'), DB::raw('SUM(damount) as monthsum'))
+            ->where('drug', 'like', $requestedname)
+            ->where('clinic', 'like', $requestedclinic)
+            ->groupBy(DB::raw('MONTH(dispense_time)'))
+            ->orderBy('dispense_time', 'asc')
+            ->get();
+
         $date = [];
         $sent = [];
+        $ddate = [];
+        $dsent = [];
 
 
         foreach ($sentstock as $sentstocks) {
@@ -75,25 +87,67 @@ class requestController extends Controller
             $sent[] = intval($sentstocks->monthsum);
         }
 
+        foreach ($disstock as $disstocks) {
+            $ddate[] = $disstocks->date;
+            $dsent[] = intval($disstocks->monthsum);
+        }
+
+        $uniqueDates = array_unique(array_merge($date, $ddate));
+        sort($uniqueDates);
+
+        // Prepare data for distribution and dispense datasets
+        $sentData = array_fill(0, count($uniqueDates), 0);
+        $dsentData = array_fill(0, count($uniqueDates), 0);
+
+        foreach ($uniqueDates as $index => $uniqueDate) {
+            if (in_array($uniqueDate, $date)) {
+                $sentData[$index] = $sent[array_search($uniqueDate, $date)];
+            }
+            if (in_array($uniqueDate, $ddate)) {
+                $dsentData[$index] = $dsent[array_search($uniqueDate, $ddate)];
+            }
+        }
+
+
         $chart = Chartjs::build()
-            ->name("UserRegistrationsChart")
-            ->type("line")
-            ->size(["width" => 400, "height" => 200])
-            ->labels($date)
-            ->datasets([
+        ->name("StockComparisonChart")
+        ->type("line")
+        ->size(["width" => 400, "height" => 200])
+        ->labels($uniqueDates)
+        ->datasets([
+            [
+                "label" => "Distribution",
+                "backgroundColor" => "rgba(38, 185, 154, 0.31)",
+                "borderColor" => "rgba(38, 185, 154, 0.7)",
+                "data" => $sentData
+            ],
+            [
+                "label" => "Dispense",
+                "backgroundColor" => "rgba(255, 99, 132, 0.31)",
+                "borderColor" => "rgba(255, 99, 132, 0.7)",
+                "data" => $dsentData
+            ]
+        ]);
+
+        $chartData = [
+            'labels' => $uniqueDates,
+            'datasets' => [
                 [
-                    "label" => "Dristriubtion",
+                    "label" => "Distribution",
                     "backgroundColor" => "rgba(38, 185, 154, 0.31)",
                     "borderColor" => "rgba(38, 185, 154, 0.7)",
-                    "data" => $sent
+                    "data" => $sentData
+                ],
+                [
+                    "label" => "Dispense",
+                    "backgroundColor" => "rgba(255, 99, 132, 0.31)",
+                    "borderColor" => "rgba(255, 99, 132, 0.7)",
+                    "data" => $dsentData
                 ]
-            ]);
-            
-            $data = [
-                'labels' => $date,
-                'data' => $sent,
-            ];
-            
+            ]
+        ];
+
+
         switch ($requestedclinic) {
             case "81 Baines Avenue(Harare)":
                 $currentclinicstock = DB::table('avenue81_stocks')->where('item_number', 'like', $requestednumber)->get()->first()->item_quantity;
@@ -127,11 +181,21 @@ class requestController extends Controller
                 break;
         }
 
-        return view('requestchart',  compact('chart', 'currentclinicstock', 'maincurrentstock', 'requestedclinic', 'requestedname', 'requestednumber', 'requestedid','requestedquantity','data'));
+        return view('requestchart', [
+            'chartData' => $chartData,
+            'currentclinicstock' => $currentclinicstock,
+            'maincurrentstock' => $maincurrentstock,
+            'requestedclinic' => $requestedclinic,
+            'requestedname' => $requestedname,
+            'requestednumber' => $requestednumber,
+            'requestedid' => $requestedid,
+            'requestedquantity' => $requestedquantity
+        ]);
     }
 
     public function approverequest(Request $request, StockItem $stockItem)
     {
+      
         $request->validate([
             'item_name' => 'required',
             'item_quantity' => 'required',
@@ -145,8 +209,8 @@ class requestController extends Controller
 
         $disributestock = $request->item_quantity;
         if ($disributestock > $currenstock) {
-            $pending = DB::table('stock_items')->where('item_number',$request->item_number)->get();
-            return view('Requests/requestitemsearch', ['search' => $pending] )->with('error', 'Not Enough Stock.');
+            $pending = DB::table('stock_items')->where('item_number', $request->item_number)->get();
+            return view('Requests/requestitemsearch', ['search' => $pending])->with('error', 'Not Enough Stock.');
         } else {
             $newstock = $currenstock - $disributestock;
             $items['item_quantity'] = $newstock;
@@ -169,7 +233,7 @@ class requestController extends Controller
             $pending['item_number'] = $request->item_number;
             $pending['procurer'] = auth()->user()->name;
             $pending['status'] = 'Pending';
-            $pending['clinic'] = $request->clinics;
+            $pending['clinics'] = $request->clinics;
             pending_stocks::create($pending);
             stock_request::where('id', $request->requestid)
                 ->update([

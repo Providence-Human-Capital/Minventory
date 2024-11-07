@@ -118,6 +118,7 @@
                             @endforeach
                             </tr>
                         </table>
+                        
                     </center>
 
                 </div>

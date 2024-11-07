@@ -28,8 +28,8 @@
                             <x-nav-link :href="route('pendingstock')" :active="request()->routeIs('pendingstock')">
                                 {{ __('Pending Stock') }}
                             </x-nav-link>
-                            <x-nav-link :href="route('getclinicstock')" :active="request()->routeIs('getclinicstock')">
-                                {{ __('Clinic Stock') }}
+                            <x-nav-link :href="route('getallstocks')" :active="request()->routeIs('getallstocks')">
+                                {{ __('Clinics Stock') }}
                             </x-nav-link>
                             <x-nav-link :href="route('getuseroptions')" :active="request()->routeIs('getuseroptions')">
                                 {{ __('Users') }}
@@ -55,8 +55,17 @@
                             <x-nav-link :href="route('getclinicstock')" :active="request()->routeIs('getclinicstock')">
                                 {{ __('Clinic Stock') }}
                             </x-nav-link>
+                            <x-nav-link :href="route('stocktransfer')" :active="request()->routeIs('stocktransfer')">
+                                {{ __('Stock Transfer') }}
+                            </x-nav-link>
                             <x-nav-link :href="route('requeststock')" :active="request()->routeIs('requeststock')">
                                 {{ __('Request Stock') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('dishistory')" :active="request()->routeIs('dishistory')">
+                                {{ __('Dispense History') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('patientform')" :active="request()->routeIs('patientform')">
+                                {{ __('Patients') }}
                             </x-nav-link>
                     @endswitch
                 </div>
