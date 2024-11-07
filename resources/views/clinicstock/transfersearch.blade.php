@@ -256,7 +256,7 @@
 
                     @if ($records->isEmpty())
                         <div class="text-center text-gray-600 mt-4">
-                            <p>No records found.</p>
+                            <p>No records found at all.</p>
                         </div>
                     @endif
 
