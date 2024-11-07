@@ -16,7 +16,7 @@ use App\Http\Controllers\requestController;
 use Illuminate\Routing\RouteRegistrar;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PatientController;
-
+use App\Models\clinic_stock;
 
 /*
 |--------------------------------------------------------------------------
@@ -62,7 +62,11 @@ Route::patch('/clinicstock/pendingstock/update', [clincStockController::class, '
 Route::get('/clinicstock/search', [clincStockController::class,  'searchpstock'])->middleware('auth')->name('searchpstock');
 Route::get('/clinicstock/search/item', [clincStockController::class,  'searchclinicstock'])->middleware('auth')->name('searchclinicstock');
 Route::post('/clinicstock/search/rstock', [clincStockController::class, 'searchrstock'])->middleware('auth')->name('searchrstock');
-
+//stocktransfer
+Route::get('clinicstock/stocktransfer', [clincStockController::class, 'stocktransfer'])->middleware('auth')->name('stocktransfer');
+Route::post('/clinicstock/stocktransfer', [clincStockController::class, 'savetransfer'])->middleware('auth')->name('savetransfer');
+//search
+Route::post('/drugtransfers/search', [clincStockController::class, 'searchtransfer'])->name('searchtransfer');
 
 //making requesting stock
 Route::get('/requeststock', [clincStockController::class, 'requeststock'])->middleware('auth')->name('requeststock');

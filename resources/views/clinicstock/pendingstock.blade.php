@@ -71,7 +71,7 @@
                                 <th>{{$pstock->item_name}}</th>
                                 <th>{{$pstock->item_number}}</th>
                                 <th>{{$pstock->item_quantity}}</th>
-                                <th>{{$pstock->clinic}}</th>
+                                <th>{{$pstock->clinics}}</th>
                                 <th>{{$pstock->status}}</th>
                                 <th>{{$pstock->procurer}}</th>
                                 <th>{{$pstock->created_at}}</th>

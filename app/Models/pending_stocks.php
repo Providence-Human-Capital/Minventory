@@ -15,7 +15,7 @@ class pending_stocks extends Model
             'item_number',
             'procurer',
             'status',
-            'clinic',
+            'clinics',
             'reciever',
             'Received_at',
 

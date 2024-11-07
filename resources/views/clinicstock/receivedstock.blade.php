@@ -73,51 +73,40 @@
                     {{ __("Recived stocks") }}
                  
                     <center>
-                        <table style="border-collapse: collapse;width: 100%;">
-
-                            <tr style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Item
-                                    Name</th>
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Item
-                                    Number
-                                </th>
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                    Quantity</th>
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Clinic</th>
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Status
-                                </th>
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                    procurer</th>
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                    Sent at:
-                                </th>
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                     Reciever:
-                                </th>
-                                <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                    Received at:
-                                </th>
-                            </tr>
-                           
-                            <tr>
-                                
+                        <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif;">
+                            <!-- Table Header -->
+                            <thead style="background-color: #f4f4f4; color: #333;">
+                                <tr>
+                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd; font-weight: bold;">Item Name</th>
+                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd; font-weight: bold;">Item Number</th>
+                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd; font-weight: bold;">Quantity</th>
+                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd; font-weight: bold;">Clinic</th>
+                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd; font-weight: bold;">Status</th>
+                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd; font-weight: bold;">Procurer</th>
+                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd; font-weight: bold;">Sent At</th>
+                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd; font-weight: bold;">Receiver</th>
+                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd; font-weight: bold;">Received At</th>
+                                </tr>
+                            </thead>
+                        
+                            <!-- Table Body -->
+                            <tbody>
                                 @foreach ($rstocks as $rstock)
-                                <th>{{$rstock->item_name}}</th>
-                                <th>{{$rstock->item_number}}</th>
-                                <th>{{$rstock->item_quantity}}</th>
-                                <th>{{$rstock->clinic}}</th>
-                                <th>{{$rstock->status}}</th>
-                                <th>{{$rstock->procurer}}</th>
-                                <th>{{$rstock->created_at}}</th>
-                                <th>{{$rstock->reciever}}</th>
-                                <th>{{$rstock->updated_at}}</th>
-                            </tr>
-
-
-
-                            @endforeach
-                            </tr>
+                                <tr style="background-color: #fff; border-bottom: 1px solid #ddd;">
+                                    <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">{{ $rstock->item_name }}</td>
+                                    <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">{{ $rstock->item_number }}</td>
+                                    <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">{{ $rstock->item_quantity }}</td>
+                                    <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">{{ $rstock->clinics }}</td>
+                                    <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">{{ $rstock->status }}</td>
+                                    <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">{{ $rstock->procurer }}</td>
+                                    <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">{{ $rstock->created_at }}</td>
+                                    <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">{{ $rstock->reciever }}</td>
+                                    <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">{{ $rstock->updated_at }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
                         </table>
+                        
                     </center>
 
                 </div>

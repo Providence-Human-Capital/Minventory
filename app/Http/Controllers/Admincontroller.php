@@ -55,7 +55,7 @@ class Admincontroller extends Controller
         $data = DB::table("pending_stocks")
 
             ->select(DB::raw('DATE_FORMAT(updated_at, "%M-%y") as date'), DB::raw('SUM(item_quantity) as monthsum'), 'item_name')
-            ->where('clinic', 'like', $clinic)
+            ->where('clinics', 'like', $clinic)
             ->where('status', 'like', 'Received')
             ->whereYear('updated_at', $year)  // Filter by year
             ->whereMonth('updated_at', $month) // Filter by month

@@ -167,7 +167,7 @@
                                         </div>
                                         <div>
                                             <label for="clinics">Clinic</label>:
-                                            <input type="text " id="clinics" value="{{ $requestedclinic }}"
+                                            <input type="text " id="clinics"  name="clinics" value="{{ $requestedclinic }}"
                                                 readonly>
                                             @error('clinics')
                                                 <p style="color:red;size:13px">{{ $message }}</p>

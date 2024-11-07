@@ -53,6 +53,9 @@
                             <x-nav-link :href="route('getclinicstock')" :active="request()->routeIs('getclinicstock')">
                                 {{ __('Clinic Stock') }}
                             </x-nav-link>
+                            <x-nav-link :href="route('stocktransfer')" :active="request()->routeIs('stocktransfer')">
+                                {{ __('Stock Transfer') }}
+                            </x-nav-link>
                             <x-nav-link :href="route('requeststock')" :active="request()->routeIs('requeststock')">
                                 {{ __('Request Stock') }}
                             </x-nav-link>

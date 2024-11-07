@@ -60,7 +60,7 @@ class requestController extends Controller
 
             ->select(DB::raw('DATE_FORMAT(updated_at, "%M-%y") as date'), DB::raw('SUM(item_quantity) as monthsum'))
             ->where('item_name', 'like', $requestedname)
-            ->where('clinic', 'like', $requestedclinic)
+            ->where('clinics', 'like', $requestedclinic)
             ->where('status', 'like', 'Received')
             ->groupBy(DB::raw('MONTH(updated_at)'))
             ->orderBy('updated_at', 'asc')
@@ -195,6 +195,7 @@ class requestController extends Controller
 
     public function approverequest(Request $request, StockItem $stockItem)
     {
+      
         $request->validate([
             'item_name' => 'required',
             'item_quantity' => 'required',
@@ -232,7 +233,7 @@ class requestController extends Controller
             $pending['item_number'] = $request->item_number;
             $pending['procurer'] = auth()->user()->name;
             $pending['status'] = 'Pending';
-            $pending['clinic'] = $request->clinics;
+            $pending['clinics'] = $request->clinics;
             pending_stocks::create($pending);
             stock_request::where('id', $request->requestid)
                 ->update([
