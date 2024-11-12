@@ -15,6 +15,8 @@ class mainstock_journal extends Model
         'price',
         'expiry_date',
         'clinics',
-        'procurer'
+        'procurer',
+        'p_o_d',
+        'p_o_r'
     ];
 }

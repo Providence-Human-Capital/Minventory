@@ -245,6 +245,16 @@
                                                         <p style="color:red;size:13px">{{ $message }}</p>
                                                     @enderror
                                                     </label><br>
+
+                                                    <div class="mb-4">
+                                                        <label for="image" class="block text-gray-700">Product Image</label>
+                                                        <input type="file" id="image" name="image" accept="image/*"
+                                                            class="w-full px-4 py-2 border rounded-md text-gray-700">
+                                                        @error('image')
+                                                            <p style="color:red;size:13px">{{ $message }}</p>
+                                                        @enderror
+                                            
+                                                    </div>
                                                 </div>
 
                                                 <input type="submit"
