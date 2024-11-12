@@ -67,11 +67,91 @@ class Admincontroller extends Controller
             $values = [];
             $html = '';
             
-            foreach ($data as $item) {
-                $labels[] = $item->item_name; // Drug names
-                $values[] = $item->monthsum;   // Quantities
-                $html .= "<tr><td>{$item->item_name}</td><td>{$item->monthsum}</td></tr>";
+            switch ($clinic) {
+                case '81 Baines Avenue(Harare)':
+                    foreach ($data as $item) {
+                        
+                        $clinicstock = DB::table('avenue81_stocks')->where('item_name',$item->item_name)->value('item_quantity');
+                        $labels[] = $item->item_name; // Drug names
+                       $values[] = $item->monthsum;   // Quantities
+                       $html .= "<tr><td>{$item->item_name}</td><td>{$item->monthsum}</td><td>$clinicstock</td></tr>";
+                   }
+                    break;
+                case '52 Baines Avenue(Harare)':
+                    foreach ($data as $item) {
+                    $clinicstock = DB::table('avenue52_stocks')->where('item_name',$item->item_name)->value('item_quantity');
+                    $labels[] = $item->item_name; // Drug names
+                       $values[] = $item->monthsum;   // Quantities
+                       $html .= "<tr><td>{$item->item_name}</td><td>{$item->monthsum}</td><td>$clinicstock</td></tr>";
+                   }
+                    break;
+                case '64 Cork road Avondale(Harare)':
+                    foreach ($data as $item) {
+                    $clinicstock = DB::table('avondale64_stocks')->where('item_name',$item->item_name)->value('item_quantity');
+                    $labels[] = $item->item_name; // Drug names
+                       $values[] = $item->monthsum;   // Quantities
+                       $html .= "<tr><td>{$item->item_name}</td><td>{$item->monthsum}</td><td>$clinicstock</td></tr>";
+                   }
+                    break;
+                case '40 Josiah Chinamano Avenue(Harare)':
+                    foreach ($data as $item) {
+                    $clinicstock = DB::table('chimano40_stocks')->where('item_name',$item->item_name)->value('item_quantity');
+                    $labels[] = $item->item_name; // Drug names
+                       $values[] = $item->monthsum;   // Quantities
+                       $html .= "<tr><td>{$item->item_name}</td><td>{$item->monthsum}</td><td>$clinicstock</td></tr>";
+                   }
+                    break;
+                case 'Epworth Clinic(Harare)':
+                    foreach ($data as $item) {
+                    $clinicstock = DB::table('epworth_stocks')->where('item_name',$item->item_name)->value('item_quantity');
+                    $labels[] = $item->item_name; // Drug names
+                       $values[] = $item->monthsum;   // Quantities
+                       $html .= "<tr><td>{$item->item_name}</td><td>{$item->monthsum}</td><td>$clinicstock</td></tr>";
+                   }
+                    break;
+                case 'Fort Street and 9th Avenue(Bulawayo)':
+                    foreach ($data as $item) {
+                    $clinicstock = DB::table('fortstreet_stocks')->where('item_name',$item->item_name)->value('item_quantity');
+                    $labels[] = $item->item_name; // Drug names
+                       $values[] = $item->monthsum;   // Quantities
+                       $html .= "<tr><td>{$item->item_name}</td><td>{$item->monthsum}</td><td>$clinicstock</td></tr>";
+                   }
+                    break;
+                case 'Royal Arcade Complex(Bulawayo)':
+                    foreach ($data as $item) {
+                    $clinicstock = DB::table('royalarcade_stocks')->where('item_name',$item->item_name)->value('item_quantity');
+                    $labels[] = $item->item_name; // Drug names
+                       $values[] = $item->monthsum;   // Quantities
+                       $html .= "<tr><td>{$item->item_name}</td><td>{$item->monthsum}</td><td>$clinicstock</td></tr>";
+                   }
+                    break;
+                case '39 6th street(GWERU)':
+                    foreach ($data as $item) {
+                    $clinicstock = DB::table('street6gweru_stocks')->where('item_name',$item->item_name)->value('item_quantity');
+                    $labels[] = $item->item_name; // Drug names
+                       $values[] = $item->monthsum;   // Quantities
+                       $html .= "<tr><td>{$item->item_name}</td><td>{$item->monthsum}</td><td>$clinicstock</td></tr>";
+                   }
+                    break;
+                case '126 Herbert Chitepo Street(Mutare)':
+                    foreach ($data as $item) {
+                    $clinicstock = DB::table('chitepo126mutare_stock')->get();
+                    $labels[] = $item->item_name; // Drug names
+                       $values[] = $item->monthsum;   // Quantities
+                       $html .= "<tr><td>{$item->item_name}</td><td>{$item->monthsum}</td><td>$clinicstock</td></tr>";
+                   }
+                    break;
+                case '13 Shuvai Mahofa street(Masvingo)':
+                    foreach ($data as $item) {
+                    $clinicstock = DB::table('shuvaimahofa13masvingo_stocks')->where('item_name',$item->item_name)->value('item_quantity');
+                    $labels[] = $item->item_name; // Drug names
+                       $values[] = $item->monthsum;   // Quantities
+                       $html .= "<tr><td>{$item->item_name}</td><td>{$item->monthsum}</td><td>$clinicstock</td></tr>";
+                   }
+                    break;
             }
+            
+           
             
 
 

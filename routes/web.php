@@ -85,6 +85,9 @@ Route::get('/clinicstock', [clincStockController::class, 'getclinicstock'])->mid
 Route::patch('/mainstock/dis/{stock_item}', [requestController::class, 'approverequest'])->middleware('auth')->name('approverequest');
 Route::post('/sendemail', [MailerController::class, 'sendEmail'])->name('sendEmail');
 //admin options
+Route::get('/admin/allclincistock', [Admincontroller::class, 'allclinicstocks'])->name('getallstocks');
+Route::post('/admin/selecteclinic', [Admincontroller::class, 'showclinicchart'])->name('showclinicchart');
+Route::post('/admin/selecteclinic/test', [Admincontroller::class, 'test'])->name('test');
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/registered', [RegisteredUserController::class, 'create'])->middleware('auth')->name('registerationform');
     Route::post('/registered', [RegisteredUserController::class, 'store'])->middleware('auth')->name('registered');
@@ -99,9 +102,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     //reset user password
     Route::patch('/admin/user/reset/{id}', [Admincontroller::class, 'resetpassword'])->name(('resetpassword'));
     //adimnget all clinics
-    Route::get('/admin/allclincistock', [Admincontroller::class, 'allclinicstocks'])->name('getallstocks');
-    Route::post('/admin/selecteclinic', [Admincontroller::class, 'showclinicchart'])->name('showclinicchart');
-    Route::post('/admin/selecteclinic/test', [Admincontroller::class, 'test'])->name('test');
+
 });
 Route::get('/forbidden', function () {
     return view('layouts.forbidden');

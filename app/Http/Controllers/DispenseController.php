@@ -13,15 +13,13 @@ class DispenseController extends Controller
 {
     public function dispenseform(Request $request)
     {
-        $uin = $request->uin;
+
 
         $drug = $request->item_name;
         $drug_number = $request->item_number;
-        $dependantcheck = $request->checkbox;
 
-        $employee = DB::table('employees')->where('uin', $uin)->get()->first();
 
-        return view('clinicstock.dispense', compact('employee', 'dependantcheck', 'drug', 'drug_number'));
+        return view('clinicstock.dispense', compact('drug', 'drug_number'));
     }
 
     public function dispense(Request $request)
@@ -31,7 +29,6 @@ class DispenseController extends Controller
             'damount' => "required",
 
         ]);
-        $dispense['UIN'] = $request->UIN;
         $dispense['drug'] = $request->drug;
         $dispense['damount'] = $request->damount;
         $dispense['dispenser'] = auth()->user()->name;
@@ -158,26 +155,8 @@ class DispenseController extends Controller
 
                 break;
         }
-
-        if ($request->checkbox == null) {
-            $person = employees::where('UIN', $request->UIN)->get()->first();
-            $dispense['recipient'] = $person->name;
-            dispense::create($dispense);
-            return redirect()->route('getclinicstock')->with('success', 'Stock Dispensed.');
-        } elseif ($request->dependant1 == null || $request->dependant2 !== null) {
-
-            $person = employees::where('UIN', $request->UIN)->get()->first();
-            $dispense['recipient'] = $person->dependant2;
-            dispense::create($dispense);
-            return redirect()->route('getclinicstock')->with('success', 'Stock Dispensed.');
-        } elseif ($request->dependant1 !== null || $request->dependant2 == null) {
-            $person = employees::where('UIN', $request->UIN)->get()->first();
-            $dispense['recipient'] = $person->dependant1;
-            dispense::create($dispense);
-            return redirect()->route('getclinicstock')->with('success', 'Stock Dispensed.');
-        } elseif ($request->dependant1 == null || $request->dependant2 == null) {
-            return redirect()->back()->with('error', 'If patient is dependant select which dependant.Make sure you select only one dependant');
-        }
+        dispense::create($dispense);
+        return redirect()->route('getclinicstock')->with('success', 'Stock Dispensed.');
     }
 
     public function dispensehistory()
@@ -217,6 +196,6 @@ class DispenseController extends Controller
 
         // Execute the query and get the results
         $results = $query->get();
-        return view('clinci.transactionsearch', ['results' => $results]);
+        return view('clinicstock.dispensesearch', ['results' => $results]);
     }
 }

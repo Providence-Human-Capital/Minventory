@@ -57,10 +57,6 @@
                                         <thead>
                                             <tr style="background-color: #f2f2f2;">
                                                 <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">
-                                                    UIN</th>
-                                                <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">
-                                                    Recipient</th>
-                                                <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">
                                                     Drug</th>
                                                 <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">
                                                     Quantity</th>
@@ -72,7 +68,7 @@
                                         </thead>
                                         <tbody>
 
-                                            @if ($clinichis->isEmpty())
+                                            @if ($results->isEmpty())
                                                 <tr>
                                                     <td colspan="9"
                                                         style="text-align: center; padding: 16px; color: red;">
@@ -80,12 +76,8 @@
                                                     </td>
                                                 </tr>
                                             @else
-                                                @foreach ($clinichis as $hisrequest)
+                                                @foreach ($results as $hisrequest)
                                                     <tr>
-                                                        <td style="padding: 12px; border: 1px solid #ddd;">
-                                                            {{ $hisrequest->UIN }}</td>
-                                                        <td style="padding: 12px; border: 1px solid #ddd;">
-                                                            {{ $hisrequest->recipient }}</td>
                                                         <td style="padding: 12px; border: 1px solid #ddd;">
                                                             {{ $hisrequest->drug }}</td>
                                                         <td style="padding: 12px; border: 1px solid #ddd;">

@@ -69,8 +69,6 @@ class clincStockController extends Controller
             $match->receiver = Auth::user()->name;
             $match->status = 'Received';
             $match->save();
-        } else {
-            return response()->json(['message' => 'No matching record found in transferrecords.'], 404);
         }
         $approve->update($update);
         $addstock = $approve->item_quantity;

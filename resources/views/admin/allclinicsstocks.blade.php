@@ -135,6 +135,7 @@
                                         <tr>
                                             <th>Item Name</th>
                                             <th>Quantity Distributed</th>
+                                            <th>Current Clinic Stock</th>
                                         </tr>
                                     </thead>
                                     <tbody id="resultTableBody">
