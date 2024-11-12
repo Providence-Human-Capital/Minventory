@@ -200,7 +200,6 @@ class requestController extends Controller
             'item_name' => 'required',
             'item_quantity' => 'required',
             'item_number' => 'required',
-            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
 
         ]);
         $imagename = now()->format('Y-m-d_H-i-s') . '.' . $request->image->extension();

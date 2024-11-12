@@ -68,7 +68,8 @@ class mainStockController extends Controller
             'item_name'=>'required',
             'item_quantity'=>'required',
             'item_number'=>'required',
-            'price'=>'required'
+            'price'=>'required',
+            'batch_number'=>'required'
 
         ]);     
      
@@ -87,6 +88,7 @@ class mainStockController extends Controller
         $journal['price']=$request->price;
         $journal['procurer']=auth()->user()->name;
         $journal['to_from_mainstock']="TO";
+        $journal['batch_number']=$request->batch_number;
         $journal['expiry_date']=date('Y/m/d',strtotime($request->expiry_date));
         mainstock_journal::create($journal);
         return redirect()->route('mainstock')->with('success','Added to Main Stock.');

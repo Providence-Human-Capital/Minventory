@@ -208,43 +208,43 @@ class clincStockController extends Controller
 
         switch (auth()->user()->clinic) {
             case '81 Baines Avenue(Harare)':
-                $clinicstock = DB::table('avenue81_stocks')->get();
+                $clinicstock = DB::table('avenue81_stocks')->orderBy('item_name', 'asc')->get();
                 return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
                 break;
             case '52 Baines Avenue(Harare)':
-                $clinicstock = DB::table('avenue52_stocks')->get();
+                $clinicstock = DB::table('avenue52_stocks') ->orderby('item_name', 'asc')->get();
                 return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
                 break;
             case '64 Cork road Avondale(Harare)':
-                $clinicstock = DB::table('avondale64_stocks')->get();
+                $clinicstock = DB::table('avondale64_stocks') ->orderby('item_name', 'asc')->get();
                 return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
                 break;
             case '40 Josiah Chinamano Avenue(Harare)':
-                $clinicstock = DB::table('chimano40_stocks')->get();
+                $clinicstock = DB::table('chimano40_stocks') ->orderby('item_name', 'asc')->get();
                 return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
                 break;
             case 'Epworth Clinic(Harare)':
-                $clinicstock = DB::table('epworth_stocks')->get();
+                $clinicstock = DB::table('epworth_stocks') ->orderby('item_name', 'asc')->get();
                 return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
                 break;
             case 'Fort Street and 9th Avenue(Bulawayo)':
-                $clinicstock = DB::table('fortstreet_stocks')->get();
+                $clinicstock = DB::table('fortstreet_stocks') ->orderby('item_name', 'asc')->get();
                 return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
                 break;
             case 'Royal Arcade Complex(Bulawayo)':
-                $clinicstock = DB::table('royalarcade_stocks')->get();
+                $clinicstock = DB::table('royalarcade_stocks') ->orderby('item_name', 'asc')->get();
                 return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
                 break;
             case '39 6th street(GWERU)':
-                $clinicstock = DB::table('street6gweru_stocks')->get();
+                $clinicstock = DB::table('street6gweru_stocks') ->orderby('item_name', 'asc')->get();
                 return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
                 break;
             case '126 Herbert Chitepo Street(Mutare)':
-                $clinicstock = DB::table('chitepo126mutare_stock')->get();
+                $clinicstock = DB::table('chitepo126mutare_stock') ->orderby('item_name', 'asc')->get();
                 return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
                 break;
             case '13 Shuvai Mahofa street(Masvingo)':
-                $clinicstock = DB::table('shuvaimahofa13masvingo_stocks')->get();
+                $clinicstock = DB::table('shuvaimahofa13masvingo_stocks') ->orderby('item_name', 'asc')->get();
                 return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
                 break;
         }
