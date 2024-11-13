@@ -146,40 +146,12 @@ class requestController extends Controller
                 ]
             ]
         ];
+        $tableName = preg_replace('/[^a-zA-Z0-9]/', '', $requestedclinic); // Clean clinic name
+        $tableName = strtolower($tableName) . '_stocks';  // Add suffix for the stock table
+        $currentclinicstock = DB::table($tableName)->where('item_number', 'like', $requestednumber)->get()->first()->item_quantity;
 
 
-        switch ($requestedclinic) {
-            case "81 Baines Avenue(Harare)":
-                $currentclinicstock = DB::table('avenue81_stocks')->where('item_number', 'like', $requestednumber)->get()->first()->item_quantity;
-                break;
-            case '52 Baines Avenue(Harare)':
-                $currentclinicstock = DB::table('avenue52_stocks')->where('item_number', 'like', $requestednumber)->get()->first()->item_quantity;
-                break;
-            case '64 Cork road Avondale(Harare)':
-                $currentclinicstock = DB::table('avondale64_stocks')->where('item_number', 'like', $requestednumber)->get()->first()->item_quantity;
-                break;
-            case '40 Josiah Chinamano Avenue(Harare)':
-                $currentclinicstock = DB::table('chimano40_stocks')->where('item_number', 'like', $requestednumber)->get()->first()->item_quantity;
-                break;
-            case 'Epworth Clinic(Harare)':
-                $currentclinicstock = DB::table('epworth_stocks')->where('item_number', 'like', $requestednumber)->get()->first()->item_quantity;
-                break;
-            case 'Fort Street and 9th Avenue(Bulawayo)':
-                $currentclinicstock = DB::table('fortstreet_stocks')->where('item_number', 'like', $requestednumber)->get()->first()->item_quantity;
-                break;
-            case 'Royal Arcade Complex(Bulawayo)':
-                $currentclinicstock = DB::table('royalarcade_stocks')->where('item_number', 'like', $requestednumber)->get()->first()->item_quantity;
-                break;
-            case '39 6th street(GWERU)':
-                $currentclinicstock = DB::table('street6gweru_stocks')->where('item_number', 'like', $requestednumber)->get()->first()->item_quantity;
-                break;
-            case '126 Herbert Chitepo Street(Mutare)':
-                $currentclinicstock = DB::table('chitepo126mutare_stock')->where('item_number', 'like', $requestednumber)->get()->first()->item_quantity;
-                break;
-            case '13 Shuvai Mahofa street(Masvingo)':
-                $currentclinicstock = DB::table('shuvaimahofa13masvingo_stocks')->where('item_number', 'like', $requestednumber)->get()->first()->item_quantity;
-                break;
-        }
+        
 
         return view('requestchart', [
             'chartData' => $chartData,

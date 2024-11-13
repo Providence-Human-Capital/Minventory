@@ -32,6 +32,9 @@
                             <x-nav-link :href="route('getuseroptions')" :active="request()->routeIs('getuseroptions')">
                                 {{ __('Users') }}
                             </x-nav-link>
+                            <x-nav-link :href="route('getcreateclinicform')" :active="request()->routeIs('getcreateclinicform')">
+                                {{ __('Create Clinic') }}
+                            </x-nav-link>
                             @break
 
                         @case('Accountant')

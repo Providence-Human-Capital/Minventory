@@ -70,23 +70,15 @@
 
                                         <label for="clinics">Select Clinic:</label>
                                         <select name="clinics" id="clinics" class="form-select">
+                                            <?php
+                                            $clinics = DB::table('clinics')->get('clinic_name');
+                                            ?>
                                             <option value="" disabled selected>Select a clinic</option>
-                                            <option value="81 Baines Avenue(Harare)">81 Baines Avenue (Harare)</option>
-                                            <option value="52 Baines Avenue(Harare)">52 Baines Avenue (Harare)</option>
-                                            <option value="64 Cork Road Avondale(Harare)">64 Cork Road Avondale (Harare)
-                                            </option>
-                                            <option value="40 Josiah Chinamano Avenue(Harare)">40 Josiah Chinamano
-                                                Avenue (Harare)</option>
-                                            <option value="Epworth Clinic(Harare)">Epworth Clinic (Harare)</option>
-                                            <option value="Fort Street and 9th Avenue(Bulawayo)">Fort Street and 9th
-                                                Avenue (Bulawayo)</option>
-                                            <option value="Royal Arcade Complex(Bulawayo)">Royal Arcade Complex
-                                                (Bulawayo)</option>
-                                            <option value="39 6th Street(GWERU)">39 6th Street (Gweru)</option>
-                                            <option value="126 Herbert Chitepo Street(Mutare)">126 Herbert Chitepo
-                                                Street (Mutare)</option>
-                                            <option value="13 Shuvai Mahofa Street(Masvingo)">13 Shuvai Mahofa Street
-                                                (Masvingo)</option>
+                                            @foreach ($clinics as $clinic)
+                                                <option value="{{ $clinic->clinic_name }}">{{ $clinic->clinic_name }}
+                                                </option>
+                                            @endforeach
+
                                         </select>
 
                                         <label for="month">Select Month:</label>
@@ -158,46 +150,47 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         $(document).ready(function() {
-            $('#clinicForm').on('submit', function(event) {
-                event.preventDefault(); // Prevent default form submission
+    $('#clinicForm').on('submit', function(event) {
+        event.preventDefault(); // Prevent default form submission
 
-                const formData = $(this).serialize(); // Serialize form data
+        const formData = $(this).serialize(); // Serialize form data
 
-                $.ajax({
-                    url: '{{ route('showclinicchart') }}', // Your route to fetch data
-                    method: 'POST',
-                    data: formData,
-                    success: function(data) {
-                        console.log(data);
-                        $('#resultTableBody').html(data.html); // Update HTML with returned data
-                        updateChart(data.chartData); // Update chart with returned data
-                    },
-                    error: function(xhr) {
-                        console.error(xhr);
-                        alert('An error occurred while fetching data.');
-                    }
-                });
-            });
+        $.ajax({
+            url: '{{ route('showclinicchart') }}', // Your route to handle the request
+            method: 'POST',
+            data: formData, // Send form data to the server
+            success: function(data) {
+                console.log(data); // Log the returned data for debugging
+                $('#resultTableBody').html(data.html); // Update the table body with HTML
+                updateChart(data.chartData); // Update the chart with the data
+            },
+            error: function(xhr) {
+                console.error(xhr); // Log the error response
+                alert('An error occurred while fetching data.');
+            }
         });
+    });
+});
 
-        function updateChart(chartData) {
+// Function to update the chart
+function updateChart(chartData) {
     const ctx = document.getElementById('resultChart').getContext('2d');
-    
-    // Destroy existing chart if it exists
+
+    // Destroy existing chart if any
     if (window.myChart) {
         window.myChart.destroy();
     }
 
-    // Create a new chart instance and assign it to window.myChart
+    // Create a new chart
     window.myChart = new Chart(ctx, {
-        type: 'bar', // Change to desired chart type
+        type: 'bar', // You can change the chart type here (e.g., 'line', 'bar')
         data: {
-            labels: chartData.labels,
+            labels: chartData.labels, // Chart labels (e.g., item names)
             datasets: [{
-                label: 'Drugs distributed',
-                data: chartData.values,
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
+                label: 'Quantity Distributed',
+                data: chartData.values, // Chart values (e.g., quantities distributed)
+                backgroundColor: 'rgba(75, 192, 192, 0.2)', // Background color
+                borderColor: 'rgba(75, 192, 192, 1)', // Border color
                 borderWidth: 1
             }]
         },
@@ -205,7 +198,7 @@
             responsive: true,
             scales: {
                 y: {
-                    beginAtZero: true
+                    beginAtZero: true // Start the y-axis from 0
                 }
             }
         }
@@ -213,5 +206,4 @@
 }
 
     </script>
-
 </x-app-layout>

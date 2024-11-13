@@ -89,6 +89,8 @@ Route::get('/admin/allclincistock', [Admincontroller::class, 'allclinicstocks'])
 Route::post('/admin/selecteclinic', [Admincontroller::class, 'showclinicchart'])->name('showclinicchart');
 Route::post('/admin/selecteclinic/test', [Admincontroller::class, 'test'])->name('test');
 Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin/createclinic',[Admincontroller::class, 'getcreateclinicform'])->name('getcreateclinicform');
+    Route::post('/admin/createclinic/save',[Admincontroller::class, 'createclinic'])->name('createclinic');
     Route::get('/registered', [RegisteredUserController::class, 'create'])->middleware('auth')->name('registerationform');
     Route::post('/registered', [RegisteredUserController::class, 'store'])->middleware('auth')->name('registered');
     Route::get('register', [RegisteredUserController::class, 'create'])

@@ -54,21 +54,14 @@
                             <select name="clinic_to" id="clinic_to"
                                 class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 required>
-                                <option value="" disabled selected>Select a clinic</option>
-                                <option value="81 Baines Avenue(Harare)">81 Baines Avenue (Harare)</option>
-                                <option value="52 Baines Avenue(Harare)">52 Baines Avenue (Harare)</option>
-                                <option value="64 Cork Road Avondale(Harare)">64 Cork Road Avondale (Harare)</option>
-                                <option value="40 Josiah Chinamano Avenue(Harare)">40 Josiah Chinamano Avenue (Harare)
-                                </option>
-                                <option value="Epworth Clinic(Harare)">Epworth Clinic (Harare)</option>
-                                <option value="Fort Street and 9th Avenue(Bulawayo)">Fort Street and 9th Avenue
-                                    (Bulawayo)</option>
-                                <option value="Royal Arcade Complex(Bulawayo)">Royal Arcade Complex (Bulawayo)</option>
-                                <option value="39 6th Street(GWERU)">39 6th Street (Gweru)</option>
-                                <option value="126 Herbert Chitepo Street(Mutare)">126 Herbert Chitepo Street (Mutare)
-                                </option>
-                                <option value="13 Shuvai Mahofa Street(Masvingo)">13 Shuvai Mahofa Street (Masvingo)
-                                </option>
+                                <?php
+                                            $clinics =DB::table('clinics')->get('clinic_name')
+                                                ?>
+                                            
+                                            <option value="" disabled selected>Select a clinic</option>
+                                            @foreach ($clinics as $clinic)
+                                            <option value="{{$clinic->clinic_name}}">{{$clinic->clinic_name}}</option>
+                                            @endforeach
                             </select>
                         </div>
                         <div class="text-center mt-8">
@@ -117,17 +110,14 @@
                             <div class="mb-4">
                                 <label for="clinic_from" class="block text-sm font-medium text-gray-700">Clinic From</label>
                                 <select name="clinic_from" id="clinic_from" class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    <option value="" disabled selected>Select a clinic</option>
-                                    <option value="81 Baines Avenue(Harare)">81 Baines Avenue (Harare)</option>
-                                    <option value="52 Baines Avenue(Harare)">52 Baines Avenue (Harare)</option>
-                                    <option value="64 Cork Road Avondale(Harare)">64 Cork Road Avondale (Harare)</option>
-                                    <option value="40 Josiah Chinamano Avenue(Harare)">40 Josiah Chinamano Avenue (Harare)</option>
-                                    <option value="Epworth Clinic(Harare)">Epworth Clinic (Harare)</option>
-                                    <option value="Fort Street and 9th Avenue(Bulawayo)">Fort Street and 9th Avenue (Bulawayo)</option>
-                                    <option value="Royal Arcade Complex(Bulawayo)">Royal Arcade Complex (Bulawayo)</option>
-                                    <option value="39 6th Street(GWERU)">39 6th Street (Gweru)</option>
-                                    <option value="126 Herbert Chitepo Street(Mutare)">126 Herbert Chitepo Street (Mutare)</option>
-                                    <option value="13 Shuvai Mahofa Street(Masvingo)">13 Shuvai Mahofa Street (Masvingo)</option>
+                                    <?php
+                                            $clinics =DB::table('clinics')->get('clinic_name')
+                                                ?>
+                                           
+                                            <option value="" disabled selected>Select a clinic</option>
+                                            @foreach ($clinics as $clinic)
+                                            <option value="{{$clinic->clinic_name}}">{{$clinic->clinic_name}}</option>
+                                            @endforeach
                                 </select>
                             </div>
                     
@@ -135,17 +125,14 @@
                             <div class="mb-4">
                                 <label for="clinic_to" class="block text-sm font-medium text-gray-700">Clinic To</label>
                                 <select name="clinic_to" id="clinic_to" class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    <option value="" disabled selected>Select a clinic</option>
-                                    <option value="81 Baines Avenue(Harare)">81 Baines Avenue (Harare)</option>
-                                    <option value="52 Baines Avenue(Harare)">52 Baines Avenue (Harare)</option>
-                                    <option value="64 Cork Road Avondale(Harare)">64 Cork Road Avondale (Harare)</option>
-                                    <option value="40 Josiah Chinamano Avenue(Harare)">40 Josiah Chinamano Avenue (Harare)</option>
-                                    <option value="Epworth Clinic(Harare)">Epworth Clinic (Harare)</option>
-                                    <option value="Fort Street and 9th Avenue(Bulawayo)">Fort Street and 9th Avenue (Bulawayo)</option>
-                                    <option value="Royal Arcade Complex(Bulawayo)">Royal Arcade Complex (Bulawayo)</option>
-                                    <option value="39 6th Street(GWERU)">39 6th Street (Gweru)</option>
-                                    <option value="126 Herbert Chitepo Street(Mutare)">126 Herbert Chitepo Street (Mutare)</option>
-                                    <option value="13 Shuvai Mahofa Street(Masvingo)">13 Shuvai Mahofa Street (Masvingo)</option>
+                                    <?php
+                                            $clinics =DB::table('clinics')->get('clinic_name')
+                                                ?>
+                                            
+                                            <option value="" disabled selected>Select a clinic</option>
+                                            @foreach ($clinics as $clinic)
+                                            <option value="{{$clinic->clinic_name}}">{{$clinic->clinic_name}}</option>
+                                            @endforeach
                                 </select>
                             </div>
                     

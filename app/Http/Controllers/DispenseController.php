@@ -35,125 +35,18 @@ class DispenseController extends Controller
         $dispense['dispense_time'] = Carbon::now()->toDatetimeString();
         $dispense['clinic'] = auth()->user()->clinic;
         $damount = $request->damount;
-        switch (auth()->user()->clinic) {
-            case '81 Baines Avenue(Harare)':
-                $currenstock = DB::table('avenue81_stocks')->where('item_number', 'like', $request->drug_number)->get()->first()->item_quantity;
-                if ($damount > $currenstock) {
-                    redirect()->route('requeststock')->with('error', 'Request more stock');
-                } else {
-                    $newstock = $currenstock - $damount;
-                    DB::table('avenue81_stocks')
-                        ->where('item_number', 'like', $request->drug_number)
-                        ->update(['avenue81_stocks.item_quantity' => $newstock]);
-                }
-
-                break;
-            case '52 Baines Avenue(Harare)':
-                $currenstock = DB::table('avenue52_stocks')->where('item_number', 'like', $request->drug_number)->get()->first()->item_quantity;
-                if ($damount > $currenstock) {
-                    redirect()->route('requeststock')->with('error', 'Request more stock');
-                } else {
-                    $newstock = $currenstock - $damount;
-                    DB::table('avenue52_stocks')
-                        ->where('item_number', 'like', $request->drug_number)
-                        ->update(['avenue52_stocks.item_quantity' => $newstock]);
-                }
-                break;
-            case '64 Cork road Avondale(Harare)':
-                $currenstock = DB::table('avondale64_stocks')->where('item_number', 'like', $request->drug_number)->get()->first()->item_quantity;
-                if ($damount > $currenstock) {
-                    redirect()->route('requeststock')->with('error', 'Request more stock');
-                } else {
-                    $newstock = $currenstock - $damount;
-                    DB::table('avondale64_stocks')
-                        ->where('item_number', 'like', $request->drug_number)
-                        ->update(['avondale64_stocks.item_quantity' => $newstock]);
-                }
-
-                break;
-            case '40 Josiah Chinamano Avenue(Harare)':
-                $currenstock = DB::table('chimano40_stocks')->where('item_number', 'like', $request->drug_number)->get()->first()->item_quantity;
-                if ($damount > $currenstock) {
-                    redirect()->route('requeststock')->with('error', 'Request more stock');
-                } else {
-                    $newstock = $currenstock - $damount;
-                    DB::table('chimano40_stocks')
-                        ->where('item_number', 'like', $request->drug_number)
-                        ->update(['chimano40_stocks.item_quantity' => $newstock]);
-                }
-                break;
-            case 'Epworth Clinic(Harare)':
-                $currenstock = DB::table('epworth_stocks')->where('item_number', 'like', $request->drug_number)->get()->first()->item_quantity;
-                if ($damount > $currenstock) {
-                    redirect()->route('requeststock')->with('error', 'Request more stock');
-                } else {
-                    $newstock = $currenstock - $damount;
-                    DB::table('epworth_stocks')
-                        ->where('item_number', 'like', $request->drug_number)
-                        ->update(['epworth_stocks.item_quantity' => $newstock]);
-                }
-
-                break;
-            case 'Fort Street and 9th Avenue(Bulawayo)':
-                $currenstock = DB::table('fortstreet_stocks')->where('item_number', 'like', $request->drug_number)->get()->first()->item_quantity;
-                if ($damount > $currenstock) {
-                    redirect()->route('requeststock')->with('error', 'Request more stock');
-                } else {
-                    $newstock = $currenstock - $damount;
-                    DB::table('fortstreet_stocks')
-                        ->where('item_number', 'like', $request->drug_number)
-                        ->update(['fortstreet_stocks.item_quantity' => $newstock]);
-                }
-
-                break;
-            case 'Royal Arcade Complex(Bulawayo)':
-                $currenstock = DB::table('royalarcade_stocks')->where('item_number', 'like', $request->drug_number)->get()->first()->item_quantity;
-                if ($damount > $currenstock) {
-                    redirect()->route('requeststock')->with('error', 'Request more stock');
-                } else {
-                    $newstock = $currenstock - $damount;
-                    DB::table('royalarcade_stocks')
-                        ->where('item_number', 'like', $request->drug_number)
-                        ->update(['royalarcade_stocks.item_quantity' => $newstock]);
-                }
-
-                break;
-            case '39 6th street(GWERU)':
-                $currenstock = DB::table('street6gweru_stocks')->where('item_number', 'like', $request->drug_number)->get()->first()->item_quantity;
-                if ($damount > $currenstock) {
-                    redirect()->route('requeststock')->with('error', 'Request more stock');
-                } else {
-                    $newstock = $currenstock - $damount;
-                    DB::table('street6gweru_stocks')
-                        ->where('item_number', 'like', $request->drug_number)
-                        ->update(['street6gweru_stocks.item_quantity' => $newstock]);
-                }
-
-                break;
-            case '126 Herbert Chitepo Street(Mutare)':
-                $currenstock = DB::table('chitepo126mutare_stock')->where('item_number', 'like', $request->drug_number)->get()->first()->item_quantity;
-                if ($damount > $currenstock) {
-                    redirect()->route('requeststock')->with('error', 'Request more stock');
-                } else {
-                    $newstock = $currenstock - $damount;
-                    DB::table('chitepo126mutare_stock')
-                        ->where('item_number', 'like', $request->drug_number)
-                        ->update(['chitepo126mutare_stock.item_quantity' => $newstock]);
-                }
-
-                break;
-            case '13 Shuvai Mahofa street(Masvingo)':
-                $currenstock = DB::table('shuvaimahofa13masvingo_stocks')->where('item_number', 'like', $request->drug_number)->get()->first()->item_quantity;
-                if ($damount > $currenstock) {
-                    redirect()->route('requeststock')->with('error', 'Request more stock');
-                } else {
-                    $newstock = $currenstock - $damount;
-                    DB::table('shuvaimahofa13masvingo_stocks')
-                        ->where('item_number', 'like', $request->drug_number)
-                        ->update(['shuvaimahofa13masvingo_stocks.item_quantity' => $newstock]);
-                }
-
-                break;
+        $clinic=auth()->user()->clinic;
+        $tableName = preg_replace('/[^a-zA-Z0-9]/', '', $clinic); // Clean clinic name
+        $tableName = strtolower($tableName) . '_stocks';  // Add suffix for the stock table
+        $currenstock = DB::table($tableName)->where('item_number', 'like', $request->drug_number)->get()->first()->item_quantity;
+        if ($damount > $currenstock) {
+            redirect()->route('requeststock')->with('error', 'Request more stock');
+        } else {
+            $newstock = $currenstock - $damount;
+            dd($newstock);
+            DB::table($tableName)
+                ->where('item_number', 'like', $request->drug_number)
+                ->update(['item_quantity' => $newstock]);
         }
         dispense::create($dispense);
         return redirect()->route('getclinicstock')->with('success', 'Stock Dispensed.');

@@ -128,17 +128,14 @@
                                 <div class="col">
                                     <label for="clinics" class="dark:text-white">Choose a Clinic</label>
                                     <select name="clinics" id="clinics" class="form-control" style="border-radius: 9px">
-                                        <option value="">Select a clinic</option>
-                                        <option value="81 Baines Avenue(Harare)">81 Baines Avenue(Harare)</option>
-                                        <option value="52 Baines Avenue(Harare)">52 Baines Avenue(Harare)</option>
-                                        <option value="64 Cork road Avondale(Harare)">64 Cork road Avondale(Harare)</option>
-                                        <option value="40 Josiah Chinamano Avenue(Harare)">40 Josiah Chinamano Avenue(Harare)</option>
-                                        <option value="Epworth Clinic(Harare)">Epworth Clinic(Harare)</option>
-                                        <option value="Fort Street and 9th Avenue(Bulawayo)">Fort Street and 9th Avenue(Bulawayo)</option>
-                                        <option value="Royal Arcade Complex(Bulawayo)">Royal Arcade Complex(Bulawayo)</option>
-                                        <option value="39 6th street(GWERU)">39 6th street(GWERU)</option>
-                                        <option value="126 Herbert Chitepo Street(Mutare)">126 Herbert Chitepo Street(Mutare)</option>
-                                        <option value="13 Shuvai Mahofa street(Masvingo)">13 Shuvai Mahofa street(Masvingo)</option>
+                                        <?php
+                                            $clinics =DB::table('clinics')->get('clinic_name')
+                                                ?>
+                                            
+                                            <option value="" disabled selected>Select a clinic</option>
+                                            @foreach ($clinics as $clinic)
+                                            <option value="{{$clinic->clinic_name}}">{{$clinic->clinic_name}}</option>
+                                            @endforeach
                                     </select>
                                     @error('clinics')
                                         <p class="text-danger">{{ $message }}</p>
