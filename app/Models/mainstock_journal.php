@@ -17,6 +17,7 @@ class mainstock_journal extends Model
         'clinics',
         'procurer',
         'batch_number',
+        'p_o_d',
         'p_o_r'
     ];
 }

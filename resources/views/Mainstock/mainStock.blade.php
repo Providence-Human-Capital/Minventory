@@ -114,7 +114,7 @@
                                     </button>
                                 </div>
                             </div>
-                            <form method="POST" action="/mainstock/{{ $stocks->id }}">
+                            <form method="POST" action="/mainstock/{{ $stocks->id }}" enctype="multipart/form-data">
                                 <div style="padding-left:10px;padding-right:10px;width:100%">
                                     @csrf
                                     @method('patch')
@@ -165,6 +165,15 @@
                                         <input type="date" id="expiry_date" name="expiry_date"
                                             placeholder="B1992XC" style="width: 100%;"><br>
                                     </div>
+                                     <!-- Image Upload -->
+                                     <div>
+                                        <label for="item_image">Upload Image</label><br>
+                                        <input type="file" id="item_image" name="item_image" accept="image/*"
+                                            style="width: 100%;"><br>
+                                        @error('item_image')
+                                            <p style="color:red;size:13px">{{ $message }}</p>
+                                        @enderror
+                                    </div>
 
                                     <input type="submit"
                                         style="background-color: green;color:white;size:10pt;padding:5pt;margin:15pt;border-radius:5px;border-style:outset;border-color:black"
@@ -190,7 +199,7 @@
                                 </button>
                             </div>
 
-                            <form method="POST" action="/mainstock/dis/{{ $stocks->id }}">
+                            <form method="POST" action="/mainstock/dis/{{ $stocks->id }}" enctype="multipart/form-data">
                                 <div style="padding-left:10px;padding-right:10px;width:100%">
                                     @csrf
                                     @method('patch')
@@ -224,18 +233,29 @@
                                         <label for="clinics">Choose a Clinic</label><br>
                                         <select name="clinics" id="clinics" style="width: 100%;">
                                             <?php
-                                            $clinics =DB::table('clinics')->get('clinic_name')
-                                                ?>
-                                            
+                                            $clinics = DB::table('clinics')->get('clinic_name');
+                                            ?>
+
                                             <option value="" disabled selected>Select a clinic</option>
                                             @foreach ($clinics as $clinic)
-                                            <option value="{{$clinic->clinic_name}}">{{$clinic->clinic_name}}</option>
+                                                <option value="{{ $clinic->clinic_name }}">{{ $clinic->clinic_name }}
+                                                </option>
                                             @endforeach
                                         </select><br>
                                         @error('clinics')
                                             <p style="color:red;size:13px">{{ $message }}</p>
                                         @enderror
                                         </label><br>
+
+                                        <!-- Image Upload -->
+                                        <div>
+                                            <label for="item_image">Upload Image</label><br>
+                                            <input type="file" id="item_image" name="item_image" accept="image/*"
+                                                style="width: 100%;"><br>
+                                            @error('item_image')
+                                                <p style="color:red;size:13px">{{ $message }}</p>
+                                            @enderror
+                                        </div>
 
                                     </div>
 
@@ -266,7 +286,7 @@
                                     </button>
                                 </div>
                             </div>
-                            <form method="POST" action="/mainstock">
+                            <form method="POST" action="/mainstock" enctype="multipart/form-data">
                                 <div style="padding-left:10px;padding-right:10px;width:100%">
                                     @csrf
                                     <div>
@@ -293,6 +313,8 @@
                                             <p style="color:red;size:13px">{{ $message }}</p>
                                         @enderror
                                     </div>
+
+                                   
 
                                     <input type="submit"
                                         style="background-color: green;color:white;size:10pt;padding:5pt;margin:15pt;border-radius:5px;border-style:outset;border-color:black"

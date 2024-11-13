@@ -172,10 +172,13 @@ class requestController extends Controller
             'item_name' => 'required',
             'item_quantity' => 'required',
             'item_number' => 'required',
+            'item_image'=>'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+
+
 
         ]);
-        $imagename = now()->format('Y-m-d_H-i-s') . '.' . $request->image->extension();
-        $request->image->move(public_path('images'), $imagename);
+        $imagename = now()->format('Y-m-d_H-i-s') . '.' . $request->item_image->extension();
+        $request->item_image->move(public_path('images'), $imagename);
         $items['item_number'] = $request->item_number;
         $items['expiry_date'] = date('Y/m/d', strtotime($request->expiry_date));
         $search = $request->item_number;
@@ -200,7 +203,7 @@ class requestController extends Controller
             $journal['price'] = $request->price;
             $journal['procurer'] = auth()->user()->name;
             $journal['clinics'] = $request->clinics;
-            $product['p_o_d'] = 'images/' . $imagename;
+            $journal['p_o_d'] = 'images/' . $imagename;
             $journal['expiry_date'] = date('Y/m/d', strtotime($request->expiry_date));
             mainstock_journal::create($journal);
             $pending['item_name'] = $request->item_name;

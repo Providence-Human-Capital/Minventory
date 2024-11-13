@@ -69,10 +69,11 @@ class mainStockController extends Controller
             'item_quantity'=>'required',
             'item_number'=>'required',
             'price'=>'required',
-            'batch_number'=>'required'
-
+            'batch_number'=>'required',
+            'item_image'=>'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);     
-     
+        $imagename = $request->item_image . '.' . $request->item_image->extension();
+        $request->item_image->move(public_path('images'), $imagename);
         $items['item_number']=$request->item_number;
         $items['price']=$request->price;
         $items['expiry_date']=date('Y/m/d',strtotime($request->expiry_date));
@@ -88,6 +89,7 @@ class mainStockController extends Controller
         $journal['price']=$request->price;
         $journal['procurer']=auth()->user()->name;
         $journal['to_from_mainstock']="TO";
+        $journal['p_o_d'] = 'images/' . $imagename;
         $journal['batch_number']=$request->batch_number;
         $journal['expiry_date']=date('Y/m/d',strtotime($request->expiry_date));
         mainstock_journal::create($journal);
