@@ -3,7 +3,7 @@
         <div style="width:80%;margin-top:30px">
             @if (session('error'))
                 <div class="alert alert-danger">
-                    {{ session('error') }}
+                    {{ session('error')}}
                 </div>
             @endif
 
