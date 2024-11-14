@@ -218,7 +218,6 @@ class requestController extends Controller
                     'status' => 'Approved',
                     'approver' => auth()->user()->name,
                     'date_approved' => Carbon::now()->toDatetimeString()
-
                 ]);
 
             $stockRequest = stock_request::where('id', $request->requestid)->first();
