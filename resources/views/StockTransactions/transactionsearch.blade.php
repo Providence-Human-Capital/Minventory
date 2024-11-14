@@ -62,15 +62,16 @@
                                         <label for="clinics">Choose a Clinic</label>
                                         <select name="clinics" id="clinics" class="form-control">
                                             <?php
-                                            $clinics =DB::table('clinics')->get('clinic_name')
-                                                ?>
+                                            $clinics = DB::table('clinics')->get('clinic_name');
+                                            ?>
                                             <?php
-                                            $clinics =DB::table('clinics')->get('clinic_name')
-                                                ?>
-                                            
+                                            $clinics = DB::table('clinics')->get('clinic_name');
+                                            ?>
+
                                             <option value="" disabled selected>Select a clinic</option>
                                             @foreach ($clinics as $clinic)
-                                            <option value="{{$clinic->clinic_name}}">{{$clinic->clinic_name}}</option>
+                                                <option value="{{ $clinic->clinic_name }}">{{ $clinic->clinic_name }}
+                                                </option>
                                             @endforeach
                                         </select>
                                         @error('clinics')
@@ -131,13 +132,11 @@
                                                             <th>Item Name</th>
                                                             <th>Item Number</th>
                                                             <th>Quantity</th>
-                                                            <th>Price ($USD)</th>
                                                             <th>Clinic</th>
                                                             <th>Expiry Date</th>
                                                             <th>Procurer</th>
-                                                            <th>Completed At</th>
                                                             <th>Received By</th>
-                                                            <th>Received At</th>
+                                                            <th>Proof of Delivery</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -146,13 +145,101 @@
                                                                 <td>{{ $result->item_name }}</td>
                                                                 <td>{{ $result->item_number }}</td>
                                                                 <td>{{ $result->item_quantity }}</td>
-                                                                <td>{{ $result->price }}</td>
                                                                 <td>{{ $result->clinics }}</td>
                                                                 <td>{{ $result->expiry_date }}</td>
                                                                 <td>{{ $result->procurer }}</td>
-                                                                <td>{{ $result->created_at }}</td>
                                                                 <td>{{ $result->recieved_by }}</td>
-                                                                <td>{{ $result->updated_at }}</td>
+
+                                                                <th
+                                                                    style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: left; padding-left: 10px">
+                                                                    <button type="button" class="btn btn-primary"
+                                                                        data-toggle="modal"
+                                                                        data-target="#viewModal{{ $result->id }}">
+                                                                        <i class="fas fa-eye"></i>
+                                                                    </button>
+                                                                </th>
+                                                                <th
+                                                                    style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: left; padding-left: 10px">
+                                                                    <button type="button" class="btn btn-primary"
+                                                                        data-toggle="modal"
+                                                                        data-target="#viewrModal{{ $entry->id }}">
+                                                                        <i class="fas fa-eye"></i>
+                                                                    </button>
+                                                                </th>
+                                                                {{-- modal design view --}}
+                                                                <div class="modal fade mt-11 "
+                                                                    id="viewModal{{ $result->id }}" tabindex="-1"
+                                                                    role="dialog"
+                                                                    aria-labelledby="viewModalLabel{{ $result->id }}"
+                                                                    aria-hidden="true">
+                                                                    <div class="modal-dialog" role="document">
+                                                                        <div class="modal-content dark:bg-gray-800">
+                                                                            <div class="modal-header"
+                                                                                style="background-color: green; color: white;">
+                                                                                <h5 class="modal-title"
+                                                                                    id="viewModalLabel{{ $result->id }}">
+                                                                                    Proof of Delivery
+                                                                                    {{ $result->created_at }} <a
+                                                                                        href="{{ asset($result->p_o_d) }}"
+                                                                                        download="{{ basename($result->p_o_d) }}"
+                                                                                        class="btn btn-primary">
+                                                                                        <i class="fas fa-download"
+                                                                                            style="font-size: 30px; color: blue;"></i>
+                                                                                    </a></h5>
+                                                                                <button type="button" class="close"
+                                                                                    data-dismiss="modal"
+                                                                                    aria-label="Close">
+                                                                                    <span
+                                                                                        aria-hidden="true">&times;</span>
+                                                                                </button>
+                                                                            </div>
+                                                                            <div>
+
+                                                                                <img src="{{ asset($result->p_o_d) }}"
+                                                                                    class="card-img-top" alt="No image"
+                                                                                    style="object-fit: cover; height: 500px;width:500px">
+                                                                            </div>
+
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                {{-- modal2 design view --}}
+                                                                <div class="modal fade mt-11 "
+                                                                    id="viewrModal{{ $entry->id }}" tabindex="-1"
+                                                                    role="dialog"
+                                                                    aria-labelledby="viewrModalLabel{{ $entry->id }}"
+                                                                    aria-hidden="true">
+                                                                    <div class="modal-dialog" role="document">
+                                                                        <div class="modal-content dark:bg-gray-800">
+                                                                            <div class="modal-header"
+                                                                                style="background-color: green; color: white;">
+                                                                                <h5 class="modal-title"
+                                                                                    id="viewrModalLabel{{ $entry->id }}">
+                                                                                    Proof of Delivery
+                                                                                    {{ $entry->id }} <a
+                                                                                        href="{{ asset($entry->p_o_r) }}"
+                                                                                        download="{{ basename($entry->p_o_r) }}"
+                                                                                        class="btn btn-primary">
+                                                                                        <i class="fas fa-download"
+                                                                                            style="font-size: 30px; color: blue;"></i>
+                                                                                    </a></h5>
+                                                                                <button type="button" class="close"
+                                                                                    data-dismiss="modal"
+                                                                                    aria-label="Close">
+                                                                                    <span
+                                                                                        aria-hidden="true">&times;</span>
+                                                                                </button>
+                                                                            </div>
+                                                                            <div>
+
+                                                                                <img src="{{ asset($entry->p_o_r) }}"
+                                                                                    class="card-img-top" alt="No image"
+                                                                                    style="object-fit: cover; height: 500px;width:500px">
+                                                                            </div>
+
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                             </tr>
                                                         @endforeach
                                                     </tbody>

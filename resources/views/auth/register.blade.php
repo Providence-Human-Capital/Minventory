@@ -35,6 +35,9 @@
             <x-input-label for="clinic" :value="__('Clinic')" />
             <select name="clinic" id="clinic" style="width: 100%;">
                 <option value="" disabled selected>Select a clinic</option>
+                <?php
+                $clinics = DB::table('clinics')->get('clinic_name');
+                ?>
                 @foreach ($clinics as $clinic)
                     <option value="{{ $clinic->clinic_name }}">{{ $clinic->clinic_name }}</option>
                 @endforeach

@@ -110,24 +110,24 @@ class requestController extends Controller
 
 
         $chart = Chartjs::build()
-        ->name("StockComparisonChart")
-        ->type("line")
-        ->size(["width" => 400, "height" => 200])
-        ->labels($uniqueDates)
-        ->datasets([
-            [
-                "label" => "Distribution",
-                "backgroundColor" => "rgba(38, 185, 154, 0.31)",
-                "borderColor" => "rgba(38, 185, 154, 0.7)",
-                "data" => $sentData
-            ],
-            [
-                "label" => "Dispense",
-                "backgroundColor" => "rgba(255, 99, 132, 0.31)",
-                "borderColor" => "rgba(255, 99, 132, 0.7)",
-                "data" => $dsentData
-            ]
-        ]);
+            ->name("StockComparisonChart")
+            ->type("line")
+            ->size(["width" => 400, "height" => 200])
+            ->labels($uniqueDates)
+            ->datasets([
+                [
+                    "label" => "Distribution",
+                    "backgroundColor" => "rgba(38, 185, 154, 0.31)",
+                    "borderColor" => "rgba(38, 185, 154, 0.7)",
+                    "data" => $sentData
+                ],
+                [
+                    "label" => "Dispense",
+                    "backgroundColor" => "rgba(255, 99, 132, 0.31)",
+                    "borderColor" => "rgba(255, 99, 132, 0.7)",
+                    "data" => $dsentData
+                ]
+            ]);
 
         $chartData = [
             'labels' => $uniqueDates,
@@ -151,7 +151,7 @@ class requestController extends Controller
         $currentclinicstock = DB::table($tableName)->where('item_number', 'like', $requestednumber)->get()->first()->item_quantity;
 
 
-        
+
 
         return view('requestchart', [
             'chartData' => $chartData,
@@ -167,12 +167,12 @@ class requestController extends Controller
 
     public function approverequest(Request $request, StockItem $stockItem)
     {
-      
+
         $request->validate([
             'item_name' => 'required',
             'item_quantity' => 'required',
             'item_number' => 'required',
-            'item_image'=>'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'item_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
 
 
 
@@ -223,7 +223,7 @@ class requestController extends Controller
 
             $stockRequest = stock_request::where('id', $request->requestid)->first();
 
-            if (!$stockRequest || !$stockRequest->requester) {
+            /*if (!$stockRequest || !$stockRequest->requester) {
                 // Handle the case where the requester is not found or doesn't exist
                 $data = [
                     'subject' => "Request has been approved",
@@ -252,7 +252,7 @@ class requestController extends Controller
                     $message->to($requesterEmail) // Change to the recipient's email address
                         ->subject($data['subject']);
                 });
-            }
+            }*/
         }
 
 

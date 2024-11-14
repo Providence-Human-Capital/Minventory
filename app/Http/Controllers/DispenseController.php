@@ -35,21 +35,22 @@ class DispenseController extends Controller
         $dispense['dispense_time'] = Carbon::now()->toDatetimeString();
         $dispense['clinic'] = auth()->user()->clinic;
         $damount = $request->damount;
-        $clinic=auth()->user()->clinic;
+        $clinic = auth()->user()->clinic;
         $tableName = preg_replace('/[^a-zA-Z0-9]/', '', $clinic); // Clean clinic name
         $tableName = strtolower($tableName) . '_stocks';  // Add suffix for the stock table
         $currenstock = DB::table($tableName)->where('item_number', 'like', $request->drug_number)->get()->first()->item_quantity;
-        if ($damount > $currenstock) {
-            redirect()->route('requeststock')->with('error', 'Request more stock');
-        } else {
+        if ($damount < $currenstock) {
             $newstock = $currenstock - $damount;
-            dd($newstock);
             DB::table($tableName)
                 ->where('item_number', 'like', $request->drug_number)
                 ->update(['item_quantity' => $newstock]);
-        }
-        dispense::create($dispense);
-        return redirect()->route('getclinicstock')->with('success', 'Stock Dispensed.');
+            dispense::create($dispense);
+            return redirect()->route('getclinicstock')->with('success', 'Stock Dispensed.');
+        } 
+
+        return redirect()->route('requeststock')->with('error', 'Request more stock');
+
+
     }
 
     public function dispensehistory()

@@ -68,10 +68,6 @@
                                     Quantity</th>
                                 <th
                                     style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD; text-align: center; font-size: 18px">
-                                    Price ($USD)
-                                </th>
-                                <th
-                                    style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD; text-align: center; font-size: 18px">
                                     Clinic</th>
                                 <th
                                     style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD; text-align: center; font-size: 18px">
@@ -97,6 +93,10 @@
                                     style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD; text-align: center; font-size: 18px">
                                     P_O_D
                                 </th>
+                                <th
+                                    style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD; text-align: center; font-size: 18px">
+                                    P_O_R
+                                </th>
                             </tr>
                             <tr class="dark:text-gray-200">
 
@@ -110,9 +110,6 @@
                                     <th
                                         style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: left; padding-left: 10px">
                                         {{ $entry->item_quantity }}</th>
-                                    <th
-                                        style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: left; padding-left: 10px">
-                                        {{ $entry->price }}</th>
                                     <th
                                         style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: left; padding-left: 10px">
                                         {{ $entry->clinics }}</th>
@@ -133,12 +130,16 @@
                                         {{ $entry->updated_at }}</th>
                                     <th
                                         style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: left; padding-left: 10px">
-                                        {{ $entry->updated_at }}</th>
+                                        <button type="button" class="btn btn-primary" data-toggle="modal"
+                                            data-target="#viewModal{{ $entry->id }}">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </th>
                                     <th
                                         style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: left; padding-left: 10px">
-                                        <button type="button" class="btn btn-success" data-toggle="modal"
-                                            data-target="#viewModal{{ $entry->id }}">
-                                            Search Transactions
+                                        <button type="button" class="btn btn-primary" data-toggle="modal"
+                                            data-target="#viewrModal{{ $entry->id }}">
+                                            <i class="fas fa-eye"></i>
                                         </button>
                                     </th>
                                     {{-- modal design view --}}
@@ -164,7 +165,37 @@
                                                 </div>
                                                 <div>
 
-                                                    <img src="{{ asset($entry->p_o_d) }}" class="card-img-top"
+                                                    <img src="{{ asset($entry->p_o_d) }}" class="card-img-top" alt="No image"
+                                                        style="object-fit: cover; height: 500px;width:500px">
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {{-- modal2 design view --}}
+                                    <div class="modal fade mt-11 " id="viewrModal{{ $entry->id }}" tabindex="-1"
+                                        role="dialog" aria-labelledby="viewrModalLabel{{ $entry->id }}"
+                                        aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content dark:bg-gray-800">
+                                                <div class="modal-header"
+                                                    style="background-color: green; color: white;">
+                                                    <h5 class="modal-title" id="viewrModalLabel{{ $entry->id }}">
+                                                        Proof of Delivery {{ $entry->id }} <a
+                                                            href="{{ asset($entry->p_o_r) }}"
+                                                            download="{{ basename($entry->p_o_r) }}"
+                                                            class="btn btn-primary">
+                                                            <i class="fas fa-download"
+                                                                style="font-size: 30px; color: blue;"></i>
+                                                        </a></h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div>
+
+                                                    <img src="{{ asset($entry->p_o_r) }}" class="card-img-top" alt="No image"
                                                         style="object-fit: cover; height: 500px;width:500px">
                                                 </div>
 

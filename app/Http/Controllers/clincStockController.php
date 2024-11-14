@@ -46,17 +46,24 @@ class clincStockController extends Controller
 
     public function changestatus(Request $request)
     {
+        $request->validate([
+            'item_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
         $id = $request->id;
+        $imagename = now()->format('Y-m-d_H-i-s') . '.' . $request->item_image->extension();
+        $request->item_image->move(public_path('images'), $imagename);
         $update['status'] = 'Received';
         $update['reciever'] = Auth::user()->name;
         $approved = pending_stocks::where('id', 'like', $id)->get()->first();
-        $journal = mainstock_journal::where('item_number', 'like', $approved->item_number)
+        $update['p_o_r'] = 'images/' . $imagename;
+        mainstock_journal::where('item_number', 'like', $approved->item_number)
             ->where('clinics', 'like', $approved->clinics)
             ->where('created_at', 'like', $approved->created_at)
             ->where('item_quantity', 'like', $approved->item_quantity)
             ->where('item_number', 'like', $approved->item_number)
             ->update([
                 'recieved_by' => auth()->user()->name,
+                'p_o_r' => 'images/' . $imagename,
                 // Add any other fields as necessary
             ]);;
         $approve = pending_stocks::find($id);
@@ -72,14 +79,14 @@ class clincStockController extends Controller
         }
         $approve->update($update);
         $addstock = $approve->item_quantity;
-        $clinic=$approved->clinics;
+        $clinic = $approved->clinics;
         $tableName = preg_replace('/[^a-zA-Z0-9]/', '', $clinic); // Clean clinic name
         $tableName = strtolower($tableName) . '_stocks';  // Add suffix for the stock table
         $currenstock = DB::table($tableName)->where('item_number', 'like', $approve->item_number)->get()->first()->item_quantity;
         $newstock = $addstock + $currenstock;
-                DB::table($tableName)
-                    ->where('item_number', 'like', $approve->item_number)
-                    ->update(['item_quantity' => $newstock]);
+        DB::table($tableName)
+            ->where('item_number', 'like', $approve->item_number)
+            ->update(['item_quantity' => $newstock]);
 
         return redirect()->route('pendingstock')->with('success', 'Stock Received.');
     }
@@ -90,11 +97,11 @@ class clincStockController extends Controller
 
         $searchTerm = $request->input('isearch'); // Get the search query from the request
         $pending = [];
-        $clinic=auth()->user()->clinic;
+        $clinic = auth()->user()->clinic;
         $tableName = preg_replace('/[^a-zA-Z0-9]/', '', $clinic); // Clean clinic name
         $tableName = strtolower($tableName) . '_stocks';  // Add suffix for the stock table
         $pending = DB::table($tableName)->where('item_name', 'LIKE', "%{$searchTerm}%")->get();
-        
+
         if ($pending->isEmpty()) {
             return redirect()->route('getclinicstock')->with('error', 'Product could not be found');
         } else {
@@ -104,7 +111,7 @@ class clincStockController extends Controller
     }
     public function getclinicstock()
     {
-        $clinic=auth()->user()->clinic;
+        $clinic = auth()->user()->clinic;
         $tableName = preg_replace('/[^a-zA-Z0-9]/', '', $clinic); // Clean clinic name
         $tableName = strtolower($tableName) . '_stocks';  // Add suffix for the stock table
         $clinicstock = DB::table($tableName)->orderBy('item_name', 'asc')->get();
@@ -213,63 +220,62 @@ class clincStockController extends Controller
         pending_stocks::create($pending);
         $removestock = $request->drug_amount;
 
-        $clinic=auth()->user()->clinic;
+        $clinic = auth()->user()->clinic;
         $tableName = preg_replace('/[^a-zA-Z0-9]/', '', $clinic); // Clean clinic name
         $tableName = strtolower($tableName) . '_stocks';  // Add suffix for the stock table
         $currenstock = DB::table($tableName)->where('item_number', 'like', $request->item_number)->get()->first()->item_quantity;
         $newstock = $currenstock - $removestock;
-                DB::table($tableName)
-                    ->where('item_number', 'like', $request->item_number)
-                    ->update(['item_quantity' => $newstock]);
+        DB::table($tableName)
+            ->where('item_number', 'like', $request->item_number)
+            ->update(['item_quantity' => $newstock]);
 
         redirect()->route('stocktransfer')->with('success', 'Transfer sent');
     }
 
 
 
-public function searchtransfer(Request $request)
-{
+    public function searchtransfer(Request $request)
+    {
 
-    $drugs = DB::table('stock_items')->select('item_number', 'item_name')->get();
-    $query = Transferrecord::query();  // Start with the base query for DrugTransfer
+        $drugs = DB::table('stock_items')->select('item_number', 'item_name')->get();
+        $query = Transferrecord::query();  // Start with the base query for DrugTransfer
 
-    // Apply filters based on the input parameters
-    if ($request->filled('drug_name')) {
-        $query->where('drug_name', 'like', '%' . $request->drug_name . '%');
-    }
-    if ($request->filled('clinic_from')) {
-        $query->where('clinic_from', 'like', '%' . $request->clinic_from . '%');
-    }
-    if ($request->filled('sender')) {
-        $query->where('sender', 'like', '%' . $request->sender . '%');
-    }
-    if ($request->filled('drug_amount')) {
-        $query->where('drug_amount', '=', $request->drug_amount);
-    }
-    if ($request->filled('clinic_to') ) {
-        $query->where('clinic_to', 'like', '%' . $request->clinic_to . '%');
-    }
-    if ($request->filled('receiver') ) {
-        $query->where('receiver', 'like', '%' . $request->receiver . '%');
-    }
-    if ($request->filled('send_at_start') && $request->filled('send_at_end')) {
-        // Ensure the date format matches the database's format
-        $query->whereBetween('created_at', [
-            $request->send_at_start . ' 00:00:00',
-            $request->send_at_end . ' 23:59:59'
-        ]);
-    }
+        // Apply filters based on the input parameters
+        if ($request->filled('drug_name')) {
+            $query->where('drug_name', 'like', '%' . $request->drug_name . '%');
+        }
+        if ($request->filled('clinic_from')) {
+            $query->where('clinic_from', 'like', '%' . $request->clinic_from . '%');
+        }
+        if ($request->filled('sender')) {
+            $query->where('sender', 'like', '%' . $request->sender . '%');
+        }
+        if ($request->filled('drug_amount')) {
+            $query->where('drug_amount', '=', $request->drug_amount);
+        }
+        if ($request->filled('clinic_to')) {
+            $query->where('clinic_to', 'like', '%' . $request->clinic_to . '%');
+        }
+        if ($request->filled('receiver')) {
+            $query->where('receiver', 'like', '%' . $request->receiver . '%');
+        }
+        if ($request->filled('send_at_start') && $request->filled('send_at_end')) {
+            // Ensure the date format matches the database's format
+            $query->whereBetween('created_at', [
+                $request->send_at_start . ' 00:00:00',
+                $request->send_at_end . ' 23:59:59'
+            ]);
+        }
 
-    // Date range for 'updated_at' (Received At)
-    if ($request->filled('received_at_start') && $request->filled('received_at_end')) {
-        $query->whereBetween('updated_at', [
-            $request->received_at_start . ' 00:00:00',
-            $request->received_at_end . ' 23:59:59'
-        ]);
+        // Date range for 'updated_at' (Received At)
+        if ($request->filled('received_at_start') && $request->filled('received_at_end')) {
+            $query->whereBetween('updated_at', [
+                $request->received_at_start . ' 00:00:00',
+                $request->received_at_end . ' 23:59:59'
+            ]);
+        }
+        // Get the filtered records
+        $records = $query->get();
+        return view('clinicstock.transfersearch', compact('records', 'drugs'));
     }
-    // Get the filtered records
-    $records = $query->get();
-    return view('clinicstock.transfersearch', compact('records','drugs'));
-}
-
 }

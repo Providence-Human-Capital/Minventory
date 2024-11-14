@@ -52,38 +52,108 @@
                                         <table style="border-collapse: collapse; width: 100%; margin-top: 20px;">
                                             <thead>
                                                 <tr style="background-color: #f2f2f2;">
-                                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Item Name</th>
-                                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Item Number</th>
-                                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Quantity</th>
-                                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Clinic</th>
-                                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Status</th>
-                                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Received By</th>
-                                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Requested At</th>
+                                                    <th
+                                                        style="padding: 12px; text-align: left; border: 1px solid #ddd;">
+                                                        Item Name</th>
+                                                    <th
+                                                        style="padding: 12px; text-align: left; border: 1px solid #ddd;">
+                                                        Item Number</th>
+                                                    <th
+                                                        style="padding: 12px; text-align: left; border: 1px solid #ddd;">
+                                                        Quantity</th>
+                                                    <th
+                                                        style="padding: 12px; text-align: left; border: 1px solid #ddd;">
+                                                        Clinic</th>
+                                                    <th
+                                                        style="padding: 12px; text-align: left; border: 1px solid #ddd;">
+                                                        Status</th>
+                                                    <th
+                                                        style="padding: 12px; text-align: left; border: 1px solid #ddd;">
+                                                        Received By</th>
+                                                    <th
+                                                        style="padding: 12px; text-align: left; border: 1px solid #ddd;">
+                                                        Requested At</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @if ($results->isEmpty())
                                                     <tr>
-                                                        <td colspan="7" style="text-align: center; padding: 16px; color: red;">
+                                                        <td colspan="7"
+                                                            style="text-align: center; padding: 16px; color: red;">
                                                             No pending requests available.
                                                         </td>
                                                     </tr>
                                                 @else
                                                     @foreach ($results as $prequest)
                                                         <tr>
-                                                            <td style="padding: 12px; border: 1px solid #ddd;">{{ $prequest->item_name }}</td>
-                                                            <td style="padding: 12px; border: 1px solid #ddd;">{{ $prequest->item_number }}</td>
-                                                            <td style="padding: 12px; border: 1px solid #ddd;">{{ $prequest->item_quantity }}</td>
-                                                            <td style="padding: 12px; border: 1px solid #ddd;">{{ $prequest->clinic }}</td>
-                                                            <td style="padding: 12px; border: 1px solid #ddd;">{{ $prequest->status }}</td>
-                                                            <td style="padding: 12px; border: 1px solid #ddd;">{{ $prequest->requester }}</td>
-                                                            <td style="padding: 12px; border: 1px solid #ddd;">{{ $prequest->updated_at }}</td>
+                                                            <td style="padding: 12px; border: 1px solid #ddd;">
+                                                                {{ $prequest->item_name }}</td>
+                                                            <td style="padding: 12px; border: 1px solid #ddd;">
+                                                                {{ $prequest->item_number }}</td>
+                                                            <td style="padding: 12px; border: 1px solid #ddd;">
+                                                                {{ $prequest->item_quantity }}</td>
+                                                            <td style="padding: 12px; border: 1px solid #ddd;">
+                                                                {{ $prequest->clinic }}</td>
+                                                            <td style="padding: 12px; border: 1px solid #ddd;">
+                                                                {{ $prequest->status }}</td>
+                                                            <td style="padding: 12px; border: 1px solid #ddd;">
+                                                                {{ $prequest->requester }}</td>
+                                                            <td style="padding: 12px; border: 1px solid #ddd;">
+                                                                {{ $prequest->updated_at }}</td>
+                                                            <td style="padding: 12px; border: 1px solid #ddd;">
+                                                                <button type="button" class="btn btn-success"
+                                                                    data-toggle="modal"
+                                                                    data-target="#receiveModal{{ $prequest->id }}"><i
+                                                                        class="fas fa-eye"></i>
+
+                                                                </button>
+                                                                {{-- receive stock model design start here --}}
+                                                                <div class="modal fade"
+                                                                    id="receiveModal{{ $prequest->id }}" tabindex="-1"
+                                                                    role="dialog"
+                                                                    aria-labelledby="receiveModal{{ $prequest->id }}"
+                                                                    aria-hidden="true">
+                                                                    <div class="modal-dialog" role="document">
+                                                                        <div class="modal-content">
+                                                                            <div class="modal-header"
+                                                                                style="padding: 0px;height:50px">
+                                                                                <div style="color:white;width:100%;height:100%;background-color:green;top:0px;text-align:center"
+                                                                                    class="modal-title"
+                                                                                    id="receiveModal{{ $prequest->id }}">
+                                                                                    <h5 class="modal-title"
+                                                                                        id="viewModalLabel{{ $prequest->id }}">
+                                                                                        Proof of Delivery
+                                                                                        {{ $prequest->id }} <a
+                                                                                            href="{{ asset($prequest->p_o_r) }}"
+                                                                                            download="{{ basename($prequest->p_o_r) }}"
+                                                                                            class="btn btn-primary">
+                                                                                            <i class="fas fa-download"
+                                                                                                style="font-size: 30px; color: blue;"></i>
+                                                                                        </a></h5>
+                                                                                    <button style="display:inline"
+                                                                                        type="button" class="close"
+                                                                                        data-dismiss="modal"
+                                                                                        aria-label="Close">
+                                                                                        <span
+                                                                                            aria-hidden="true">&times;</span>
+                                                                                    </button>
+                                                                                </div>
+                                                                            </div>
+                                                                            <img src="{{ asset($prequest->p_o_r) }}"
+                                                                                class="card-img-top"
+                                                                                style="object-fit: cover; height: 500px;width:500px">
+
+
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
                                                         </tr>
                                                     @endforeach
                                                 @endif
                                             </tbody>
                                         </table>
-                                        
+
                                     </div>
                                 </div>
                             </div>
@@ -227,7 +297,7 @@
         </div>
     </div>
 
-    {{--print script--}}
+    {{-- print script --}}
     <script>
         function printResults() {
             var printContents = document.getElementById('printArea').innerHTML;

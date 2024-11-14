@@ -37,15 +37,14 @@
                             </div>
                         @endif
 
-                        <button type="button" class="btn btn-success" data-toggle="modal"
-                            data-target="#searchModal">
+                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#searchModal">
                             Search Records
                         </button>
                     </div>
                 </div>
             </div>
         </div>
-        
+
     </x-slot>
 
     <center>
@@ -55,69 +54,134 @@
                     {{ session('error') }}
                 </div>
             @endif
-    
+
             @if (\Session::has('success'))
-            <div class="alert alert-success">
-                <p>{{ \Session::get('success') }}</p>
-    
-            </div>
+                <div class="alert alert-success">
+                    <p>{{ \Session::get('success') }}</p>
+
+                </div>
             @endif
         </div>
-        </center>
+    </center>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 ">
-            
+
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    {{ __("Recived stocks") }}
-                 
+                    {{ __('Recived stocks') }}
+
                     <center>
                         <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif;">
                             <!-- Table Header -->
                             <thead style="background-color: #f4f4f4; color: #333;">
                                 <tr>
-                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd; font-weight: bold;">Item Name</th>
-                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd; font-weight: bold;">Item Number</th>
-                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd; font-weight: bold;">Quantity</th>
-                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd; font-weight: bold;">Clinic</th>
-                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd; font-weight: bold;">Status</th>
-                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd; font-weight: bold;">Procurer</th>
-                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd; font-weight: bold;">Sent At</th>
-                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd; font-weight: bold;">Receiver</th>
-                                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd; font-weight: bold;">Received At</th>
+                                    <th
+                                        style="padding: 12px; text-align: left; border: 1px solid #ddd; font-weight: bold;">
+                                        Item Name</th>
+                                    <th
+                                        style="padding: 12px; text-align: left; border: 1px solid #ddd; font-weight: bold;">
+                                        Item Number</th>
+                                    <th
+                                        style="padding: 12px; text-align: left; border: 1px solid #ddd; font-weight: bold;">
+                                        Quantity</th>
+                                    <th
+                                        style="padding: 12px; text-align: left; border: 1px solid #ddd; font-weight: bold;">
+                                        Clinic</th>
+                                    <th
+                                        style="padding: 12px; text-align: left; border: 1px solid #ddd; font-weight: bold;">
+                                        Status</th>
+                                    <th
+                                        style="padding: 12px; text-align: left; border: 1px solid #ddd; font-weight: bold;">
+                                        Procurer</th>
+                                    <th
+                                        style="padding: 12px; text-align: left; border: 1px solid #ddd; font-weight: bold;">
+                                        Sent At</th>
+                                    <th
+                                        style="padding: 12px; text-align: left; border: 1px solid #ddd; font-weight: bold;">
+                                        Receiver</th>
+                                    <th
+                                        style="padding: 12px; text-align: left; border: 1px solid #ddd; font-weight: bold;">
+                                        Proof of delivery</th>
                                 </tr>
                             </thead>
-                        
+
                             <!-- Table Body -->
                             <tbody>
                                 @foreach ($rstocks as $rstock)
-                                <tr style="background-color: #fff; border-bottom: 1px solid #ddd;">
-                                    <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">{{ $rstock->item_name }}</td>
-                                    <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">{{ $rstock->item_number }}</td>
-                                    <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">{{ $rstock->item_quantity }}</td>
-                                    <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">{{ $rstock->clinics }}</td>
-                                    <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">{{ $rstock->status }}</td>
-                                    <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">{{ $rstock->procurer }}</td>
-                                    <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">{{ $rstock->created_at }}</td>
-                                    <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">{{ $rstock->reciever }}</td>
-                                    <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">{{ $rstock->updated_at }}</td>
-                                </tr>
+                                    <tr style="background-color: #fff; border-bottom: 1px solid #ddd;">
+                                        <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">
+                                            {{ $rstock->item_name }}</td>
+                                        <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">
+                                            {{ $rstock->item_number }}</td>
+                                        <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">
+                                            {{ $rstock->item_quantity }}</td>
+                                        <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">
+                                            {{ $rstock->clinics }}</td>
+                                        <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">
+                                            {{ $rstock->status }}</td>
+                                        <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">
+                                            {{ $rstock->procurer }}</td>
+                                        <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">
+                                            {{ $rstock->created_at }}</td>
+                                        <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">
+                                            {{ $rstock->reciever }}</td>
+                                        <td style="padding: 10px; text-align: left; border: 1px solid #ddd;"><button
+                                                type="button" class="btn btn-success" data-toggle="modal"
+                                                data-target="#receiveModal{{ $rstock->id }}"><i
+                                                    class="fas fa-eye"></i>
+                                                
+                                            </button>
+                                            {{-- receive stock model design start here --}}
+                                            <div class="modal fade" id="receiveModal{{ $rstock->id }}" tabindex="-1"
+                                                role="dialog" aria-labelledby="receiveModal{{ $rstock->id }}"
+                                                aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header" style="padding: 0px;height:50px">
+                                                            <div style="color:white;width:100%;height:100%;background-color:green;top:0px;text-align:center"
+                                                                class="modal-title"
+                                                                id="receiveModal{{ $rstock->id }}">
+                                                                <h5 class="modal-title" id="viewModalLabel{{ $rstock->id }}">
+                                                                    Proof of Delivery {{ $rstock->id }} <a
+                                                                        href="{{ asset($rstock->p_o_r) }}"
+                                                                        download="{{ basename($rstock->p_o_r) }}"
+                                                                        class="btn btn-primary">
+                                                                        <i class="fas fa-download"
+                                                                            style="font-size: 30px; color: blue;"></i>
+                                                                    </a></h5>
+                                                                <button style="display:inline" type="button"
+                                                                    class="close" data-dismiss="modal"
+                                                                    aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <img src="{{ asset($rstock->p_o_r) }}" class="card-img-top"
+                                                        style="object-fit: cover; height: 500px;width:500px">
+
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
                                 @endforeach
                             </tbody>
                         </table>
-                        
+
                     </center>
 
                 </div>
 
-                
+
             </div>
         </div>
     </div>
 
-     {{-- modal design search --}}
-     <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    {{-- modal design search --}}
+    <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header" style="background-color: green; color: white;">
@@ -126,33 +190,38 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form method="POST" action="{{route('searchrstock')}}">
+                <form method="POST" action="{{ route('searchrstock') }}">
                     <div class="modal-body">
                         @csrf
                         <div class="container">
                             <div class="row mb-3">
                                 <div class="col">
                                     <label for="item_name">Item Name</label>
-                                    <input type="text" id="item_name" name="item_name" placeholder="Item Name" class="form-control">
+                                    <input type="text" id="item_name" name="item_name" placeholder="Item Name"
+                                        class="form-control">
                                 </div>
                                 <div class="col">
                                     <label for="item_number">Item Number</label>
-                                    <input type="text" id="item_number" name="item_number" placeholder="Item Number" class="form-control">
+                                    <input type="text" id="item_number" name="item_number"
+                                        placeholder="Item Number" class="form-control">
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col">
                                     <label for="procurer">Procurer</label>
-                                    <input type="text" id="procurer" name="procurer" placeholder="Procurer" class="form-control">
+                                    <input type="text" id="procurer" name="procurer" placeholder="Procurer"
+                                        class="form-control">
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col">
                                     <label for="transaction_date_from">Transaction Date</label>
                                     <div class="d-flex justify-content-between">
-                                        <input type="date" id="transaction_date_from" name="transaction_date_from" class="form-control">
+                                        <input type="date" id="transaction_date_from" name="transaction_date_from"
+                                            class="form-control">
                                         <span class="mx-2 align-self-center">-</span>
-                                        <input type="date" id="transaction_date_to" name="transaction_date_to" class="form-control">
+                                        <input type="date" id="transaction_date_to" name="transaction_date_to"
+                                            class="form-control">
                                     </div>
                                 </div>
                             </div>
@@ -165,5 +234,5 @@
             </div>
         </div>
     </div>
-    
+
 </x-app-layout>
