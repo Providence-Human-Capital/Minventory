@@ -231,7 +231,7 @@
 
                                     <div>
                                         <label for="clinics">Choose a Clinic</label><br>
-                                        <select name="clinics" id="clinics" style="width: 100%;">
+                                        <select name="clinics" id="clinics" style="width: 100%;" required>
                                             <?php
                                             $clinics = DB::table('clinics')->get('clinic_name');
                                             ?>

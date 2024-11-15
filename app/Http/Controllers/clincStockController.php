@@ -49,13 +49,15 @@ class clincStockController extends Controller
         $request->validate([
             'item_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-        $id = $request->id;
         $imagename = now()->format('Y-m-d_H-i-s') . '.' . $request->item_image->extension();
         $request->item_image->move(public_path('images'), $imagename);
+        $update['p_o_r'] = 'images/' . $imagename;
+        $id = $request->id;
+
         $update['status'] = 'Received';
         $update['reciever'] = Auth::user()->name;
         $approved = pending_stocks::where('id', 'like', $id)->get()->first();
-        $update['p_o_r'] = 'images/' . $imagename;
+
         mainstock_journal::where('item_number', 'like', $approved->item_number)
             ->where('clinics', 'like', $approved->clinics)
             ->where('created_at', 'like', $approved->created_at)

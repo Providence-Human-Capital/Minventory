@@ -96,7 +96,7 @@
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
-                                            <form method="POST" action="/mainstock/{{ $searchs->id }}">
+                                            <form method="POST" action="/mainstock/{{ $searchs->id }}" enctype="multipart/form-data">
                                                 @csrf
                                                 @method('patch')
                                                 <div class="modal-body">
@@ -124,6 +124,23 @@
                                                         <label for="expiry_date">Expiry Date</label>
                                                         <input type="date" id="expiry_date" name="expiry_date"
                                                             class="form-control">
+                                                    </div>
+                                                    <div>
+                                                        <label for='batch_number'>Batch Number</label><br>
+                                                        <input type="text" id="batch_number" name="batch_number"
+                                                            style="width: 100%;"><br>
+                                                        @error('batch_number')
+                                                            <p style="color:red;size:13px">{{ $message }}</p>
+                                                        @enderror
+                                                    </div>
+                                                    
+                                                    <div>
+                                                        <label for="item_image">Upload Image</label><br>
+                                                        <input type="file" id="item_image" name="item_image" accept="image/*"
+                                                            style="width: 100%;"><br>
+                                                        @error('item_image')
+                                                            <p style="color:red;size:13px">{{ $message }}</p>
+                                                        @enderror
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -171,7 +188,7 @@
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="clinics">Choose a Clinic</label>
-                                                        <select name="clinics" id="clinics" class="form-control">
+                                                        <select name="clinics" id="clinics" class="form-control" required>
                                                             <?php
                                                             $clinics = DB::table('clinics')->get('clinic_name');
                                                             ?>
@@ -183,6 +200,9 @@
                                                                     {{ $clinic->clinic_name }}</option>
                                                             @endforeach
                                                         </select>
+                                                        @error('clinics')
+                                                            <p style="color:red;size:13px">{{ $message }}</p>
+                                                        @enderror
                                                     </div>
                                                     <div>
                                                         <label for="item_image">Upload Image</label><br>

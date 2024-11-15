@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Clinic;
+use App\Models\dispense;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -79,9 +80,15 @@ class Admincontroller extends Controller
     foreach ($data as $item) {
         // For each item, find the current quantity in the clinic's specific table
         $itemQuantity = DB::table($tableName)->where('item_name', $item->item_name)->value('item_quantity');
+        $usage = DB::table('dispenses')
+        ->select(DB::raw('SUM(damount) as monthsum'))
+        ->where('item_name', $item->item_name)
+        ->whereYear('dispense_time', $year) // Assuming `dispense_date` is the column for the date
+        ->whereMonth('dispense_time', $month)
+        ->value('monthsum');
 
         // Append a new row to the HTML table with the data
-        $html .= "<tr><td>{$item->item_name}</td><td>{$item->monthsum}</td><td>{$itemQuantity}</td></tr>";
+        $html .= "<tr><td>{$item->item_name}</td><td>{$item->monthsum}</td><td>{$itemQuantity}</td><td>{$usage}</td></tr>";
 
         // Populate chart data (labels and values)
         $labels[] = $item->item_name;
