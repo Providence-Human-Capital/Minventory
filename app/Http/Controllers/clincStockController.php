@@ -53,7 +53,6 @@ class clincStockController extends Controller
         $request->item_image->move(public_path('images'), $imagename);
         $update['p_o_r'] = 'images/' . $imagename;
         $id = $request->id;
-
         $update['status'] = 'Received';
         $update['reciever'] = Auth::user()->name;
         $approved = pending_stocks::where('id', 'like', $id)->get()->first();
