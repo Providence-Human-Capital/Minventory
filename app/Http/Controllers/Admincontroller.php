@@ -54,7 +54,7 @@ class Admincontroller extends Controller
     $month = $request->month; 
     $year = $request->year;
 
-    // Fetch the data from the 'pending_stocks' table
+    // Fetch the data from the 'pending_stocks'table
     $data = DB::table("pending_stocks")
         ->select(DB::raw('DATE_FORMAT(updated_at, "%M-%y") as date'), 
                  DB::raw('SUM(item_quantity) as monthsum'), 
