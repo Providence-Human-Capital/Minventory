@@ -167,8 +167,7 @@
                     data: formData, // Send form data to the server
                     success: function(data) {
                         console.log(data); // Log the returned data for debugging
-                        $('#resultTableBody').html(data
-                            .html); // Update the table body with HTML
+                        $('#resultTableBody').html(data.html); // Update the table body with HTML
                         updateChart(data.chartData); // Update the chart with the data
                     },
                     error: function(xhr) {

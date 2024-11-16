@@ -85,7 +85,11 @@ class DispenseController extends Controller
 
         // Transaction Date
         if ($request->filled('transaction_date_from') && $request->filled('transaction_date_to')) {
-            $query->whereBetween('dispense_time', [$request->transaction_date_from, $request->transaction_date_to]);
+            $query->whereBetween(DB::raw('DATE(dispense_time)'), [$request->transaction_date_from, $request->transaction_date_to]);
+        } elseif ($request->filled('transaction_date_from')) {
+            $query->where(DB::raw('DATE(dispense_time)'), '>=', $request->transaction_date_from);
+        } elseif ($request->filled('transaction_date_to')) {
+            $query->where(DB::raw('DATE(dispense_time)'), '<=', $request->transaction_date_to);
         }
 
         // Execute the query and get the results

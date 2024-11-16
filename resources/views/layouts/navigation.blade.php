@@ -68,11 +68,9 @@
                             <x-nav-link :href="route('dishistory')" :active="request()->routeIs('dishistory')">
                                 {{ __('Dispense History') }}
                             </x-nav-link>
-                            <x-nav-link :href="route('patientform')" :active="request()->routeIs('patientform')">
-                                {{ __('Patients') }}
-                            </x-nav-link>
                     @endswitch
                 </div>
+                
             </div>
 
             <!-- User Settings Dropdown -->

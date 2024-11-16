@@ -72,21 +72,21 @@ class Admincontroller extends Controller
     $values = [];
     $html = '';
 
+    
     // Generate table name dynamically from the selected clinic
     $tableName = preg_replace('/[^a-zA-Z0-9]/', '', $clinic); // Clean clinic name
     $tableName = strtolower($tableName) . '_stocks';  // Add suffix for the stock table
-
     // Loop through the fetched data and build the HTML table rows
     foreach ($data as $item) {
         // For each item, find the current quantity in the clinic's specific table
         $itemQuantity = DB::table($tableName)->where('item_name', $item->item_name)->value('item_quantity');
+       
         $usage = DB::table('dispenses')
         ->select(DB::raw('SUM(damount) as monthsum'))
-        ->where('item_name', $item->item_name)
+        ->where('drug', $item->item_name)
         ->whereYear('dispense_time', $year) // Assuming `dispense_date` is the column for the date
         ->whereMonth('dispense_time', $month)
         ->value('monthsum');
-
         // Append a new row to the HTML table with the data
         $html .= "<tr><td>{$item->item_name}</td><td>{$item->monthsum}</td><td>{$itemQuantity}</td><td>{$usage}</td></tr>";
 
@@ -94,7 +94,6 @@ class Admincontroller extends Controller
         $labels[] = $item->item_name;
         $values[] = $item->monthsum;
     }
-
     // Return the HTML table and chart data as a JSON response
     return response()->json([
         'html' => $html,  

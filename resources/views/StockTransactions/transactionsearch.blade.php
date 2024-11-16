@@ -133,6 +133,7 @@
                                                             <th>Item Number</th>
                                                             <th>Quantity</th>
                                                             <th>Clinic</th>
+                                                            <th>Date of transaction</th>
                                                             <th>Expiry Date</th>
                                                             <th>Procurer</th>
                                                             <th>Received By</th>
@@ -146,7 +147,8 @@
                                                                 <td>{{ $result->item_number }}</td>
                                                                 <td>{{ $result->item_quantity }}</td>
                                                                 <td>{{ $result->clinics }}</td>
-                                                                <td>{{ $result->expiry_date }}</td>
+                                                                <td>{{ $result->updated_at }}</td>
+                                                                <td>{{ $result->expiry_date}}</td>
                                                                 <td>{{ $result->procurer }}</td>
                                                                 <td>{{ $result->recieved_by }}</td>
 
@@ -162,7 +164,7 @@
                                                                     style="border-bottom: 1px solid #DDD; padding: 2px; border-right: 1px solid #DDD; text-align: left; padding-left: 10px">
                                                                     <button type="button" class="btn btn-primary"
                                                                         data-toggle="modal"
-                                                                        data-target="#viewrModal{{ $entry->id }}">
+                                                                        data-target="#viewrModal{{ $result->id }}">
                                                                         <i class="fas fa-eye"></i>
                                                                     </button>
                                                                 </th>
@@ -205,20 +207,20 @@
                                                                 </div>
                                                                 {{-- modal2 design view --}}
                                                                 <div class="modal fade mt-11 "
-                                                                    id="viewrModal{{ $entry->id }}" tabindex="-1"
+                                                                    id="viewrModal{{ $result->id }}" tabindex="-1"
                                                                     role="dialog"
-                                                                    aria-labelledby="viewrModalLabel{{ $entry->id }}"
+                                                                    aria-labelledby="viewrModalLabel{{ $result->id }}"
                                                                     aria-hidden="true">
                                                                     <div class="modal-dialog" role="document">
                                                                         <div class="modal-content dark:bg-gray-800">
                                                                             <div class="modal-header"
                                                                                 style="background-color: green; color: white;">
                                                                                 <h5 class="modal-title"
-                                                                                    id="viewrModalLabel{{ $entry->id }}">
+                                                                                    id="viewrModalLabel{{ $result->id }}">
                                                                                     Proof of Delivery
-                                                                                    {{ $entry->id }} <a
-                                                                                        href="{{ asset($entry->p_o_r) }}"
-                                                                                        download="{{ basename($entry->p_o_r) }}"
+                                                                                    {{ $result->id }} <a
+                                                                                        href="{{ asset($result->p_o_r) }}"
+                                                                                        download="{{ basename($result->p_o_r) }}"
                                                                                         class="btn btn-primary">
                                                                                         <i class="fas fa-download"
                                                                                             style="font-size: 30px; color: blue;"></i>
@@ -232,7 +234,7 @@
                                                                             </div>
                                                                             <div>
 
-                                                                                <img src="{{ asset($entry->p_o_r) }}"
+                                                                                <img src="{{ asset($result->p_o_r) }}"
                                                                                     class="card-img-top" alt="No image"
                                                                                     style="object-fit: cover; height: 500px;width:500px">
                                                                             </div>

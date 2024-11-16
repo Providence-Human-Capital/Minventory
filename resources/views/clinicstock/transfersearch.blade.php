@@ -89,96 +89,129 @@
                         </button>
                     </div>
 
-                    <!-- Search Form -->
+                   <div style="padding: 10pt">
                     <form method="POST" action="{{ route('searchtransfer') }}" class="mb-4">
                         @csrf
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                             <!-- Drug Name -->
                             <div class="mb-4">
                                 <label for="drug_name" class="block text-sm font-medium text-gray-700">Drug Name</label>
-                                <select name="drug_name" id="drug_name" class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" onchange="autofill()">
+                                <select name="drug_name" id="drug_name"
+                                    class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    onchange="autofill()">
                                     <option></option>
                                     @foreach ($drugs as $drug)
-                                        <option value="{{ $drug->item_name }}" data-item-number="{{ $drug->item_number }}">
+                                        <option value="{{ $drug->item_name }}"
+                                            data-item-number="{{ $drug->item_number }}">
                                             {{ $drug->item_name }}
                                         </option>
                                     @endforeach
                                 </select>
                             </div>
-                    
-                            <!-- Clinic From -->
-                            <div class="mb-4">
-                                <label for="clinic_from" class="block text-sm font-medium text-gray-700">Clinic From</label>
-                                <select name="clinic_from" id="clinic_from" class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    <?php
-                                            $clinics =DB::table('clinics')->get('clinic_name')
-                                                ?>
-                                           
-                                            <option value="" disabled selected>Select a clinic</option>
-                                            @foreach ($clinics as $clinic)
-                                            <option value="{{$clinic->clinic_name}}">{{$clinic->clinic_name}}</option>
-                                            @endforeach
-                                </select>
+                            <div class="col-span-1 sm:col-span-2 lg:col-span-3 grid grid-cols-2 gap-4">
+                                <div class="mb-4">
+                                    <label for="clinic_from" class="block text-sm font-medium text-gray-700">Clinic
+                                        From</label>
+                                    <select name="clinic_from" id="clinic_from"
+                                        class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <?php
+                                        $clinics = DB::table('clinics')->get('clinic_name');
+                                        ?>
+
+                                        <option value="" disabled selected>Select a clinic</option>
+                                        @foreach ($clinics as $clinic)
+                                            <option value="{{ $clinic->clinic_name }}">{{ $clinic->clinic_name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="clinic_to" class="block text-sm font-medium text-gray-700">Clinic
+                                        To</label>
+                                    <select name="clinic_to" id="clinic_to"
+                                        class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <?php
+                                        $clinics = DB::table('clinics')->get('clinic_name');
+                                        ?>
+
+                                        <option value="" disabled selected>Select a clinic</option>
+                                        @foreach ($clinics as $clinic)
+                                            <option value="{{ $clinic->clinic_name }}">{{ $clinic->clinic_name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
-                    
-                            <!-- Clinic To -->
-                            <div class="mb-4">
-                                <label for="clinic_to" class="block text-sm font-medium text-gray-700">Clinic To</label>
-                                <select name="clinic_to" id="clinic_to" class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    <?php
-                                            $clinics =DB::table('clinics')->get('clinic_name')
-                                                ?>
-                                            
-                                            <option value="" disabled selected>Select a clinic</option>
-                                            @foreach ($clinics as $clinic)
-                                            <option value="{{$clinic->clinic_name}}">{{$clinic->clinic_name}}</option>
-                                            @endforeach
-                                </select>
-                            </div>
-                    
+
                             <!-- Sender & Receiver (Put them in the same row) -->
-                            <div class="mb-4">
-                                <label for="sender" class="block text-sm font-medium text-gray-700">Sender</label>
-                                <input type="text" name="sender" id="sender" class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" value="{{ request('sender') }}" placeholder="Enter Sender Name">
+                            <div class="col-span-1 sm:col-span-2 lg:col-span-3 grid grid-cols-2 gap-4">
+                                <div class="mb-4">
+                                    <label for="sender"
+                                        class="block text-sm font-medium text-gray-700">Sender</label>
+                                    <input type="text" name="sender" id="sender"
+                                        class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        value="{{ request('sender') }}" placeholder="Enter Sender Name">
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="receiver"
+                                        class="block text-sm font-medium text-gray-700">Receiver</label>
+                                    <input type="text" name="receiver" id="receiver"
+                                        class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        value="{{ request('receiver') }}" placeholder="Enter Receiver">
+                                </div>
                             </div>
-                    
-                            <div class="mb-4">
-                                <label for="receiver" class="block text-sm font-medium text-gray-700">Receiver</label>
-                                <input type="text" name="receiver" id="receiver" class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" value="{{ request('receiver') }}" placeholder="Enter Receiver">
-                            </div>
-                    
+
                             <!-- Date Range for Send At and Received At (Put them in the same row) -->
                             <div class="col-span-1 sm:col-span-2 lg:col-span-3 grid grid-cols-2 gap-4">
                                 <!-- Send At Date Range -->
                                 <div class="mb-4">
-                                    <label for="send_at_start" class="block text-sm font-medium text-gray-700">Send At - Start Date</label>
-                                    <input type="date" name="send_at_start" id="send_at_start" class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" value="{{ request('send_at_start') }}">
+                                    <label for="send_at_start" class="block text-sm font-medium text-gray-700">Send At
+                                        - Start Date</label>
+                                    <input type="date" name="send_at_start" id="send_at_start"
+                                        class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        value="{{ request('send_at_start') }}">
                                 </div>
-                    
+
                                 <div class="mb-4">
-                                    <label for="send_at_end" class="block text-sm font-medium text-gray-700">Send At - End Date</label>
-                                    <input type="date" name="send_at_end" id="send_at_end" class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" value="{{ request('send_at_end') }}">
+                                    <label for="send_at_end" class="block text-sm font-medium text-gray-700">Send At -
+                                        End Date</label>
+                                    <input type="date" name="send_at_end" id="send_at_end"
+                                        class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        value="{{ request('send_at_end') }}">
                                 </div>
-                    
+
                                 <!-- Received At Date Range -->
                                 <div class="mb-4">
-                                    <label for="received_at_start" class="block text-sm font-medium text-gray-700">Received At - Start Date</label>
-                                    <input type="date" name="received_at_start" id="received_at_start" class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" value="{{ request('received_at_start') }}">
+                                    <label for="received_at_start"
+                                        class="block text-sm font-medium text-gray-700">Received At - Start
+                                        Date</label>
+                                    <input type="date" name="received_at_start" id="received_at_start"
+                                        class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        value="{{ request('received_at_start') }}">
                                 </div>
-                    
+
                                 <div class="mb-4">
-                                    <label for="received_at_end" class="block text-sm font-medium text-gray-700">Received At - End Date</label>
-                                    <input type="date" name="received_at_end" id="received_at_end" class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" value="{{ request('received_at_end') }}">
+                                    <label for="received_at_end"
+                                        class="block text-sm font-medium text-gray-700">Received At - End Date</label>
+                                    <input type="date" name="received_at_end" id="received_at_end"
+                                        class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        value="{{ request('received_at_end') }}">
                                 </div>
                             </div>
-                    
+
                             <!-- Submit Button -->
                             <div class="col-span-1 sm:col-span-2 lg:col-span-3 text-center">
-                                <button type="submit" class="bg-blue-500 text-white p-3 rounded-md shadow-lg hover:bg-blue-700 transition duration-300 ease-in-out">Search</button>
+                                <button type="submit"
+                                    class="bg-blue-500 text-white p-3 rounded-md shadow-lg hover:bg-blue-700 transition duration-300 ease-in-out">Search</button>
                             </div>
                         </div>
                     </form>
+                    </div> 
                     
+
+
                 </div>
             </div>
         </div>

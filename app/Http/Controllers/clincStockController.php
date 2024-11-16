@@ -52,6 +52,7 @@ class clincStockController extends Controller
         $imagename = now()->format('Y-m-d_H-i-s') . '.' . $request->item_image->extension();
         $request->item_image->move(public_path('images'), $imagename);
         $update['p_o_r'] = 'images/' . $imagename;
+
         $id = $request->id;
         $update['status'] = 'Received';
         $update['reciever'] = Auth::user()->name;
@@ -127,6 +128,7 @@ class clincStockController extends Controller
 
     public function searchrstock(Request $request)
     {
+
         $drugs = DB::table('stock_items')->select('item_number', 'item_name')->get();
         $request->validate([
             'item_name' => 'nullable|string|max:255',
@@ -138,7 +140,11 @@ class clincStockController extends Controller
         ]);
 
         // Start the query
-        $query = stock_request::query(); // Adjust the model name
+        $query = pending_stocks::query();
+
+        $query->where('clinics', auth()->user()->clinic);
+        $query->where('status', 'like', 'Received');
+
 
         // Apply filters based on input
         if ($request->filled('item_name')) {
@@ -157,19 +163,20 @@ class clincStockController extends Controller
             $query->where('status', 'like', '%' . $request->status . '%');
         }
 
-        if ($request->filled('transaction_date_from')) {
-            $query->where('date_requested', '>=', $request->transaction_date_from);
+        if ($request->filled('transaction_date_from') && $request->filled('transaction_date_to')) {
+            $query->whereRaw('DATE(updated_at) BETWEEN ? AND ?', [
+                $request->transaction_date_from,
+                $request->transaction_date_to
+            ]);
+        } elseif ($request->filled('transaction_date_from')) {
+            $query->whereRaw('DATE(updated_at) >= ?', [$request->transaction_date_from]);
+        } elseif ($request->filled('transaction_date_to')) {
+            $query->whereRaw('DATE(updated_at) <= ?', [$request->transaction_date_to]);
         }
 
-        if ($request->filled('transaction_date_to')) {
-            $query->where('date_requested', '<=', $request->transaction_date_to);
-        }
 
-        // Execute the query and get the results
         $results = $query->get();
-
-        // Return the results to a view or as a JSON response
-        return view('clinicstock.receivedstocksearch', compact('results', 'drugs')); // Adjust view name as needed
+        return view('clinicstock.receivedstocksearch', compact('results', 'drugs'));
     }
 
     public function saverequest(Request $request)
@@ -260,20 +267,23 @@ class clincStockController extends Controller
         if ($request->filled('receiver')) {
             $query->where('receiver', 'like', '%' . $request->receiver . '%');
         }
+        if ($request->filled('status')) {
+            $query->where('status', 'like', '%' . $request->status . '%');
+        }
         if ($request->filled('send_at_start') && $request->filled('send_at_end')) {
-            // Ensure the date format matches the database's format
-            $query->whereBetween('created_at', [
-                $request->send_at_start . ' 00:00:00',
-                $request->send_at_end . ' 23:59:59'
-            ]);
+            $query->whereBetween(DB::raw('DATE(updated_at)'), [$request->send_at_start, $request->send_at_end]);
+        } elseif ($request->filled('send_at_start')) {
+            $query->where(DB::raw('DATE(updated_at)'), '>=', $request->send_at_start);
+        } elseif ($request->filled('send_at_end')) {
+            $query->where(DB::raw('DATE(updated_at)'), '<=', $request->send_at_end);
         }
 
-        // Date range for 'updated_at' (Received At)
         if ($request->filled('received_at_start') && $request->filled('received_at_end')) {
-            $query->whereBetween('updated_at', [
-                $request->received_at_start . ' 00:00:00',
-                $request->received_at_end . ' 23:59:59'
-            ]);
+            $query->whereBetween(DB::raw('DATE(updated_at)'), [$request->received_at_start, $request->received_at_end]);
+        } elseif ($request->filled('received_at_start')) {
+            $query->where(DB::raw('DATE(updated_at)'), '>=', $request->received_at_start);
+        } elseif ($request->filled('received_at_end')) {
+            $query->where(DB::raw('DATE(updated_at)'), '<=', $request->received_at_end);
         }
         // Get the filtered records
         $records = $query->get();

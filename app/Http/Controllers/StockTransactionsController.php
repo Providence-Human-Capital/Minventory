@@ -6,6 +6,7 @@ use App\Models\mainstock_journal;
 use App\Models\StockItem;
 use GuzzleHttp\Promise\Create;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class StockTransactionsController extends Controller
 {
@@ -85,7 +86,11 @@ class StockTransactionsController extends Controller
 
         // Transaction Date
         if ($request->filled('transaction_date_from') && $request->filled('transaction_date_to')) {
-            $query->whereBetween('created_at', [$request->transaction_date_from, $request->transaction_date_to]);
+            $query->whereBetween(DB::raw('DATE(updated_at)'), [$request->transaction_date_from, $request->transaction_date_to]);
+        } elseif ($request->filled('transaction_date_from')) {
+            $query->where(DB::raw('DATE(updated_at)'), '>=', $request->transaction_date_from);
+        } elseif ($request->filled('transaction_date_to')) {
+            $query->where(DB::raw('DATE(updated_at)'), '<=', $request->transaction_date_to);
         }
 
         // Execute the query and get the results

@@ -298,11 +298,11 @@ class requestController extends Controller
             $query->where('status', 'like', '%' . $request->status . '%');
         }
 
-        if ($request->filled('transaction_date_from')) {
+        if ($request->filled('transaction_date_from') && $request->filled('transaction_date_to')) {
+            $query->whereBetween('date_requested', [$request->transaction_date_from, $request->transaction_date_to]);
+        } elseif ($request->filled('transaction_date_from')) {
             $query->where('date_requested', '>=', $request->transaction_date_from);
-        }
-
-        if ($request->filled('transaction_date_to')) {
+        } elseif ($request->filled('transaction_date_to')) {
             $query->where('date_requested', '<=', $request->transaction_date_to);
         }
 

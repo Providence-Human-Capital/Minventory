@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="py-1" style="float:left;">
+        <div class="py-1" style="float:right;padding:10px">
             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#searchrModal">
                 Search
             </button>
