@@ -63,7 +63,6 @@
                                                 <td>{{ $entry->item_number }}</td>
                                                 <td>{{ $entry->item_quantity }}</td>
                                                 <td>{{ $entry->clinics }}</td>
-                                                
                                                 <td>{{ $entry->procurer }}</td>
                                                 <td>{{ $entry->recieved_by }}</td>
                                                 <td>{{ $entry->created_at }}</td>
