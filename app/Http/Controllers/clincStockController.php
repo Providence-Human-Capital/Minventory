@@ -84,12 +84,16 @@ class clincStockController extends Controller
         $clinic = $approved->clinics;
         $tableName = preg_replace('/[^a-zA-Z0-9]/', '', $clinic); // Clean clinic name
         $tableName = strtolower($tableName) . '_stocks';  // Add suffix for the stock table
-        $currenstock = DB::table($tableName)->where('item_number', 'like', $approve->item_number)->get()->first()->item_quantity;
-        $newstock = $addstock + $currenstock;
-        DB::table($tableName)
-            ->where('item_number', 'like', $approve->item_number)
+        $details=json_decode($approve->details);
+        foreach($details as $detail)
+        {
+            $currenstock = DB::table($tableName)->where('item_number', 'like', $detail->item_number)->get()->first()->item_quantity; 
+            $addstocks = $detail->item_quantity;
+            $newstock = $addstocks + $currenstock; 
+            DB::table($tableName)
+            ->where('item_number', 'like',  $detail->item_number)
             ->update(['item_quantity' => $newstock]);
-
+        }
         return redirect()->route('pendingstock')->with('success', 'Stock Received.');
     }
 

@@ -1,4 +1,5 @@
 <nav x-data="{ open: false }" class="bg-white dark:bg-red-800 border-b border-gray-100 dark:border-gray-700">
+    
     <!-- Primary Navigation Menu -->
     <div class="dark:bg-emerald-950 bg-green-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
@@ -67,6 +68,9 @@
                             </x-nav-link>
                             <x-nav-link :href="route('dishistory')" :active="request()->routeIs('dishistory')">
                                 {{ __('Dispense History') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('patientform')" :active="request()->routeIs('patientform')">
+                                {{ __('Patients') }}
                             </x-nav-link>
                     @endswitch
                 </div>

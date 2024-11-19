@@ -81,6 +81,49 @@
                                                     class="fas fa-warehouse"></i>
                                                 Receive
                                             </button>
+                                            <td>
+                                                <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                        data-target="#detailsModal{{ $pstock->id }}">
+                                                    View
+                                                </button>
+                                            </td>
+                                            <!--details view modal-->
+                                            <div class="modal fade" id="detailsModal{{ $pstock->id }}" tabindex="-1" role="dialog" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg" role="document">
+                                                    <div class="modal-content dark:bg-gray-800">
+                                                        <div class="modal-header bg-green-600 text-white">
+                                                            <h5 class="modal-title">Transaction Details - ID {{ $pstock->id }}</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            @php
+                                                                $details = json_decode($pstock->details, true); // Decode JSON data
+                                                            @endphp
+                                                            <div class="table-responsive">
+                                                                <div class="container mt-4">
+                                                                    <div class="row">
+                                                                        @foreach ($details as $detail)
+                                                                            <div class="col-md-4 mb-4">
+                                                                                <div class="card h-100">
+                                                                                    <div class="card-body d-flex flex-column">
+                                                                                        <h5 class="card-title">{{ $detail['item_name'] }}</h5>
+                                                                                        <div class="flex-grow-1">
+                                                                                            <p><strong>Item Number:</strong> {{ $detail['item_number'] }}</p>
+                                                                                            <p><strong>Quantity:</strong> {{ $detail['item_quantity'] }}</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        @endforeach
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             {{-- receive stock model design start here --}}
                                             <div class="modal fade" id="receiveModal{{ $pstock->id }}" tabindex="-1"
                                                 role="dialog" aria-labelledby="receiveModal{{ $pstock->id }}"

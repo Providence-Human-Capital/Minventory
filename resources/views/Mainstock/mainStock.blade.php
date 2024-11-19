@@ -9,22 +9,12 @@
                 </div>
                 <div class="col-sm">
                     <div style="display:inline">
-                        @if (count($errors) > 0)
-                            <div class="alert alert-danger">
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-
-                                </ul>
-                            </div>
-                        @endif
-
-
-
                         <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addModal">
                             Add New Stock
                         </button>
+                        <a href="{{route('bulkform')}}"><button type="button">
+                           BULK SEND
+                        </button></a>
                     </div>
                 </div>
                 <div class="col-sm">
@@ -56,6 +46,7 @@
             @endif
         </div>
     </center>
+
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -165,8 +156,8 @@
                                         <input type="date" id="expiry_date" name="expiry_date"
                                             placeholder="B1992XC" style="width: 100%;"><br>
                                     </div>
-                                     <!-- Image Upload -->
-                                     <div>
+                                    <!-- Image Upload -->
+                                    <div>
                                         <label for="item_image">Upload Image</label><br>
                                         <input type="file" id="item_image" name="item_image" accept="image/*"
                                             style="width: 100%;"><br>
@@ -199,7 +190,8 @@
                                 </button>
                             </div>
 
-                            <form method="POST" action="/mainstock/dis/{{ $stocks->id }}" enctype="multipart/form-data">
+                            <form method="POST" action="/mainstock/dis/{{ $stocks->id }}"
+                                enctype="multipart/form-data">
                                 <div style="padding-left:10px;padding-right:10px;width:100%">
                                     @csrf
                                     @method('patch')
@@ -314,7 +306,7 @@
                                         @enderror
                                     </div>
 
-                                   
+
 
                                     <input type="submit"
                                         style="background-color: green;color:white;size:10pt;padding:5pt;margin:15pt;border-radius:5px;border-style:outset;border-color:black"

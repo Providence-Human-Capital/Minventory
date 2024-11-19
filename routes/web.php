@@ -48,12 +48,13 @@ Route::get('/mainstock', [mainStockController::class, 'showmain'])->middleware('
 Route::patch('/mainstock/{stock_item}', [mainStockController::class, 'updatemain'])->middleware('auth')->name('updateStock');
 //Add new stock item
 Route::post('/mainstock', [mainStockController::class, 'addnewitem'])->middleware('auth')->name('addnewitem');
-
 //transaction journal search
 Route::post('/StockTransactions/search', [StockTransactionsController::class, 'seachjournal'])->middleware('auth')->name('searchStock');
 //printing report routes
 Route::post('/StockTransactions/search/print', [printcontroller::class, 'printstransactionresults'])->middleware('auth')->name('printstransactionresults');
-
+//BULK TRANSACTION
+Route::get('mainstock/bulkform',[mainStockController::class, 'bulkform'])->middleware('auth')->name('bulkform');
+Route::post('mainstock/bulksend',[mainStockController::class, 'bulksend'])->middleware('auth')->name('bulksend');
 
 //recieve stock
 Route::get('/clinicstock/pendingstock', [clincStockController::class, 'showpending'])->middleware('auth')->name('pendingstock');
