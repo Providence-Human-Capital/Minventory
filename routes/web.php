@@ -54,7 +54,10 @@ Route::post('/StockTransactions/search', [StockTransactionsController::class, 's
 Route::post('/StockTransactions/search/print', [printcontroller::class, 'printstransactionresults'])->middleware('auth')->name('printstransactionresults');
 //BULK TRANSACTION
 Route::get('mainstock/bulkform',[mainStockController::class, 'bulkform'])->middleware('auth')->name('bulkform');
+Route::get('mainstock/bulkformadd',[mainStockController::class, 'bulkformadd'])->middleware('auth')->name('bulkformadd');
 Route::post('mainstock/bulksend',[mainStockController::class, 'bulksend'])->middleware('auth')->name('bulksend');
+Route::post('mainstock/bulkadd',[mainStockController::class, 'bulkadd'])->middleware('auth')->name('bulkadd');
+
 
 //recieve stock
 Route::get('/clinicstock/pendingstock', [clincStockController::class, 'showpending'])->middleware('auth')->name('pendingstock');

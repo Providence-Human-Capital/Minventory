@@ -12,9 +12,12 @@
                         <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addModal">
                             Add New Stock
                         </button>
-                        <a href="{{route('bulkform')}}"><button type="button">
+                        <a href="{{route('bulkform')}}"><button type="button" class="btn btn-success">
                            BULK SEND
                         </button></a>
+                        <a href="{{route('bulkformadd')}}"><button type="button" class="btn btn-primary">
+                           Bulk Add
+                         </button></a>
                     </div>
                 </div>
                 <div class="col-sm">

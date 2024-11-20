@@ -12,7 +12,7 @@ class StockItem extends Model
     protected $fillable = [
         'item_name',
         'item_quantity',
-        'item_number',
+        'item_number'
     ];
 
     public $timestamps = false;

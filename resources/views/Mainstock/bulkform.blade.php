@@ -47,10 +47,10 @@
                     <div style="flex: 2; margin-right: 10px;">
                         <label for="drug_name[]">Drug Name</label><br>
                         <select name="drug_name[]" class="drug-dropdown" style="width: 100%;" required>
-                            <?php $drugs = DB::table('stock_items')->get('item_name'); ?>
+                            <?php $drugs = DB::table('stock_items')->get(); ?>
                             <option value="" disabled selected>Select a drug</option>
                             @foreach ($drugs as $drug)
-                                <option value="{{ $drug->item_name }}">{{ $drug->item_name }}</option>
+                                <option value="{{ $drug->item_number }}" data-item-number="{{ $drug->item_number }}">{{ $drug->item_name }}</option>
                             @endforeach
                         </select>
                     </div>

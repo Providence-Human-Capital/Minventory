@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Clinic;
 use App\Models\mainstock_journal;
 use App\Models\pending_stock;
 use App\Models\pending_stocks;
@@ -38,6 +39,17 @@ class mainStockController extends Controller
         $items['item_number'] = $request->item_number;
         $items['item_quantity'] = $request->item_quantity;
         StockItem::create($items);
+        $clinics= Clinic::all();
+        foreach($clinics as $clinic)
+        {
+            $clinicname= $clinic->clinic_name;
+            $tableName = preg_replace('/[^a-zA-Z0-9]/', '', $clinicname); // Clean clinic name
+            $tableName = strtolower($tableName) . '_stocks';
+            DB::table($tableName)->insert($items);
+    
+        }
+       
+
 
         return redirect()->route('mainstock')->with('success', 'Product Added.');
     }
@@ -107,8 +119,16 @@ class mainStockController extends Controller
         return view('Mainstock.bulkform');
     }
 
+    public function bulkformadd()
+    {
+        return view('Mainstock.bulkformadd');
+    }
+
+    
+
     public function bulksend(Request $request)
     {
+        dd($request);
         $request->validate([
             'clinics' => 'required',
             'drug_name' => 'required|array',
@@ -127,7 +147,7 @@ class mainStockController extends Controller
 
         foreach ($request->drug_name as $index => $drugName) {
             $drugQuantity = $request->quantity[$index];
-            $stockItem = StockItem::where('item_name', $drugName)->first();
+            $stockItem = StockItem::where('item_number', $drugName)->first();
             if ($drugQuantity > $stockItem->item_quantity) {
                 // Handle insufficient stock
                 return redirect()->back()->with('error', "Not enough stock for '{$drugName}'. Current stock: {$stockItem->item_quantity}.");
@@ -137,9 +157,9 @@ class mainStockController extends Controller
 
             // Collect details for the bulk journal and pending stock entries
             $bulkDetails[] = [
-                'item_name' => $drugName,
+                'item_name' => $stockItem->item_name,
                 'item_quantity' => $drugQuantity,
-                'item_number' => $stockItem->item_number,
+                'item_number' => $drugName 
             ];
         }
         $imagename = now()->format('Y-m-d_H-i-s') . '.' . $request->item_image->extension();
@@ -163,5 +183,44 @@ class mainStockController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Bulk distribution completed successfully!');
+    }
+
+    public function bulkadd(Request $request)
+    {
+        $request->validate([
+            'drug_name' => 'required|array',
+            'drug_name.*' => 'required|string',
+            'quantity' => 'required|array',
+            'quantity.*' => 'required|integer|min:1',
+            'item_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+        $procurer = auth()->user()->name;
+        $bulkDetails = [];
+        $totalDrugs = count($request->drug_name);
+        
+        foreach ($request->drug_name as $index => $drugName) {
+            $drugQuantity = $request->quantity[$index];
+            $stockItem = StockItem::where('item_number', $drugName)->first();
+            $newStock = $stockItem->item_quantity + $drugQuantity;
+            $stockItem->update(['item_quantity' => $newStock]);
+
+            // Collect details for the bulk journal and pending stock entries
+            $bulkDetails[] = [
+                'item_name' => $stockItem->item_name,
+                'item_quantity' => $drugQuantity,
+                'item_number' => $stockItem->item_number,
+            ];
+        }
+        $imagename = now()->format('Y-m-d_H-i-s') . '.' . $request->item_image->extension();
+        $request->item_image->move(public_path('images'), $imagename);
+        mainstock_journal::create([
+            'total_items' => $totalDrugs,
+            'procurer' => $procurer,
+            'p_o_d' => 'images/' . $imagename,
+            'details' => json_encode($bulkDetails), // Store bulk details as JSON
+
+        ]) ;
+
+        return redirect()->back()->with('success', 'Bulk Addition completed successfully!');
     }
 }
