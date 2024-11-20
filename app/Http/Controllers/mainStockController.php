@@ -46,7 +46,6 @@ class mainStockController extends Controller
             $tableName = preg_replace('/[^a-zA-Z0-9]/', '', $clinicname); // Clean clinic name
             $tableName = strtolower($tableName) . '_stocks';
             DB::table($tableName)->insert($items);
-    
         }
        
 
