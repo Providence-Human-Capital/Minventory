@@ -138,7 +138,7 @@
                                                                                 id="viewModalLabel{{ $prequest->id }}">
                                                                                 Proof of Delivery
                                                                                 {{ $prequest->id }} <a
-                                                                                    href="{{ asset($prequest->p_o_r) }}"
+                                                                                    href="{{ asset('images/' . $prequest->p_o_r) }}"
                                                                                     download="{{ basename($prequest->p_o_r) }}"
                                                                                     class="btn btn-primary">
                                                                                     <i class="fas fa-download"

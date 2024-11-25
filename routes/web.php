@@ -91,6 +91,10 @@ Route::post('/sendemail', [MailerController::class, 'sendEmail'])->name('sendEma
 //admin options
 Route::get('/admin/allclincistock', [Admincontroller::class, 'allclinicstocks'])->name('getallstocks');
 Route::post('/admin/selecteclinic', [Admincontroller::class, 'showclinicchart'])->name('showclinicchart');
+Route::get('/admin/selecteclinicdrug', [Admincontroller::class, 'getdrugreport'])->name('getdrugreport');
+Route::post('/admin/selecteclinicdrug', [Admincontroller::class, 'drugreport'])->name('drugreport');
+Route::get('/admin/allclincistockbatch', [Admincontroller::class, 'allclinicstocksbatch'])->name('batch');
+Route::post('/admin/selecteclinicbatch', [Admincontroller::class, 'showclinicchartbatch'])->name('batchchart');
 Route::post('/admin/selecteclinic/test', [Admincontroller::class, 'test'])->name('test');
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/createclinic',[Admincontroller::class, 'getcreateclinicform'])->name('getcreateclinicform');

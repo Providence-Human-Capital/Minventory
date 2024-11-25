@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Maatwebsite\Excel\Excel as ExcelExcel;
+use Maatwebsite\Excel\Facades\Excel;
 
 class Admincontroller extends Controller
 {
@@ -55,49 +57,51 @@ class Admincontroller extends Controller
         $clinic = $request->clinics;
         $month = $request->month;
         $year = $request->year;
-
-        // Fetch the data from the 'pending_stocks'table
-        $data = DB::table("pending_stocks")
+        $date_from = DATE($request->date_from);
+        $date_to = DATE($request->date_to);
+        $data = DB::table('pending_stocks')
             ->select(
-                DB::raw('DATE_FORMAT(updated_at, "%M-%y") as date'),
-                DB::raw('SUM(item_quantity) as monthsum'),
-                'item_name'
+                DB::raw('DATE(updated_at) AS date'),
+                DB::raw('SUM(item_quantity) AS monthsum'),
+                'item_name',
+                'item_number'
             )
             ->where('clinics', 'like', $clinic)
             ->where('status', 'like', 'Received')
-            ->whereYear('updated_at', $year)
-            ->whereMonth('updated_at', $month)
-            ->groupBy(DB::raw('MONTH(updated_at)'), 'item_name')
+            ->whereRaw('DATE(updated_at) BETWEEN ? AND ?', [$date_from, $date_to])
+            ->groupBy(DB::raw('DATE(updated_at)'), 'item_name', 'item_number') // Group by date and item
             ->orderBy('updated_at', 'asc')
             ->get();
 
-        // Initialize arrays to store chart data and the HTML table rows
         $labels = [];
         $values = [];
         $html = '';
 
-
         // Generate table name dynamically from the selected clinic
-        $tableName = preg_replace('/[^a-zA-Z0-9]/', '', $clinic); // Clean clinic name
-        $tableName = strtolower($tableName) . '_stocks';  // Add suffix for the stock table
-        // Loop through the fetched data and build the HTML table rows
+        $tableName = preg_replace('/[^a-zA-Z0-9]/', '', $clinic);
+        $tableName = strtolower($tableName) . '_stocks';
         foreach ($data as $item) {
-            // For each item, find the current quantity in the clinic's specific table
-            $itemQuantity = DB::table($tableName)->where('item_name', $item->item_name)->value('item_quantity');
+            $itemQuantity = DB::table($tableName)->where('item_number', $item->item_number)->value('item_quantity');
 
             $usage = DB::table('dispenses')
                 ->select(DB::raw('SUM(damount) as monthsum'))
                 ->where('drug', $item->item_name)
-                ->whereYear('dispense_time', $year) // Assuming `dispense_date` is the column for the date
-                ->whereMonth('dispense_time', $month)
+                ->whereRaw('DATE(dispense_time) BETWEEN ? AND ?', [
+                    $date_from,
+                    $date_to
+                ])
                 ->value('monthsum');
+
+
+            $fontColor = ($itemQuantity < 100) ? 'red' : 'black';
             // Append a new row to the HTML table with the data
-            $html .= "<tr><td>{$item->item_name}</td><td>{$item->monthsum}</td><td>{$itemQuantity}</td><td>{$usage}</td></tr>";
+            $html .= "<tr><td>{$item->item_name}</td><td>{$item->monthsum}</td><td style='color: {$fontColor};'>{$itemQuantity}</td><td>{$usage}</td></tr>";
 
             // Populate chart data (labels and values)
             $labels[] = $item->item_name;
             $values[] = $item->monthsum;
         }
+
         // Return the HTML table and chart data as a JSON response
         return response()->json([
             'html' => $html,
@@ -108,6 +112,103 @@ class Admincontroller extends Controller
         ]);
     }
 
+
+    public function allclinicstocksbatch()
+    {
+        return view('admin.allclinicsstocksbatch');
+    }
+
+    public function showclinicchartbatch(Request $request)
+    {
+        $clinic = $request->clinics;
+        $month = $request->month;
+        $year = $request->year;
+        $date_from = DATE($request->date_from);
+        $date_to = DATE($request->date_to);
+    
+        // Fetch data from pending_stocks
+        $data = DB::table('pending_stocks')
+            ->where('clinics', 'like', $clinic)
+            ->where('status', 'like', 'Received')
+            ->whereRaw('DATE(updated_at) BETWEEN ? AND ?', [$date_from, $date_to])
+            ->get();
+    
+        $labels = [];
+        $values = [];
+        $html = '';
+        // Initialize an empty array for the drug summary
+        $drugSummary = [];
+    
+        // Loop through the records and process each item
+        foreach ($data as $stock) {
+            // Decode the details JSON field to extract drug details
+            $details = json_decode($stock->details);
+    
+            // Check if details are not empty
+            if ($details) {
+                // Loop through each drug detail
+                foreach ($details as $detail) {
+                    $drugName = $detail->item_name;
+                    $drugNumber = $detail->item_number;
+                    $drugQuantity = $detail->item_quantity;
+    
+                    // If the drug already exists in the summary, add the quantity
+                    if (isset($drugSummary[$drugNumber])) {
+                        $drugSummary[$drugNumber]['quantity'] += $drugQuantity;
+                    } else {
+                        // If not, initialize the quantity for the drug
+                        $drugSummary[$drugNumber] = [
+                            'name' => $drugName,  // Store the drug name
+                            'quantity' => $drugQuantity  // Store the quantity
+                        ];
+                    }
+                }
+            }
+        }
+    
+        // Process each drug summary to fetch current stock and usage
+        $tableName = preg_replace('/[^a-zA-Z0-9]/', '', $clinic); // Clean clinic name
+        $tableName = strtolower($tableName) . '_stocks';  // Use clinic name as the table name
+    
+        foreach ($drugSummary as $drug => $itemData) {
+            $drugName = $itemData['name'];
+            $itemQuantity = $itemData['quantity'];
+    
+            // Fetch the stock for the drug
+            $stock_item = DB::table($tableName)->where('item_number', $drug)->first();
+    
+            if ($stock_item) {
+                $currentStockQuantity = $stock_item->item_quantity;
+    
+                // Get the usage for the drug
+                $usage = DB::table('dispenses')
+                    ->select(DB::raw('SUM(damount) as monthsum'))
+                    ->where('drug', $drugName)
+                    ->whereRaw('DATE(dispense_time) BETWEEN ? AND ?', [$date_from, $date_to])
+                    ->value('monthsum') ?? 0;
+    
+                // Add the row to the HTML table
+                $fontColor = ($currentStockQuantity < 100) ? 'red' : 'black';
+                $html .= "<tr><td>{$drugName}</td><td>{$itemQuantity}</td><td style='color: {$fontColor};'>{$currentStockQuantity}</td><td>{$usage}</td></tr>";
+    
+                // Populate chart data (labels and values)
+                $labels[] = $drugName;
+                $values[] = $itemQuantity;
+            }
+        }
+    
+        // Return the HTML table and chart data as a JSON response
+        return response()->json([
+            'html' => $html,
+            'chartData' => [
+                'labels' => $labels,
+                'values' => $values,
+            ]
+        ]);
+    }
+    
+
+
     public function getcreateclinicform()
     {
         return view('admin.createclinic');
@@ -115,40 +216,31 @@ class Admincontroller extends Controller
 
     public function createclinic(Request $request)
     {
+
         $request->validate([
-            'clinic_name' => 'required'
+            'clinic_name' => 'required',
+            'csv_file' => 'required|mimes:csv,txt|max:10240',
         ]);
-    
-        // Step 2: Create a new clinic record
-        $newclinic['clinic_name'] = $request->clinic_name;
-        $clinic = Clinic::create($newclinic);
-    
-        // Step 3: Generate a clean and unique table name from the clinic name
-        $tableName = preg_replace('/[^a-zA-Z0-9]/', '', $request->clinic_name);  // Clean the clinic name
-        $tableName = strtolower($tableName) . '_stocks';  // Make it lowercase and append '_stocks'
-    
-        // Step 4: Create the new table dynamically
-        if (!Schema::hasTable($tableName)) {  // Check if the table already exists
+
+        $newclinic = [
+            'clinic_name' => $request->clinic_name
+        ];
+        Clinic::create($newclinic);
+
+        $tableName = preg_replace('/[^a-zA-Z0-9]/', '', $request->clinic_name);
+        $tableName = strtolower($tableName) . '_stocks';
+
+        if (!Schema::hasTable($tableName)) {
             Schema::create($tableName, function (Blueprint $table) {
-                // Add an auto-incrementing primary key
                 $table->id();
-                
-                // Add 'item_name' column as varchar(44)
                 $table->string('item_name', 255)->nullable();
-    
-                // Add 'item_quantity' column as varchar(255)
                 $table->string('item_quantity', 255)->nullable();
-    
-                // Add 'item_number' column as varchar(7) and index it
                 $table->string('item_number', 10)->nullable();
-                
-                // Add index for 'item_number'
                 $table->index('item_number');
-    
             });
-            return redirect('getcreateclinicform')->with('success', 'Clinic created and table created successfully!');
         } else {
-            return redirect('getcreateclinicform')->with('error' ,'Table for this clinic already exists.');
+            return redirect()->route('getcreateclinicform')->with('error', 'Clinic already exists');
         }
+        return redirect()->route('getcreateclinicform')->with('success', 'Clinic created and CSV imported successfully!');
     }
 }

@@ -237,5 +237,4 @@
             document.body.innerHTML = originalContents;
         }
     </script>
-
 </x-app-layout>

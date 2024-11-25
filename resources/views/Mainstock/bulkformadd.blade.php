@@ -1,73 +1,89 @@
 <x-app-layout>
-    <center>
-        <div style="width:80%;margin-top:30px">
-            @if (session('error'))
-                <div class="alert alert-danger">
-                    {{ session('error') }}
-                </div>
-            @endif
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900 dark:text-gray-100">
+                    <center>
+                        <div style="width:80%;margin-top:30px">
+                            @if (session('error'))
+                                <div class="alert alert-danger">
+                                    {{ session('error') }}
+                                </div>
+                            @endif
 
-            @if (\Session::has('success'))
-                <div class="alert alert-success">
-                    <p>{{ \Session::get('success') }}</p>
+                            @if (\Session::has('success'))
+                                <div class="alert alert-success">
+                                    <p>{{ \Session::get('success') }}</p>
+                                </div>
+                            @endif
+                        </div>
+                    </center>
+
+                    <div class="m-10">
+                        <form method="POST" action="{{ route('bulkadd') }}" enctype="multipart/form-data">
+                            @csrf
+                            <!-- Dynamic Inputs for Drugs and Quantities -->
+                            <div id="bulk-distribution-container">
+                                <!-- Template for Inputs -->
+                                <div class="bulk-distribution-row" style="display: flex; margin-bottom: 10px;">
+                                    <!-- Drug Dropdown -->
+                                    <div style="flex: 2; margin-right: 10px;">
+                                        <label for="drug_name[]">Drug Name</label><br>
+                                        <select name="drug_name[]" class="drug-dropdown" style="width: 100%;" required>
+                                            <option value="" disabled selected>Select a drug</option>
+                                            <?php $drugs = DB::table('stock_items')->get(); ?>
+                                            @foreach ($drugs as $drug)
+                                                <option value="{{ $drug->item_number }}"
+                                                    data-item-number="{{ $drug->item_number }}">
+                                                    {{ $drug->item_name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <!-- UOM Input -->
+                                    <div style="flex: 1; margin-right: 10px;">
+                                        <label for="uom[]">Unit of Measure</label><br>
+                                        <input type="number" name="uom[]" min="1"
+                                            placeholder="Enter Unit of Measure" style="width: 100%;" required>
+                                    </div>
+                                    <!-- price Input -->
+                                    <div style="flex: 1; margin-right: 10px;">
+                                        <label for="price[]">Price</label></label><br>
+                                        <input type="number" name="price[]" min="1" step=".01"
+                                            placeholder="Enter Price" style="width: 100%;">
+                                    </div>
+
+                                    <!-- Quantity Input -->
+                                    <div style="flex: 1; margin-right: 10px;">
+                                        <label for="quantity[]">Quantity</label><br>
+                                        <input type="number" name="quantity[]" min="1"
+                                            placeholder="Enter quantity" style="width: 100%;" required>
+                                    </div>
+
+                                    <!-- Remove Button -->
+                                    <button type="button" class="remove-row"
+                                        style="background-color: red; color: white; border: none; padding: 5px;">
+                                        Remove
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Add More Button -->
+                            <button type="button" id="add-more"
+                                style="background-color: blue; color: white; padding: 10px; margin-top: 10px; border: none; border-radius: 5px;">
+                                Add More
+                            </button>
+
+                            <!-- Submit Button -->
+                            <input type="submit"
+                                style="background-color: green; color: white; padding: 10px; margin-top: 20px; border: none; border-radius: 5px;"
+                                value="Distribute Bulk">
+                        </form>
+                    </div>
                 </div>
-            @endif
+            </div>
         </div>
-    </center>
-
-    <div class="m-10">
-        <form method="POST" action="{{ route('bulkadd') }}" enctype="multipart/form-data">
-            @csrf
-
-            <!-- File Upload -->
-            <div style="flex: 1; margin-left: 10px;">
-                <label for="bulk_file">Upload Bulk File</label><br>
-                <input type="file" id="item_image" name="item_image" accept="image/*" style="width: 100%;" required>
-            </div>
-
-            <!-- Dynamic Inputs for Drugs and Quantities -->
-            <div id="bulk-distribution-container">
-                <!-- Template for Inputs -->
-                <div class="bulk-distribution-row" style="display: flex; margin-bottom: 10px;">
-                    <!-- Drug Dropdown -->
-                    <div style="flex: 2; margin-right: 10px;">
-                        <label for="drug_name[]">Drug Name</label><br>
-                        <select name="drug_name[]" class="drug-dropdown" style="width: 100%;" required>
-                            <option value="" disabled selected>Select a drug</option>
-                            <?php $drugs = DB::table('stock_items')->get(); ?>
-                            @foreach ($drugs as $drug)
-                                <option value="{{ $drug->item_number }}" data-item-number="{{ $drug->item_number }}">
-                                    {{ $drug->item_name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <!-- Quantity Input -->
-                    <div style="flex: 1; margin-right: 10px;">
-                        <label for="quantity[]">Quantity</label><br>
-                        <input type="number" name="quantity[]" min="1" placeholder="Enter quantity" style="width: 100%;" required>
-                    </div>
-
-                    <!-- Remove Button -->
-                    <button type="button" class="remove-row"
-                        style="background-color: red; color: white; border: none; padding: 5px;">
-                        Remove
-                    </button>
-                </div>
-            </div>
-
-            <!-- Add More Button -->
-            <button type="button" id="add-more"
-                style="background-color: blue; color: white; padding: 10px; margin-top: 10px; border: none; border-radius: 5px;">
-                Add More
-            </button>
-
-            <!-- Submit Button -->
-            <input type="submit"
-                style="background-color: green; color: white; padding: 10px; margin-top: 20px; border: none; border-radius: 5px;"
-                value="Distribute Bulk">
-        </form>
     </div>
 
     <script>
@@ -106,7 +122,8 @@
                 const drugName = selectedOption.textContent; // Capture drug name
 
                 // Get the index of the selected dropdown
-                const index = Array.from(dropdown.closest('.bulk-distribution-row').parentElement.children).indexOf(dropdown.closest('.bulk-distribution-row'));
+                const index = Array.from(dropdown.closest('.bulk-distribution-row').parentElement.children)
+                    .indexOf(dropdown.closest('.bulk-distribution-row'));
 
                 // Update the itemNumbers array with item_number and drugNames array with drug_name
                 itemNumbers[index] = itemNumber;
@@ -119,7 +136,8 @@
         // Listen for changes in the quantity fields
         document.querySelectorAll('input[name="quantity[]"]').forEach(input => {
             input.addEventListener('input', function() {
-                const index = Array.from(input.closest('.bulk-distribution-row').parentElement.children).indexOf(input.closest('.bulk-distribution-row'));
+                const index = Array.from(input.closest('.bulk-distribution-row').parentElement.children)
+                    .indexOf(input.closest('.bulk-distribution-row'));
 
                 // Update the quantities array at the corresponding index
                 quantities[index] = input.value;
@@ -151,4 +169,5 @@
             document.querySelector('form').appendChild(input);
         }
     </script>
+
 </x-app-layout>

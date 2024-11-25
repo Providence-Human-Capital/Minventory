@@ -116,7 +116,7 @@
                                                             </button>
                                                         </div>
                                                         <div class="modal-body text-center">
-                                                            <img src="{{ asset($entry->p_o_r) }}" alt="No Image" class="img-fluid" style="max-height: 500px;">
+                                                            <img src="{{ asset('images/' .$entry->p_o_r) }}" alt="No Image" class="img-fluid" style="max-height: 500px;">
                                                         </div>
                                                     </div>
                                                 </div>
