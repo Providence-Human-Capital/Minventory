@@ -67,35 +67,13 @@ class mainStockController extends Controller
     public function updatemain(Request $request, StockItem $stockItem)
     {
         $request->validate([
-            'item_name' => 'required',
-            'item_quantity' => 'required',
-            'item_number' => 'required',
             'price' => 'required',
-            'batch_number' => 'required',
-            'item_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            
         ]);
-        $imagename = now()->format('Y-m-d_H-i-s') . '.' . $request->item_image->extension();
-        $request->item_image->move(public_path('images'), $imagename);
-        $items['item_number'] = $request->item_number;
-        $items['price'] = $request->price;
-        $items['expiry_date'] = date('Y/m/d', strtotime($request->expiry_date));
-        $search = $request->item_number;
-        $currenstock = StockItem::where('item_number', 'like', $search)->get()->first()->item_quantity;
-        $addstock = $request->item_quantity;
-        $newstock = $currenstock + $addstock;
-        $items['item_quantity'] = $newstock;
+        $items['price'] = ($request->price*0.40)+$request->price;
+        $items['user'] = auth()->user()->name;
         $stockItem->update($items);
-        $journal['item_name'] = StockItem::where('item_number', 'like', $search)->get()->first()->item_name;
-        $journal['item_quantity'] = $request->item_quantity;
-        $journal['item_number'] = $request->item_number;
-        $journal['price'] = $request->price;
-        $journal['procurer'] = auth()->user()->name;
-        $journal['to_from_mainstock'] = "TO";
-        $journal['p_o_d'] = 'images/' . $imagename;
-        $journal['batch_number'] = $request->batch_number;
-        $journal['expiry_date'] = date('Y/m/d', strtotime($request->expiry_date));
-        mainstock_journal::create($journal);
-        return redirect()->route('mainstock')->with('success', 'Added to Main Stock.');
+        return redirect()->route('mainstock')->with('success', 'Price Updated.');
     }
 
 
@@ -203,7 +181,9 @@ class mainStockController extends Controller
             $stockItem = StockItem::where('item_number', $drugName)->first();
             $newStock = $stockItem->item_quantity + $drugQuantity;
             $item['item_quantity'] = $newStock;
-            $item['price'] = $request->price[$index];
+            $price=$request->price[$index];
+            $item['price'] = ($price*0.4)+$price;
+            $items['user'] = auth()->user()->name;
             $stockItem->update($item);
 
             // Collect details for the bulk journal and pending stock entries

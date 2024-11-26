@@ -29,6 +29,7 @@ class DispenseController extends Controller
             'damount' => "required",
 
         ]);
+        $dispense['drug_number']=$request->drug_number;
         $dispense['drug'] = $request->drug;
         $dispense['damount'] = $request->damount;
         $dispense['dispenser'] = auth()->user()->name;
@@ -63,7 +64,7 @@ class DispenseController extends Controller
 
     public function searchhis(Request $request)
     {
-
+        
         $query = dispense::query();
 
         // Apply filters based on the request inputs
@@ -75,8 +76,9 @@ class DispenseController extends Controller
 
         // drug
         if ($request->filled('drug')) {
-            $query->where('drug', $request->drug);
+            $query->where('drug','like', '%' .$request->drug. '%');
         }
+      
 
         // dispenser
         if ($request->filled('dispenser')) {
@@ -94,6 +96,7 @@ class DispenseController extends Controller
 
         // Execute the query and get the results
         $results = $query->get();
+        
         return view('clinicstock.dispensesearch', ['results' => $results]);
     }
 }

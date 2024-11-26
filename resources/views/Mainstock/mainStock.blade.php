@@ -60,6 +60,8 @@
                             <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Item Name</th>
                             <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Item Number</th>
                             <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Quantity</th>
+                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Price</th>
+
                         </tr>
 
 
@@ -74,18 +76,28 @@
                                 <td style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
                                     {{ $stocks->item_quantity }}
                                 </td>
+                                <td style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                    {{ $stocks->price }}
+                                </td>
+                                <td style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                    <button type="button" class="btn btn-primary" data-toggle="modal"
+                                        data-target="#PricechangeModal{{$stocks->id}}"><i class="fas fa-edit">
+                                        </i>
+                                        Edit Price
+                                    </button>
+                                </td>
 
                             </tr>
 
                             {{-- addStock model design start here --}}
-                            <div class="modal fade" id="addStockModal{{ $stocks->id }}" tabindex="-1" role="dialog"
-                                aria-labelledby="addStockModalLabel{{ $stocks->id }}" aria-hidden="true">
+                            <div class="modal fade" id="PricechangeModal{{ $stocks->id }}" tabindex="-1" role="dialog"
+                                aria-labelledby="PricechangeModal{{ $stocks->id }}" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header" style="padding: 0px;height:50px">
                                             <div style="color:white;width:100%;height:100%;background-color:green;top:0px;text-align:center"
-                                                class="modal-title" id="addStockModalLabel{{ $stocks->id }}">
-                                                <p style="padding-top:10px;display:inline">ADD TO STOCK</p>
+                                                class="modal-title" id="PricechangeModal{{ $stocks->id }}">
+                                                <p style="padding-top:10px;display:inline">Change Price</p>
                                                 <button style="display:inline" type="button" class="close"
                                                     data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
@@ -98,62 +110,17 @@
                                                 @csrf
                                                 @method('patch')
                                                 <div>
-                                                    <label for='item_name'>Item Name</label><br>
-                                                    <input type="text" id="item_name" name="item_name"
-                                                        value={{ $stocks->item_name }} style="width: 100%;"><br>
-                                                    @error('item_name')
-                                                        <p style="color:red;size:13px">{{ $message }}</p>
-                                                    @enderror
-                                                </div>
-                                                <div>
-                                                    <label for='quantity'>Quantity </label><br>
-                                                    <input type="number" id="item_quantity" name="item_quantity"
-                                                        placeholder="1000" style="width: 100%;"><br>
-                                                    @error('item_quantity')
-                                                        <p style="color:red;size:13px">{{ $message }}</p>
-                                                    @enderror
-                                                </div>
-                                                <div>
-                                                    <label for='item_number'>Item Number</label><br>
-                                                    <input type="text" id="item_number" name="item_number"
-                                                        value={{ $stocks->item_number }} style="width: 100%;"><br>
-                                                    @error('item_number')
-                                                        <p style="color:red;size:13px">{{ $message }}</p>
-                                                    @enderror
-                                                </div>
-                                                <div>
-                                                    <label for='batch_number'>Batch Number</label><br>
-                                                    <input type="text" id="batch_number" name="batch_number"
-                                                        style="width: 100%;"><br>
-                                                    @error('batch_number')
-                                                        <p style="color:red;size:13px">{{ $message }}</p>
-                                                    @enderror
-                                                </div>
-                                                <div>
                                                     <label for='price'>Price</label><br>
                                                     <label for="$">
                                                         <input type="number" id="price" name="price"
-                                                            placeholder="1000" style="width: 100%;">
+                                                            placeholder="1000" style="width: 100%;" value="{{$stocks->price}}">
                                                         @error('price')
                                                             <p style="color:red;size:13px">{{ $message }}</p>
                                                         @enderror
                                                     </label><br>
-                                                </div>
-                                                <div>
-                                                    <label for='expiry_date'>Expiry Date</label><br>
-                                                    <input type="date" id="expiry_date" name="expiry_date"
-                                                        placeholder="B1992XC" style="width: 100%;"><br>
-                                                </div>
-                                                <!-- Image Upload -->
-                                                <div>
-                                                    <label for="item_image">Upload Image</label><br>
-                                                    <input type="file" id="item_image" name="item_image"
-                                                        accept="image/*" style="width: 100%;"><br>
-                                                    @error('item_image')
-                                                        <p style="color:red;size:13px">{{ $message }}</p>
-                                                    @enderror
-                                                </div>
+                                                    <p style="margin: 4px">Note that the price you  input will be marked up 40% then saved.</p>
 
+                                                </div>
                                                 <input type="submit"
                                                     style="background-color: green;color:white;size:10pt;padding:5pt;margin:15pt;border-radius:5px;border-style:outset;border-color:black"
                                                     value="ADD TO STOCK">

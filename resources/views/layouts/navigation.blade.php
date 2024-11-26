@@ -49,7 +49,7 @@
                                 {{ __('Main Stock') }}
                             </x-nav-link>
                             <x-nav-link :href="route('getallstocks')" :active="request()->routeIs('getallstocks')">
-                                {{ __('Clinics Stock') }}
+                                {{ __('Reports') }}
                             </x-nav-link>
                             @break
 

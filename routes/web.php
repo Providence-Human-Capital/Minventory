@@ -90,7 +90,7 @@ Route::patch('/mainstock/dis/{stock_item}', [requestController::class, 'approver
 Route::post('/sendemail', [MailerController::class, 'sendEmail'])->name('sendEmail');
 //admin options
 Route::get('/admin/allclincistock', [Admincontroller::class, 'allclinicstocks'])->name('getallstocks');
-Route::post('/admin/selecteclinic', [Admincontroller::class, 'showclinicchart'])->name('showclinicchart');
+Route::post('/admin/allclincistock', [Admincontroller::class, 'showclinicchart'])->name('showclinicchart');
 Route::get('/admin/selecteclinicdrug', [Admincontroller::class, 'getdrugreport'])->name('getdrugreport');
 Route::post('/admin/selecteclinicdrug', [Admincontroller::class, 'drugreport'])->name('drugreport');
 Route::get('/admin/allclincistockbatch', [Admincontroller::class, 'allclinicstocksbatch'])->name('batch');

@@ -54,29 +54,30 @@ class Admincontroller extends Controller
 
     public function showclinicchart(Request $request)
     {
+
         $clinic = $request->clinics;
         $month = $request->month;
         $year = $request->year;
-        $date_from = DATE($request->date_from);
-        $date_to = DATE($request->date_to);
-        $data = DB::table('pending_stocks')
+
+        // Fetch the data from the 'pending_stocks'table
+        $data = DB::table("pending_stocks")
             ->select(
-                DB::raw('DATE(updated_at) AS date'),
-                DB::raw('SUM(item_quantity) AS monthsum'),
+                DB::raw('DATE_FORMAT(updated_at, "%M-%y") as date'),
+                DB::raw('SUM(item_quantity) as monthsum'),
                 'item_name',
                 'item_number'
             )
             ->where('clinics', 'like', $clinic)
             ->where('status', 'like', 'Received')
-            ->whereRaw('DATE(updated_at) BETWEEN ? AND ?', [$date_from, $date_to])
-            ->groupBy(DB::raw('DATE(updated_at)'), 'item_name', 'item_number') // Group by date and item
+            ->whereYear('updated_at', $year)
+            ->whereMonth('updated_at', $month)
+            ->groupBy(DB::raw('MONTH(updated_at)'), 'item_name')
             ->orderBy('updated_at', 'asc')
             ->get();
 
         $labels = [];
         $values = [];
         $html = '';
-
         // Generate table name dynamically from the selected clinic
         $tableName = preg_replace('/[^a-zA-Z0-9]/', '', $clinic);
         $tableName = strtolower($tableName) . '_stocks';
@@ -86,13 +87,9 @@ class Admincontroller extends Controller
             $usage = DB::table('dispenses')
                 ->select(DB::raw('SUM(damount) as monthsum'))
                 ->where('drug', $item->item_name)
-                ->whereRaw('DATE(dispense_time) BETWEEN ? AND ?', [
-                    $date_from,
-                    $date_to
-                ])
+                ->whereYear('dispense_time', $year) // Assuming `dispense_date` is the column for the date
+                ->whereMonth('dispense_time', $month)
                 ->value('monthsum');
-
-
             $fontColor = ($itemQuantity < 100) ? 'red' : 'black';
             // Append a new row to the HTML table with the data
             $html .= "<tr><td>{$item->item_name}</td><td>{$item->monthsum}</td><td style='color: {$fontColor};'>{$itemQuantity}</td><td>{$usage}</td></tr>";
@@ -101,7 +98,6 @@ class Admincontroller extends Controller
             $labels[] = $item->item_name;
             $values[] = $item->monthsum;
         }
-
         // Return the HTML table and chart data as a JSON response
         return response()->json([
             'html' => $html,
@@ -123,27 +119,35 @@ class Admincontroller extends Controller
         $clinic = $request->clinics;
         $month = $request->month;
         $year = $request->year;
-        $date_from = DATE($request->date_from);
-        $date_to = DATE($request->date_to);
-    
-        // Fetch data from pending_stocks
-        $data = DB::table('pending_stocks')
+
+        // Fetch the data from the 'pending_stocks'table
+        $data = DB::table("pending_stocks")
+            ->select(
+                DB::raw('DATE_FORMAT(updated_at, "%M-%y") as date'),
+                DB::raw('SUM(item_quantity) as monthsum'),
+                'item_name',
+                'item_number',
+                'details'
+            )
             ->where('clinics', 'like', $clinic)
             ->where('status', 'like', 'Received')
-            ->whereRaw('DATE(updated_at) BETWEEN ? AND ?', [$date_from, $date_to])
+            ->whereYear('updated_at', $year)
+            ->whereMonth('updated_at', $month)
+            ->groupBy(DB::raw('MONTH(updated_at)'), 'item_name')
+            ->orderBy('updated_at', 'asc')
             ->get();
-    
+
         $labels = [];
         $values = [];
         $html = '';
         // Initialize an empty array for the drug summary
         $drugSummary = [];
-    
+
         // Loop through the records and process each item
         foreach ($data as $stock) {
             // Decode the details JSON field to extract drug details
             $details = json_decode($stock->details);
-    
+
             // Check if details are not empty
             if ($details) {
                 // Loop through each drug detail
@@ -151,7 +155,7 @@ class Admincontroller extends Controller
                     $drugName = $detail->item_name;
                     $drugNumber = $detail->item_number;
                     $drugQuantity = $detail->item_quantity;
-    
+
                     // If the drug already exists in the summary, add the quantity
                     if (isset($drugSummary[$drugNumber])) {
                         $drugSummary[$drugNumber]['quantity'] += $drugQuantity;
@@ -165,39 +169,37 @@ class Admincontroller extends Controller
                 }
             }
         }
-    
-        // Process each drug summary to fetch current stock and usage
+            // Process each drug summary to fetch current stock and usage
         $tableName = preg_replace('/[^a-zA-Z0-9]/', '', $clinic); // Clean clinic name
         $tableName = strtolower($tableName) . '_stocks';  // Use clinic name as the table name
-    
         foreach ($drugSummary as $drug => $itemData) {
             $drugName = $itemData['name'];
             $itemQuantity = $itemData['quantity'];
-    
+
             // Fetch the stock for the drug
             $stock_item = DB::table($tableName)->where('item_number', $drug)->first();
-    
+
+
             if ($stock_item) {
                 $currentStockQuantity = $stock_item->item_quantity;
-    
+
                 // Get the usage for the drug
                 $usage = DB::table('dispenses')
                     ->select(DB::raw('SUM(damount) as monthsum'))
-                    ->where('drug', $drugName)
-                    ->whereRaw('DATE(dispense_time) BETWEEN ? AND ?', [$date_from, $date_to])
+                    ->where('drug_number', $drug)
+                    ->whereYear('dispense_time', $year) // Assuming `dispense_date` is the column for the date
+                    ->whereMonth('dispense_time', $month)
                     ->value('monthsum') ?? 0;
-    
                 // Add the row to the HTML table
                 $fontColor = ($currentStockQuantity < 100) ? 'red' : 'black';
                 $html .= "<tr><td>{$drugName}</td><td>{$itemQuantity}</td><td style='color: {$fontColor};'>{$currentStockQuantity}</td><td>{$usage}</td></tr>";
-    
+
                 // Populate chart data (labels and values)
                 $labels[] = $drugName;
                 $values[] = $itemQuantity;
             }
-        }
-    
-        // Return the HTML table and chart data as a JSON response
+        }       
+         // Return the HTML table and chart data as a JSON response
         return response()->json([
             'html' => $html,
             'chartData' => [
@@ -206,7 +208,7 @@ class Admincontroller extends Controller
             ]
         ]);
     }
-    
+
 
 
     public function getcreateclinicform()
