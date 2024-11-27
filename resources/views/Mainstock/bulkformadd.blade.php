@@ -50,7 +50,7 @@
                                     <!-- price Input -->
                                     <div style="flex: 1; margin-right: 10px;">
                                         <label for="price[]">Price</label></label><br>
-                                        <input type="number" name="price[]" min="1" step=".01"
+                                        <input type="number" name="price[]" min="0" step=".01"
                                             placeholder="Enter Price" style="width: 100%;">
                                     </div>
 

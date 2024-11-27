@@ -48,7 +48,7 @@
                             <x-nav-link :href="route('mainstock')" :active="request()->routeIs('mainstock')">
                                 {{ __('Main Stock') }}
                             </x-nav-link>
-                            <x-nav-link :href="route('getallstocks')" :active="request()->routeIs('getallstocks')">
+                            <x-nav-link :href="route('batch')" :active="request()->routeIs('batch')">
                                 {{ __('Reports') }}
                             </x-nav-link>
                             @break

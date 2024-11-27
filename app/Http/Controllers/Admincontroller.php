@@ -169,7 +169,7 @@ class Admincontroller extends Controller
                 }
             }
         }
-            // Process each drug summary to fetch current stock and usage
+        // Process each drug summary to fetch current stock and usage
         $tableName = preg_replace('/[^a-zA-Z0-9]/', '', $clinic); // Clean clinic name
         $tableName = strtolower($tableName) . '_stocks';  // Use clinic name as the table name
         foreach ($drugSummary as $drug => $itemData) {
@@ -198,8 +198,8 @@ class Admincontroller extends Controller
                 $labels[] = $drugName;
                 $values[] = $itemQuantity;
             }
-        }       
-         // Return the HTML table and chart data as a JSON response
+        }
+        // Return the HTML table and chart data as a JSON response
         return response()->json([
             'html' => $html,
             'chartData' => [
@@ -244,5 +244,72 @@ class Admincontroller extends Controller
             return redirect()->route('getcreateclinicform')->with('error', 'Clinic already exists');
         }
         return redirect()->route('getcreateclinicform')->with('success', 'Clinic created and CSV imported successfully!');
+    }
+    public function showDrugReport()
+    {
+        return view('admin.drugreportpage'); // Replace with the correct path to your Blade file
+    }
+    public function getdrugreport()
+    {
+        $year = now()->year;
+        $ydata = DB::table("pending_stocks")
+            ->select(
+                DB::raw('DATE_FORMAT(updated_at, "%M-%y") as date'),
+                DB::raw('SUM(item_quantity) as yearsum'),
+                'item_name',
+                'item_number',
+                'details'
+            )
+            ->where('status', 'like', 'Received')
+            ->whereYear('updated_at', $year)
+            ->groupBy(DB::raw('MONTH(updated_at)'), 'item_name')
+            ->orderBy('updated_at', 'asc')
+            ->get();
+
+        $labels = [];
+        $values = [];
+        $html = '';
+        $ydrugSummary = [];
+
+        // Process the records
+        foreach ($ydata as $stock) {
+            // Decode the details JSON field
+            $details = json_decode($stock->details);
+
+            // If details are not empty
+            if ($details) {
+                foreach ($details as $detail) {
+                    $drugName = $detail->item_name;
+                    $drugNumber = $detail->item_number;
+                    $drugQuantity = $detail->item_quantity;
+
+                    // Update the drug summary
+                    if (isset($ydrugSummary[$drugNumber])) {
+                        $ydrugSummary[$drugNumber]['quantity'] += $drugQuantity;
+                    } else {
+                        $ydrugSummary[$drugNumber] = [
+                            'name' => $drugName,
+                            'quantity' => $drugQuantity,
+                        ];
+                    }
+                }
+            }
+        }
+
+        // Populate labels, values, and HTML table rows
+        foreach ($ydrugSummary as $drug) {
+            $labels[] = $drug['name'];
+            $values[] = $drug['quantity'];
+            $html .= "<tr><td>{$drug['name']}</td><td>{$drug['quantity']}</td></tr>";
+        }
+
+        // Return JSON response
+        return response()->json([
+            'html' => $html,
+            'chartData' => [
+                'labels' => $labels,
+                'values' => $values,
+            ],
+        ]);
     }
 }

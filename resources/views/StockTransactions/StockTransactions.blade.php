@@ -166,6 +166,10 @@
                                                                                             <p><strong>Quantity:</strong>
                                                                                                 {{ $detail['item_quantity'] }}
                                                                                             </p>
+                                                                                            <p><strong>Price:</strong>
+                                                                                                ${{(DB::table('stock_items')->where('item_number',$detail['item_number'])->value('price'))* $detail['item_quantity']}}
+
+                                                                                            </p>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
