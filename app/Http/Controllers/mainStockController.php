@@ -204,3 +204,4 @@ class mainStockController extends Controller
         return redirect()->back()->with('success', 'Bulk Addition completed successfully!');
     }
 }
+
