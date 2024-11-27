@@ -41,7 +41,7 @@
                         </div>
                         <div class="card-body">
                             <p>Yearly</p>
-                            <p>Monthly</p>
+                            <p>Month</p>
                         </div>
                     </div>
                 </div>
