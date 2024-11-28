@@ -93,7 +93,7 @@ class StockTransactionsController extends Controller
             $query->where(DB::raw('DATE(updated_at)'), '<=', $request->transaction_date_to);
         }
 
-        // Execute the query and get the results
+        // Execute the query and get the result
         $results = $query->get(); 
         session(['search_results' => $results]);
         return view('StockTransactions.transactionsearch', ['results' => $results]);
