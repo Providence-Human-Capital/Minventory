@@ -51,6 +51,9 @@
                             <x-nav-link :href="route('batch')" :active="request()->routeIs('batch')">
                                 {{ __('Reports') }}
                             </x-nav-link>
+                            <x-nav-link :href="route('dishistoryadmin')" :active="request()->routeIs('dishistoryadmin')">
+                                {{ __('Dispense History') }}
+                            </x-nav-link>
                             @break
 
                         @default

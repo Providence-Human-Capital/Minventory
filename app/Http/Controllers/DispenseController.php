@@ -99,4 +99,52 @@ class DispenseController extends Controller
         
         return view('clinicstock.dispensesearch', ['results' => $results]);
     }
+
+    public function dispensehistoryadmin()
+    {
+        $clinichis = dispense::all();
+
+        return view('admin.dispensedstock', compact('clinichis'));
+    }
+
+    public function searchhisadmin(Request $request)
+    {
+        
+        $query = dispense::query();
+
+        // Apply filters based on the request inputs
+
+        // UIN
+        if ($request->filled('UIN')) {
+            $query->where('UIN', 'like', '%' . $request->UIN . '%');
+        }
+
+        // drug
+        if ($request->filled('drug')) {
+            $query->where('drug','like', '%' .$request->drug. '%');
+        }
+      
+
+        // dispenser
+        if ($request->filled('dispenser')) {
+            $query->where('dispenser', $request->dispenser);
+        }
+
+        if ($request->filled('clinic')) {
+            $query->where('clinic', $request->clinic);
+        }
+        // Transaction Date
+        if ($request->filled('transaction_date_from') && $request->filled('transaction_date_to')) {
+            $query->whereBetween(DB::raw('DATE(dispense_time)'), [$request->transaction_date_from, $request->transaction_date_to]);
+        } elseif ($request->filled('transaction_date_from')) {
+            $query->where(DB::raw('DATE(dispense_time)'), '>=', $request->transaction_date_from);
+        } elseif ($request->filled('transaction_date_to')) {
+            $query->where(DB::raw('DATE(dispense_time)'), '<=', $request->transaction_date_to);
+        }
+
+        // Execute the query and get the results
+        $results = $query->get();
+        
+        return view('admin.dispensesearch', ['results' => $results]);
+    }
 }

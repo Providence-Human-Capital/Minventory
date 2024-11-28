@@ -56,15 +56,6 @@
                                 <tr>
                                     <th
                                         style="padding: 12px; text-align: left; border: 1px solid #ddd; font-weight: bold;">
-                                        Item Name</th>
-                                    <th
-                                        style="padding: 12px; text-align: left; border: 1px solid #ddd; font-weight: bold;">
-                                        Item Number</th>
-                                    <th
-                                        style="padding: 12px; text-align: left; border: 1px solid #ddd; font-weight: bold;">
-                                        Quantity</th>
-                                    <th
-                                        style="padding: 12px; text-align: left; border: 1px solid #ddd; font-weight: bold;">
                                         Clinic</th>
                                     <th
                                         style="padding: 12px; text-align: left; border: 1px solid #ddd; font-weight: bold;">
@@ -83,7 +74,7 @@
                                         Proof of delivery</th>
                                         <th
                                         style="padding: 12px; text-align: left; border: 1px solid #ddd; font-weight: bold;">
-                                        Proof of delivery</th>Transaction Details
+                                        Transaction Details</th>
                                 </tr>
                             </thead>
 
@@ -91,12 +82,6 @@
                             <tbody>
                                 @foreach ($rstocks as $rstock)
                                     <tr style="background-color: #fff; border-bottom: 1px solid #ddd;">
-                                        <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">
-                                            {{ $rstock->item_name }}</td>
-                                        <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">
-                                            {{ $rstock->item_number }}</td>
-                                        <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">
-                                            {{ $rstock->item_quantity }}</td>
                                         <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">
                                             {{ $rstock->clinics }}</td>
                                         <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">
@@ -130,21 +115,24 @@
                                                             class="modal-title" id="receiveModal{{ $rstock->id }}">
                                                             <h5 class="modal-title"
                                                                 id="viewModalLabel{{ $rstock->id }}">
-                                                                Proof of Delivery {{ $rstock->id }} <a
-                                                                    href="{{ asset($rstock->p_o_r) }}"
-                                                                    download="{{ basename($rstock->p_o_r) }}"
-                                                                    class="btn btn-primary">
-                                                                    <i class="fas fa-download"
-                                                                        style="font-size: 30px; color: blue;"></i>
-                                                                </a></h5>
+                                                                Proof of Delivery {{ $rstock->id }}</h5>
                                                             <button style="display:inline" type="button" class="close"
                                                                 data-dismiss="modal" aria-label="Close">
                                                                 <span aria-hidden="true">&times;</span>
                                                             </button>
                                                         </div>
+                                                        
                                                     </div>
-                                                    <img src="{{ asset($rstock->p_o_r) }}" class="card-img-top"
-                                                        style="object-fit: cover; height: 500px;width:500px">
+                                                    <div class="modal-body text-center">
+                                                        <iframe src="{{ asset($rstock->p_o_r) }}" style="width: 100%; height: 500px;" frameborder="0">
+                                                            Your browser does not support iframes.
+                                                        </iframe>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <a href="{{ asset($rstock->p_o_r) }}" class="btn btn-success" download>Download PDF</a>
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                    </div>
+                                                    
 
 
                                                 </div>

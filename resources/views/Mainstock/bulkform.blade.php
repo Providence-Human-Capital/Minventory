@@ -36,10 +36,12 @@
                 </div>
 
                 <!-- File Upload -->
-                <div style="flex: 1; margin-left: 10px;">
-                    <label for="bulk_file">Upload Bulk File</label><br>
-                    <input type="file" id="item_image" name="item_image" accept="image/*" style="width: 100%;" required>
-                                            
+                <div>
+                    <label for="item_pdf">Upload PDF</label><br>
+                    <input type="file" id="item_pdf" name="item_pdf" accept="application/pdf" style="width: 100%;"><br>
+                    @error('item_pdf')
+                        <p style="color:red;size:13px">{{ $message }}</p>
+                    @enderror
                 </div>
             </div>
 

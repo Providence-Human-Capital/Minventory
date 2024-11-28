@@ -117,6 +117,9 @@
                         <button class="btn btn-primary mb-3" onclick="printResults()">
                             <i class="fa fa-print"></i> Print Results
                         </button>
+                        <button class="btn btn-success mb-3" onclick="location.href='{{ route('transactions.export.csv') }}'">
+                            <i class="fa fa-download"></i> Download CSV
+                        </button>
 
 
 
@@ -130,12 +133,10 @@
                                             <table class="table table-striped table-bordered w-full">
                                                 <thead>
                                                     <tr>
-                                                        <th>Item Name</th>
-                                                        <th>Item Number</th>
-                                                        <th>Quantity</th>
+
                                                         <th>Clinic</th>
                                                         <th>Date of Transaction</th>
-                                                        <th>Expiry Date</th>
+                                                        <th>Date of Received</th>
                                                         <th>Procurer</th>
                                                         <th>Received By</th>
                                                         <th>P.O.D</th>
@@ -146,13 +147,9 @@
                                                 <tbody>
                                                     @foreach ($results as $result)
                                                         <tr class="dark:text-gray-200">
-                                                            <td>{{ $result->item_name }}</td>
-                                                            <td>{{ $result->item_number }}</td>
-                                                            <td>{{ $result->item_quantity }}</td>
                                                             <td>{{ $result->clinics }}</td>
-                                                            <td>{{ $result->expiry_date }}</td>
-                                                            <td>{{ $result->procurer }}</td>
                                                             <td>{{ $result->created_at }}</td>
+                                                            <td>{{ $result->updated_at }}</td>                                                              <td>{{ $result->procurer }}</td>
                                                             <td>{{ $result->recieved_by }}</td>
                                                             <td>
                                                                 <button type="button" class="btn btn-primary"
@@ -192,9 +189,13 @@
                                                                         </button>
                                                                     </div>
                                                                     <div class="modal-body text-center">
-                                                                        <img src="{{ asset($result->p_o_d) }}"
-                                                                            alt="No Image" class="img-fluid"
-                                                                            style="max-height: 600px;">
+                                                                        <iframe src="{{ asset($result->p_o_d) }}" style="width: 100%; height: 500px;" frameborder="0">
+                                                                            Your browser does not support iframes.
+                                                                        </iframe>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <a href="{{ asset($result->p_o_d) }}" class="btn btn-success" download>Download PDF</a>
+                                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -215,9 +216,13 @@
                                                                         </button>
                                                                     </div>
                                                                     <div class="modal-body text-center">
-                                                                        <img src="{{ asset($result->p_o_r) }}"
-                                                                            alt="No Image" class="img-fluid"
-                                                                            style="max-height: 600px;">
+                                                                        <iframe src="{{ asset($result->p_o_r) }}" style="width: 100%; height: 500px;" frameborder="0">
+                                                                            Your browser does not support iframes.
+                                                                        </iframe>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <a href="{{ asset($result->p_o_r) }}" class="btn btn-success" download>Download PDF</a>
+                                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                                                     </div>
                                                                 </div>
                                                             </div>

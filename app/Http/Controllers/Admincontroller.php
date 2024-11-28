@@ -300,15 +300,37 @@ class Admincontroller extends Controller
         foreach ($ydrugSummary as $drug) {
             $labels[] = $drug['name'];
             $values[] = $drug['quantity'];
-            $html .= "<tr><td>{$drug['name']}</td><td>{$drug['quantity']}</td></tr>";
+            $rawData = array_values($ydrugSummary);
         }
+
+        $ysenddata = DB::table("dispenses")
+            ->select(
+                DB::raw('DATE_FORMAT(dispense_time, "%M-%y") as date'),
+                DB::raw('SUM(damount) as yearsum'),
+                'drug',
+                'drug_number',
+
+            )
+            ->whereYear('dispense_time', $year)
+            ->groupBy(DB::raw('MONTH(dispense_time)'), 'drug')
+            ->orderBy('drug', 'asc')
+            ->get();
+        foreach ($ysenddata as $data) {
+            $labels2[] = $data->drug;
+            $values2[] = $data->yearsum;
+        }
+
 
         // Return JSON response
         return response()->json([
-            'html' => $html,
+            'data' => $rawData,
             'chartData' => [
                 'labels' => $labels,
                 'values' => $values,
+            ],
+            'chartData2' => [
+                'labels' => $labels2,
+                'values' => $values2,
             ],
         ]);
     }

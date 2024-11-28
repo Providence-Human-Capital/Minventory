@@ -146,14 +146,12 @@
                                                         <form action="{{ route('changestatus') }}" method="POST" enctype="multipart/form-data">
                                                             @method('PATCH')
                                                             @csrf
-                                                            <!-- Image Upload -->
+                                                            <!-- pdf Upload -->
                                                             <div>
-                                                                <label for="item_image">Upload Image</label><br>
-                                                                <input type="file" id="item_image" name="item_image"
-                                                                    accept="image/*" style="width: 100%;"><br>
-                                                                @error('item_image')
-                                                                    <p style="color:red;size:13px">{{ $message }}
-                                                                    </p>
+                                                                <label for="item_pdf">Upload PDF</label><br>
+                                                                <input type="file" id="item_pdf" name="item_pdf" accept="application/pdf" style="width: 100%;"><br>
+                                                                @error('item_pdf')
+                                                                    <p style="color:red;size:13px">{{ $message }}</p>
                                                                 @enderror
                                                             </div>
                                                             <input type="hidden" name="id"

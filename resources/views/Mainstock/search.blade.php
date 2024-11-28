@@ -3,17 +3,27 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm">
-                    <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                        {{ __('Main Stock') }}
-                    </h2>
+                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addModal">
+                        Add New Stock Item
+                    </button>
                 </div>
                 <div class="col-sm">
+                    <div style="display:inline">
+
+                        <a href="{{ route('bulkform') }}"><button type="button" class="btn btn-success">
+                                <i class="fas fa-shipping-fast"></i>
+                                Distribute Stock
+                            </button></a>
+                        <a href="{{ route('bulkformadd') }}"><button type="button" class="btn btn-primary">
+                                <i class="fas fa-warehouse"></i>
+                                Add Stock
+                            </button></a>
+                    </div>
                 </div>
                 <div class="col-sm">
                     <form action="{{ route('searchmainstock') }}" method="GET">
-                        <input type="text" name="isearch" id="isearch" placeholder="Search items"
-                            value="{{ old('isearch') }}">
-                        <button type="submit" class="btn btn-primary">Search</button>
+                        <input type="text" name="isearch" id="isearch" value="{{ old('isearch') }}">
+                        <button type="submit">Search</button>
                     </form>
                 </div>
             </div>
@@ -60,7 +70,6 @@
                                 <th style="padding: 8px;">Item Name</th>
                                 <th style="padding: 8px;">Item Number</th>
                                 <th style="padding: 8px;">Quantity</th>
-                                <th style="padding: 8px;">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -69,16 +78,6 @@
                                     <td style="padding: 8px;">{{ $searchs->item_name }}</td>
                                     <td style="padding: 8px;">{{ $searchs->item_number }}</td>
                                     <td style="padding: 8px;">{{ $searchs->item_quantity }}</td>
-                                    <td style="padding: 8px;">
-                                        <button type="button" class="btn btn-success" data-toggle="modal"
-                                            data-target="#addStockModal{{ $searchs->id }}">
-                                            Add Stock
-                                        </button>
-                                        <button type="button" class="btn btn-primary" data-toggle="modal"
-                                            data-target="#distributeStockModal{{ $searchs->id }}">
-                                            Distribute Stock
-                                        </button>
-                                    </td>
                                 </tr>
 
                                 {{-- Add Stock Modal --}}

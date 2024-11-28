@@ -99,9 +99,15 @@
                                                             </button>
                                                         </div>
                                                         <div class="modal-body text-center">
-                                                            <img src="{{ asset($entry->p_o_d) }}" alt="No Image"
-                                                                class="img-fluid" style="max-height: 500px;">
+                                                            <iframe src="{{ asset($entry->p_o_d) }}" style="width: 100%; height: 500px;" frameborder="0">
+                                                                Your browser does not support iframes.
+                                                            </iframe>
                                                         </div>
+                                                        <div class="modal-footer">
+                                                            <a href="{{ asset($entry->p_o_d) }}" class="btn btn-success" download>Download PDF</a>
+                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                        </div>
+                                                        
                                                     </div>
                                                 </div>
                                             </div>
@@ -120,9 +126,13 @@
                                                             </button>
                                                         </div>
                                                         <div class="modal-body text-center">
-                                                            <img src="{{ asset('images/' . $entry->p_o_r) }}"
-                                                                alt="No Image" class="img-fluid"
-                                                                style="max-height: 500px;">
+                                                            <iframe src="{{ asset($entry->p_o_r) }}" style="width: 100%; height: 500px;" frameborder="0">
+                                                                Your browser does not support iframes.
+                                                            </iframe>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <a href="{{ asset($entry->p_o_r) }}" class="btn btn-success" download>Download PDF</a>
+                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                                         </div>
                                                     </div>
                                                 </div>

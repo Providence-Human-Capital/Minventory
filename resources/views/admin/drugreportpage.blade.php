@@ -50,27 +50,36 @@
                 <div class="col-md-9">
                     <div class="card">
                         <div class="card-header">
-                            Stock distributed throughout {{now()->year}} 
+                            Stock distributed throughout {{ now()->year }}
                         </div>
                         <div class="card-body">
-                            <!-- Table Area -->
-                            <div id="printArea" class="print-area">
-                                
-                            </div>
                             <!-- Chart Area -->
-                            <canvas id="resultChart" style="margin-top: 20px;"></canvas>
+                            <canvas id="resultChart" style="margin: 20px;"></canvas>
                         </div>
+                    </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        Stock dispensed throughout {{ now()->year }}
+                    </div>
+                    <div class="card-body">
+                        <!-- Chart Area -->
+                        <canvas id="resultChart2" style="margin-top: 20px;"></canvas>
                     </div>
                 </div>
             </div>
+            </div>
         </div>
     </div>
+
+
 
     <!-- Include Chart.js and jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
+        let chart1, chart2;
         $(document).ready(function() {
             fetchDrugReport();
 
@@ -79,24 +88,38 @@
                     url: '{{ route('getdrugreport') }}',
                     method: 'GET',
                     success: function(data) {
-                        $('#resultTableBody').html(data.html);
-                        renderChart(data.chartData);
+                        console.log('Fetched Data:',
+                            data); // Log the data to ensure it's correctly received
+
+                        // Ensure data is defined before proceeding
+                        if (data && data.chartData && data.chartData2) {
+                            // Populate Table
+
+
+                            // Render Charts
+                            renderChart(data.chartData, 'resultChart', chart1);
+                            renderChart(data.chartData2, 'resultChart2', chart2);
+                        } else {
+                            console.error('Invalid data format:', data);
+                            alert('No valid data available to display.');
+                        }
                     },
                     error: function(xhr) {
-                        console.error(xhr);
-                        alert('An error occurred while fetching data.');
+                        console.error('AJAX Request Failed:', xhr);
+                        alert('An error occurred while fetching the drug report.');
                     }
                 });
             }
 
-            function renderChart(chartData) {
-                const ctx = document.getElementById('resultChart').getContext('2d');
 
-                if (window.myChart) {
-                    window.myChart.destroy();
+            function renderChart(chartData, chartId, chartInstance) {
+                const ctx = document.getElementById(chartId).getContext('2d');
+
+                if (chartInstance) {
+                    chartInstance.destroy();
                 }
 
-                window.myChart = new Chart(ctx, {
+                chartInstance = new Chart(ctx, {
                     type: 'bar',
                     data: {
                         labels: chartData.labels,
@@ -111,28 +134,13 @@
                     options: {
                         responsive: true,
                         scales: {
-                            y: { beginAtZero: true },
+                            y: {
+                                beginAtZero: true
+                            },
                         },
                     },
                 });
             }
-
-            window.printResults = function() {
-                const printContents = document.getElementById('printArea').innerHTML;
-                const originalContents = document.body.innerHTML;
-
-                document.body.innerHTML = printContents;
-                window.print();
-                document.body.innerHTML = originalContents;
-            };
-
-            window.fetchGraphData = function() {
-                const month = $('#monthSelect').val();
-                const year = $('#yearSelect').val();
-
-                alert(`Fetching graph data for ${month}, ${year}.`);
-                // Add AJAX request here to fetch and update graph data based on month/year
-            };
         });
     </script>
 </x-app-layout>

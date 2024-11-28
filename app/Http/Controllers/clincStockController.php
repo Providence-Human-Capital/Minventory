@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\mainstock_journal;
 use App\Models\pending_stocks;
 use App\Models\stock_request;
+use App\Models\StockItem;
 use App\Models\Transferrecord;
 use App\Models\User;
 use Carbon\Carbon;
@@ -46,16 +47,19 @@ class clincStockController extends Controller
 
     public function changestatus(Request $request)
     {
+        
         $request->validate([
-            'item_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+           'item_pdf' => 'required|mimes:pdf|max:2048',
         ]);
-        $imagename = now()->format('Y-m-d_H-i-s') . '.' . $request->item_image->extension();
-        $request->item_image->move(public_path('images'), $imagename);
-        $update['p_o_r'] = 'images/' . $imagename;
-
+        if ($request->hasFile('item_pdf')) {
+            $file = $request->file('item_pdf');
+            $fileName = time() . '_' . $file->getClientOriginalName(); // Create a unique file name
+            $file->move(public_path('uploads/pdfs/'), $fileName);
+        }
         $id = $request->id;
         $update['status'] = 'Received';
         $update['reciever'] = Auth::user()->name;
+        $update['p_o_r'] = 'uploads/pdfs/' . $fileName;
         $approved = pending_stocks::where('id', 'like', $id)->get()->first();
 
         mainstock_journal::where('item_number', 'like', $approved->item_number)
@@ -65,7 +69,7 @@ class clincStockController extends Controller
             ->where('item_number', 'like', $approved->item_number)
             ->update([
                 'recieved_by' => auth()->user()->name,
-                'p_o_r' => 'images/' . $imagename,
+                'p_o_r' => 'uploads/pdfs/' . $fileName,
                 // Add any other fields as necessary
             ]);;
         $approve = pending_stocks::find($id);
@@ -89,10 +93,14 @@ class clincStockController extends Controller
         {
             $currenstock = DB::table($tableName)->where('item_number', 'like', $detail->item_number)->get()->first()->item_quantity; 
             $addstocks = $detail->item_quantity;
-            $newstock = $addstocks + $currenstock; 
+            $newstock = $addstocks + $currenstock;
             DB::table($tableName)
             ->where('item_number', 'like',  $detail->item_number)
             ->update(['item_quantity' => $newstock]);
+            $stockItem = StockItem::where('item_number', $detail->item_number)->first();
+            $newcentralStock = $stockItem->item_quantity - $detail->item_quantity;
+            $stockItem->update(['item_quantity' => $newcentralStock]); 
+            
         }
         return redirect()->route('pendingstock')->with('success', 'Stock Received.');
     }
@@ -120,7 +128,7 @@ class clincStockController extends Controller
         $clinic = auth()->user()->clinic;
         $tableName = preg_replace('/[^a-zA-Z0-9]/', '', $clinic); // Clean clinic name
         $tableName = strtolower($tableName) . '_stocks';  // Add suffix for the stock table
-        $clinicstock = DB::table($tableName)->orderBy('item_name', 'asc')->get();
+        $clinicstock = DB::table($tableName)->get();
         return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
     }
 

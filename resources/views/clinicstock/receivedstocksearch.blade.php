@@ -54,15 +54,6 @@
                                                 <tr style="background-color: #f2f2f2;">
                                                     <th
                                                         style="padding: 12px; text-align: left; border: 1px solid #ddd;">
-                                                        Item Name</th>
-                                                    <th
-                                                        style="padding: 12px; text-align: left; border: 1px solid #ddd;">
-                                                        Item Number</th>
-                                                    <th
-                                                        style="padding: 12px; text-align: left; border: 1px solid #ddd;">
-                                                        Quantity</th>
-                                                    <th
-                                                        style="padding: 12px; text-align: left; border: 1px solid #ddd;">
                                                         Clinic</th>
                                                     <th
                                                         style="padding: 12px; text-align: left; border: 1px solid #ddd;">
@@ -93,13 +84,7 @@
                                                     @foreach ($results as $prequest)
                                                         <tr>
                                                             <td style="padding: 12px; border: 1px solid #ddd;">
-                                                                {{ $prequest->item_name }}</td>
-                                                            <td style="padding: 12px; border: 1px solid #ddd;">
-                                                                {{ $prequest->item_number }}</td>
-                                                            <td style="padding: 12px; border: 1px solid #ddd;">
-                                                                {{ $prequest->item_quantity }}</td>
-                                                            <td style="padding: 12px; border: 1px solid #ddd;">
-                                                                {{ $prequest->clinics}}</td>
+                                                                {{ $prequest->clinics }}</td>
                                                             <td style="padding: 12px; border: 1px solid #ddd;">
                                                                 {{ $prequest->status }}</td>
                                                             <td style="padding: 12px; border: 1px solid #ddd;">
@@ -151,9 +136,20 @@
                                                                             </button>
                                                                         </div>
                                                                     </div>
-                                                                    <img src="{{ asset($prequest->p_o_r) }}"
-                                                                        class="card-img-top"
-                                                                        style="object-fit: cover; height: 500px;width:500px">
+                                                                    <div class="modal-body text-center">
+                                                                        <iframe src="{{ asset($prequest->p_o_r) }}"
+                                                                            style="width: 100%; height: 500px;"
+                                                                            frameborder="0">
+                                                                            Your browser does not support iframes.
+                                                                        </iframe>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <a href="{{ asset($prequest->p_o_r) }}"
+                                                                            class="btn btn-success" download>Download
+                                                                            PDF</a>
+                                                                        <button type="button" class="btn btn-secondary"
+                                                                            data-dismiss="modal">Close</button>
+                                                                    </div>
 
 
                                                                 </div>

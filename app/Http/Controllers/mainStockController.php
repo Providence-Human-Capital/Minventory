@@ -68,9 +68,9 @@ class mainStockController extends Controller
     {
         $request->validate([
             'price' => 'required',
-            
+
         ]);
-        $items['price'] = ($request->price*0.40)+$request->price;
+        $items['price'] = ($request->price * 0.40) + $request->price;
         $items['user'] = auth()->user()->name;
         $stockItem->update($items);
         return redirect()->route('mainstock')->with('success', 'Price Updated.');
@@ -104,14 +104,14 @@ class mainStockController extends Controller
 
     public function bulksend(Request $request)
     {
-        dd($request);
+
         $request->validate([
             'clinics' => 'required',
             'drug_name' => 'required|array',
             'drug_name.*' => 'required|string',
             'quantity' => 'required|array',
             'quantity.*' => 'required|integer|min:1',
-            'item_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'item_pdf' => 'required|mimes:pdf|max:2048',
         ]);
 
         $clinics = $request->clinics;
@@ -128,8 +128,6 @@ class mainStockController extends Controller
                 // Handle insufficient stock
                 return redirect()->back()->with('error', "Not enough stock for '{$drugName}'. Current stock: {$stockItem->item_quantity}.");
             }
-            $newStock = $stockItem->item_quantity - $drugQuantity;
-            $stockItem->update(['item_quantity' => $newStock]);
 
             // Collect details for the bulk journal and pending stock entries
             $bulkDetails[] = [
@@ -138,13 +136,17 @@ class mainStockController extends Controller
                 'item_number' => $drugName
             ];
         }
-        $imagename = now()->format('Y-m-d_H-i-s') . '.' . $request->item_image->extension();
-        $request->item_image->move(public_path('images'), $imagename);
+        if ($request->hasFile('item_pdf')) {
+            $file = $request->file('item_pdf');
+            $fileName = time() . '_' . $file->getClientOriginalName(); // Create a unique file name
+            $file->move(public_path('uploads/pdfs/'), $fileName);
+        }
+
         mainstock_journal::create([
             'total_items' => $totalDrugs,
             'procurer' => $procurer,
             'clinics' => $clinics,
-            'p_o_d' => 'images/' . $imagename,
+            'p_o_d' => 'uploads/pdfs/' . $fileName,
             'details' => json_encode($bulkDetails), // Store bulk details as JSON
 
         ]);
@@ -181,8 +183,8 @@ class mainStockController extends Controller
             $stockItem = StockItem::where('item_number', $drugName)->first();
             $newStock = $stockItem->item_quantity + $drugQuantity;
             $item['item_quantity'] = $newStock;
-            $price=$request->price[$index];
-            $item['price'] = ($price*0.4)+$price;
+            $price = $request->price[$index];
+            $item['price'] = ($price * 0.4) + $price;
             $items['user'] = auth()->user()->name;
             $stockItem->update($item);
 
@@ -191,7 +193,7 @@ class mainStockController extends Controller
                 'item_name' => $stockItem->item_name,
                 'item_quantity' => $drugQuantity,
                 'item_number' => $stockItem->item_number,
-                'price' =>$request->price,
+                'price' => $request->price,
             ];
         }
         mainstock_journal::create([
@@ -204,4 +206,3 @@ class mainStockController extends Controller
         return redirect()->back()->with('success', 'Bulk Addition completed successfully!');
     }
 }
-
