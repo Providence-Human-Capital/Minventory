@@ -382,7 +382,7 @@ class clincStockController extends Controller
                 'Requester',
                 'Requested At',
                 'Handler',
-                'Handled At ',
+                'Handled At',
                 
             ]);
 
