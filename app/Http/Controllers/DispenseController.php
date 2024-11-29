@@ -29,7 +29,7 @@ class DispenseController extends Controller
             'damount' => "required",
 
         ]);
-        $dispense['drug_number']=$request->drug_number;
+        $dispense['drug_number'] = $request->drug_number;
         $dispense['drug'] = $request->drug;
         $dispense['damount'] = $request->damount;
         $dispense['dispenser'] = auth()->user()->name;
@@ -47,11 +47,9 @@ class DispenseController extends Controller
                 ->update(['item_quantity' => $newstock]);
             dispense::create($dispense);
             return redirect()->route('getclinicstock')->with('success', 'Stock Dispensed.');
-        } 
+        }
 
         return redirect()->route('requeststock')->with('error', 'Request more stock');
-
-
     }
 
     public function dispensehistory()
@@ -59,12 +57,14 @@ class DispenseController extends Controller
         $disclinic = auth()->user()->clinic;
         $clinichis = dispense::where('clinic', $disclinic)->get();
 
+
+
         return view('clinicstock.dispensedstock', compact('clinichis'));
     }
 
     public function searchhis(Request $request)
     {
-        
+
         $query = dispense::query();
 
         // Apply filters based on the request inputs
@@ -76,9 +76,9 @@ class DispenseController extends Controller
 
         // drug
         if ($request->filled('drug')) {
-            $query->where('drug','like', '%' .$request->drug. '%');
+            $query->where('drug', 'like', '%' . $request->drug . '%');
         }
-      
+
 
         // dispenser
         if ($request->filled('dispenser')) {
@@ -96,7 +96,8 @@ class DispenseController extends Controller
 
         // Execute the query and get the results
         $results = $query->get();
-        
+        session(['search_results' => $results]);
+
         return view('clinicstock.dispensesearch', ['results' => $results]);
     }
 
@@ -109,7 +110,7 @@ class DispenseController extends Controller
 
     public function searchhisadmin(Request $request)
     {
-        
+
         $query = dispense::query();
 
         // Apply filters based on the request inputs
@@ -121,9 +122,9 @@ class DispenseController extends Controller
 
         // drug
         if ($request->filled('drug')) {
-            $query->where('drug','like', '%' .$request->drug. '%');
+            $query->where('drug', 'like', '%' . $request->drug . '%');
         }
-      
+
 
         // dispenser
         if ($request->filled('dispenser')) {
@@ -144,7 +145,53 @@ class DispenseController extends Controller
 
         // Execute the query and get the results
         $results = $query->get();
-        
+        session(['search_results' => $results]);
+
+
         return view('admin.dispensesearch', ['results' => $results]);
+    }
+
+    public function exportCsv()
+    {
+        $results = session('search_results', []);
+
+        if (empty($results)) {
+            return back()->with('error', 'No search results found to export.');
+        }
+
+        // Generate CSV response
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="search_results.csv"',
+        ];
+
+        $callback = function () use ($results) {
+            $file = fopen('php://output', 'w');
+
+
+            // Add the CSV headers
+            fputcsv($file, [
+                'Drug',
+                'Quantity',
+                'Dispenser',
+                'Clinic',
+                'Date/Time',
+            ]);
+    
+            // Add data rows
+            foreach ($results as $result) {
+                fputcsv($file, [
+                    $result->drug,      // Drug Name
+                    $result->damount,       // Quantity
+                    $result->dispenser,      // Dispenser
+                    $result->clinic,         // Clinic
+                    $result->dispense_time,     // Date/Time
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }

@@ -30,10 +30,11 @@
 
             </div>
         </div>
+        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#searchrModal">
+            Search
+        </button>
     </x-slot>
-    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#searchrModal">
-        Search
-    </button>
+    
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -42,6 +43,9 @@
                     <!-- Button to print results -->
                     <button class="btn btn-primary mb-3" onclick="printResults()">
                         <i class="fa fa-print"></i> Print Results
+                    </button>
+                    <button class="btn btn-success mb-3" onclick="location.href='{{ route('rstock.export.csv') }}'">
+                        <i class="fa fa-download"></i> Download CSV
                     </button>
                     <div class="py-12">
                         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">

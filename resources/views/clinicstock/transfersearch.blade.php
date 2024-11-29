@@ -239,6 +239,9 @@
                     <button class="btn btn-primary mb-3" onclick="printResults()">
                         <i class="fa fa-print"></i> Print Results
                     </button>
+                    <button class="btn btn-success mb-3" onclick="location.href='{{ route('transactions.export.csv') }}'">
+                        <i class="fa fa-download"></i> Download CSV
+                    </button>
 
                     <div class="table-responsive">
                         <div id="printArea" class="print-area">

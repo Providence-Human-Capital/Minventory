@@ -308,8 +308,62 @@ class requestController extends Controller
 
         // Execute the query and get the results
         $results = $query->get();
+        session(['search_results' => $results]);
+
 
         // Return the results to a view or as a JSON response
         return view('Requests.Requestsearch', compact('results')); // Adjust view name as needed
+    }
+
+    public function exportCsv()
+    {
+        $results = session('search_results', []);
+
+        if (empty($results)) {
+            return back()->with('error', 'No search results found to export.');
+        }
+
+        // Generate CSV response
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="search_results.csv"',
+        ];
+
+        $callback = function () use ($results) {
+            $file = fopen('php://output', 'w');
+
+
+            // Add the CSV headers
+            fputcsv($file, [
+                'Item Name',
+                'Item Number',
+                'Quantity',
+                'Clinic',
+                'Status',
+                'Requester',
+                'Requested At',
+                'Handled By',
+                'Handled At',
+            ]);
+
+            // Write each result to the CSV
+            foreach ($results as $result) {
+                fputcsv($file, [
+                    $result->item_name,
+                    $result->item_number,
+                    $result->item_quantity,
+                    $result->clinic,
+                    $result->status ?? 'Pending', // Default to 'Pending' if null
+                    $result->procurer,
+                    $result->created_at,
+                    $result->recieved_by,
+                    $result->updated_at,
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }

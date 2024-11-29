@@ -38,6 +38,9 @@
                         <button class="btn btn-primary mb-3" onclick="printResults()">
                             <i class="fa fa-print"></i> Print Results
                         </button>
+                        <button class="btn btn-success mb-3" onclick="location.href='{{ route('dispense.export.csv') }}'">
+                            <i class="fa fa-download"></i> Download CSV
+                        </button>
                     </div>
                     <div class="m-15" style="float:right;">
                         <button type="button" class="btn btn-success" data-toggle="modal" data-target="#searchrModal"

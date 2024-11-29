@@ -99,15 +99,22 @@
                                                             </button>
                                                         </div>
                                                         <div class="modal-body text-center">
-                                                            <iframe src="{{ asset($entry->p_o_d) }}" style="width: 100%; height: 500px;" frameborder="0">
-                                                                Your browser does not support iframes.
-                                                            </iframe>
+                                                            @if ($entry->p_o_d)
+                                                                <iframe src="{{ asset($entry->p_o_d) }}"
+                                                                    style="width: 100%; height: 500px;" frameborder="0">
+                                                                    Your browser does not support iframes.
+                                                                </iframe>
+                                                            @else
+                                                                <p>No file available for preview.</p>
+                                                            @endif
                                                         </div>
                                                         <div class="modal-footer">
-                                                            <a href="{{ asset($entry->p_o_d) }}" class="btn btn-success" download>Download PDF</a>
-                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                            <a href="{{ asset($entry->p_o_d) }}"
+                                                                class="btn btn-success" download>Download PDF</a>
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-dismiss="modal">Close</button>
                                                         </div>
-                                                        
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -126,13 +133,20 @@
                                                             </button>
                                                         </div>
                                                         <div class="modal-body text-center">
-                                                            <iframe src="{{ asset($entry->p_o_r) }}" style="width: 100%; height: 500px;" frameborder="0">
-                                                                Your browser does not support iframes.
-                                                            </iframe>
+                                                            @if ($entry->p_o_r)
+                                                                <iframe src="{{ asset($entry->p_o_r) }}"
+                                                                    style="width: 100%; height: 500px;" frameborder="0">
+                                                                    Your browser does not support iframes.
+                                                                </iframe>
+                                                            @else
+                                                                <p>No file available for preview.</p>
+                                                            @endif
                                                         </div>
                                                         <div class="modal-footer">
-                                                            <a href="{{ asset($entry->p_o_r) }}" class="btn btn-success" download>Download PDF</a>
-                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                            <a href="{{ asset($entry->p_o_r) }}"
+                                                                class="btn btn-success" download>Download PDF</a>
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-dismiss="modal">Close</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -153,43 +167,43 @@
                                                         </div>
                                                         <div class="modal-body">
                                                             @php
-                                                                
+
                                                                 $details = json_decode($entry->details, true); // Decode JSON data
                                                             @endphp
-                                                            @if(is_array($details))
-                                                            <div class="table-responsive">
-                                                                <div class="container mt-4">
-                                                                    <div class="row">
-                                                                        @foreach ($details as $detail)
-                                                                            <div class="col-md-4 mb-4">
-                                                                                <div class="card h-100">
-                                                                                    <div
-                                                                                        class="card-body d-flex flex-column">
-                                                                                        <h5 class="card-title">
-                                                                                            {{ $detail['item_name'] }}
-                                                                                        </h5>
-                                                                                        <div class="flex-grow-1">
-                                                                                            <p><strong>Item
-                                                                                                    Number:</strong>
-                                                                                                {{ $detail['item_number'] }}
-                                                                                            </p>
-                                                                                            <p><strong>Quantity:</strong>
-                                                                                                {{ $detail['item_quantity'] }}
-                                                                                            </p>
-                                                                                            <p><strong>Price:</strong>
-                                                                                                ${{(DB::table('stock_items')->where('item_number',$detail['item_number'])->value('price'))* $detail['item_quantity']}}
+                                                            @if (is_array($details))
+                                                                <div class="table-responsive">
+                                                                    <div class="container mt-4">
+                                                                        <div class="row">
+                                                                            @foreach ($details as $detail)
+                                                                                <div class="col-md-4 mb-4">
+                                                                                    <div class="card h-100">
+                                                                                        <div
+                                                                                            class="card-body d-flex flex-column">
+                                                                                            <h5 class="card-title">
+                                                                                                {{ $detail['item_name'] }}
+                                                                                            </h5>
+                                                                                            <div class="flex-grow-1">
+                                                                                                <p><strong>Item
+                                                                                                        Number:</strong>
+                                                                                                    {{ $detail['item_number'] }}
+                                                                                                </p>
+                                                                                                <p><strong>Quantity:</strong>
+                                                                                                    {{ $detail['item_quantity'] }}
+                                                                                                </p>
+                                                                                                <p><strong>Price:</strong>
+                                                                                                    ${{ DB::table('stock_items')->where('item_number', $detail['item_number'])->value('price') * $detail['item_quantity'] }}
 
-                                                                                            </p>
+                                                                                                </p>
+                                                                                            </div>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
-                                                                            </div>
-                                                                        @endforeach
+                                                                            @endforeach
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
                                                             @else
-                                                            nothing here
+                                                                nothing here
                                                             @endif
                                                         </div>
                                                     </div>

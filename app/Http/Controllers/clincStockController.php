@@ -47,9 +47,9 @@ class clincStockController extends Controller
 
     public function changestatus(Request $request)
     {
-        
+
         $request->validate([
-           'item_pdf' => 'required|mimes:pdf|max:2048',
+            'item_pdf' => 'required|mimes:pdf|max:2048',
         ]);
         if ($request->hasFile('item_pdf')) {
             $file = $request->file('item_pdf');
@@ -88,19 +88,17 @@ class clincStockController extends Controller
         $clinic = $approved->clinics;
         $tableName = preg_replace('/[^a-zA-Z0-9]/', '', $clinic); // Clean clinic name
         $tableName = strtolower($tableName) . '_stocks';  // Add suffix for the stock table
-        $details=json_decode($approve->details);
-        foreach($details as $detail)
-        {
-            $currenstock = DB::table($tableName)->where('item_number', 'like', $detail->item_number)->get()->first()->item_quantity; 
+        $details = json_decode($approve->details);
+        foreach ($details as $detail) {
+            $currenstock = DB::table($tableName)->where('item_number', 'like', $detail->item_number)->get()->first()->item_quantity;
             $addstocks = $detail->item_quantity;
             $newstock = $addstocks + $currenstock;
             DB::table($tableName)
-            ->where('item_number', 'like',  $detail->item_number)
-            ->update(['item_quantity' => $newstock]);
+                ->where('item_number', 'like',  $detail->item_number)
+                ->update(['item_quantity' => $newstock]);
             $stockItem = StockItem::where('item_number', $detail->item_number)->first();
             $newcentralStock = $stockItem->item_quantity - $detail->item_quantity;
-            $stockItem->update(['item_quantity' => $newcentralStock]); 
-            
+            $stockItem->update(['item_quantity' => $newcentralStock]);
         }
         return redirect()->route('pendingstock')->with('success', 'Stock Received.');
     }
@@ -188,6 +186,8 @@ class clincStockController extends Controller
 
 
         $results = $query->get();
+        session(['search_results' => $results]);
+
         return view('clinicstock.receivedstocksearch', compact('results', 'drugs'));
     }
 
@@ -298,7 +298,112 @@ class clincStockController extends Controller
             $query->where(DB::raw('DATE(updated_at)'), '<=', $request->received_at_end);
         }
         // Get the filtered records
-        $records = $query->get();
+        $results = $query->get();
+        session(['search_results' => $results]);
         return view('clinicstock.transfersearch', compact('records', 'drugs'));
+    }
+
+    public function exportCsv()
+    {
+        $results = session('search_results', []);
+
+        if (empty($results)) {
+            return back()->with('error', 'No search results found to export.');
+        }
+
+        // Generate CSV response
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="search_results.csv"',
+        ];
+
+        $callback = function () use ($results) {
+            $file = fopen('php://output', 'w');
+
+
+            // Add the CSV headers
+            fputcsv($file, [
+                'Clinic',
+                'Status',
+                'Received By',
+                'Requested At',
+                'Procurer',
+                'Received ',
+                'P.O.D',
+                'Transaction Details',
+                
+            ]);
+
+            // Write each result to the CSV
+            foreach ($results as $result) {
+                fputcsv($file, [
+                    $result->clinics,           // Clinic
+                    $result->status,           // Status
+                    $result->reciever,      // Received By
+                    $result->created_at,     // Requested At
+                    $result->procurer,
+                    $result->updated_at,
+                    $result->p_o_d,            // P.O.D (Proof of Delivery)
+                    json_decode($result->transaction_details), // Transaction Details in JSON format
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    public function exportrCsv()
+    {
+        $results = session('search_results', []);
+
+        if (empty($results)) {
+            return back()->with('error', 'No search results found to export.');
+        }
+
+        // Generate CSV response
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="search_results.csv"',
+        ];
+
+        $callback = function () use ($results) {
+            $file = fopen('php://output', 'w');
+
+
+            // Add the CSV headers
+            fputcsv($file, [
+                'Item_name',
+                'Item_number',
+                'Quantity',
+                'Clinic',
+                'Status',
+                'Requester',
+                'Requested At',
+                'Handler',
+                'Handled At ',
+                
+            ]);
+
+            // Write each result to the CSV
+            foreach ($results as $result) {
+                fputcsv($file, [
+                    $result->item_name, 
+                    $result->item_number,
+                    $result->item_quantity,
+                    $result->clinic,             // Clinic
+                    $result->status,           // Status
+                    $result->requester,      // Received By
+                    $result->date_requested,     // Requested At
+                    $result->approver,
+                    $result->date_approved,
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }
