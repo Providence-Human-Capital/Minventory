@@ -63,13 +63,6 @@ Route::get('/requests/export', [requestController::class, 'exportCsv'])->name('a
 Route::get('/dispense/export', [DispenseController::class, 'exportCsv'])->name('dispense.export.csv');
 Route::get('/rstock/export', [clincStockController::class, 'exportCsv'])->name('rstock.export.csv');
 Route::get('/rstock/export', [clincStockController::class, 'exportrCsv'])->name('requeststock.export.csv');
-
-
-
-
-
-
-
 //recieve stock
 Route::get('/clinicstock/pendingstock', [clincStockController::class, 'showpending'])->middleware('auth')->name('pendingstock');
 Route::get('/clinicstock/receivedstock', [clincStockController::class, 'receivedstock'])->middleware('auth')->name('receivedstock');
@@ -102,6 +95,7 @@ Route::post('/sendemail', [MailerController::class, 'sendEmail'])->name('sendEma
 //admin options
 Route::get('/admin/allclincistock', [Admincontroller::class, 'allclinicstocks'])->name('getallstocks');
 Route::post('/admin/allclincistock', [Admincontroller::class, 'showclinicchart'])->name('showclinicchart');
+Route::post('/admin/drug-report-data/yearly', [Admincontroller::class, 'yeardrug'])->name('yeardrug');
 Route::get('/admin/drug-report-data', [Admincontroller::class, 'getdrugreport'])->name('getdrugreport');
 Route::get('/admin/drug-report', [Admincontroller::class, 'showDrugReport'])->name('showDrugReport');
 Route::get('/admin/allclincistockbatch', [Admincontroller::class, 'allclinicstocksbatch'])->name('batch');

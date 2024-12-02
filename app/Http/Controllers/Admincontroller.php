@@ -11,6 +11,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Maatwebsite\Excel\Excel as ExcelExcel;
 use Maatwebsite\Excel\Facades\Excel;
+use PhpParser\Node\Stmt\Return_;
 
 class Admincontroller extends Controller
 {
@@ -324,6 +325,117 @@ class Admincontroller extends Controller
         // Return JSON response
         return response()->json([
             'data' => $rawData,
+            'chartData' => [
+                'labels' => $labels,
+                'values' => $values,
+            ],
+            'chartData2' => [
+                'labels' => $labels2,
+                'values' => $values2,
+            ],
+        ]);
+    }
+
+    public function getdrugreportyearly()
+    {
+        return view('admin.drugreportpageoptions');
+    }
+
+    public function yeardrug(Request $request)
+    {
+        // Validate inputs
+        $request->validate([
+            'year' => 'required|integer|min:2000|max:' . date('Y'),
+            'month' => 'nullable|integer|min:1|max:12',
+        ]);
+        $year = $request->year;
+        $month = $request->month;
+
+        // Build the base query for pending stocks
+        $query = DB::table("pending_stocks")
+            ->select(
+                DB::raw('DATE_FORMAT(updated_at, "%M-%y") as date'),
+                DB::raw('SUM(item_quantity) as yearsum'),
+                'item_name',
+                'item_number',
+                'details'
+            )
+            ->where('status', 'like', 'Received')
+            ->whereYear('updated_at', $year);
+
+        // Add month filter if provided
+        if ($month) {
+            $query->whereMonth('updated_at', $month);
+        }
+
+        // Group and order the query
+        $ydata = $query
+            ->groupBy($month ? DB::raw('MONTH(updated_at)') : DB::raw('YEAR(updated_at)'), 'item_name')
+            ->orderBy('updated_at', 'asc')
+            ->get();
+
+        // Process the records for pending stocks
+        $ydrugSummary = [];
+        foreach ($ydata as $stock) {
+            $details = json_decode($stock->details);
+            if ($details) {
+                foreach ($details as $detail) {
+                    $drugNumber = $detail->item_number;
+                    if (isset($ydrugSummary[$drugNumber])) {
+                        $ydrugSummary[$drugNumber]['quantity'] += $detail->item_quantity;
+                    } else {
+                        $ydrugSummary[$drugNumber] = [
+                            'name' => $detail->item_name,
+                            'quantity' => $detail->item_quantity,
+                        ];
+                    }
+                }
+            }
+        }
+
+        // Prepare data for response
+        $labels = [];
+        $values = [];
+        $html = '';
+
+        foreach ($ydrugSummary as $drug) {
+            $labels[] = $drug['name'];
+            $values[] = $drug['quantity'];
+            $html .= "<tr><td>{$drug['name']}</td><td>{$drug['quantity']}</td></tr>";
+        }
+
+        // Fetch dispenses data
+        $dispenseQuery = DB::table("dispenses")
+            ->select(
+                DB::raw('DATE_FORMAT(dispense_time, "%M-%y") as date'),
+                DB::raw('SUM(damount) as yearsum'),
+                'drug',
+                'drug_number'
+            )
+            ->whereYear('dispense_time', $year);
+
+        // Add month filter for dispenses if provided
+        if ($month) {
+            $dispenseQuery->whereMonth('dispense_time', $month);
+        }
+
+        $ysenddata = $dispenseQuery
+            ->groupBy($month ? DB::raw('MONTH(dispense_time)') : DB::raw('YEAR(dispense_time)'), 'drug')
+            ->orderBy('drug', 'asc')
+            ->get();
+
+        $labels2 = [];
+        $values2 = [];
+
+        foreach ($ysenddata as $data) {
+            $labels2[] = $data->drug;
+            $values2[] = $data->yearsum;
+        }
+
+        // Return JSON response
+        return response()->json([
+            'html' => $html,
+            'data' => array_values($ydrugSummary),
             'chartData' => [
                 'labels' => $labels,
                 'values' => $values,

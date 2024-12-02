@@ -28,27 +28,26 @@
                 </div>
             @endif
         </div>
-    </center>s
+    </center>
 
     <div class="py-12">
         <div class="container">
             <div class="row">
                 <!-- Sidebar Column -->
                 <div class="col-md-3">
-                    <form id="clinicForm" method="POST" action="{{ route('yeardrug') }}">
+                    <form id="clinicForm" method="POST" action="{{route('batchchart')}}">
                         @csrf
                         <fieldset>
+                            <legend class="fw-bold">Clinic Selection</legend>
                             <div class="mb-3">
-                                <label for="month" class="form-label">Select Month:</label>
-                                <select id="month" name="month" class="form-select">
-                                    <option value="" >Select a month</option>
-                                    @for ($i = 1; $i <= 12; $i++)
-                                        <option value="{{ $i }}">{{ date('F', mktime(0, 0, 0, $i, 1)) }}
-                                        </option>
-                                    @endfor
+                                <label for="item_number" class="form-label">Select Drug:</label>
+                                <select name="item_number" id="item_number" class="form-select">
+                                    <option value="" disabled selected>Select a drug</option>
+                                    @foreach (DB::table('stock_items')->get() as $drug)
+                                        <option value="{{ $drug->item_number }}">{{ $drug->item_name }}</option>
+                                    @endforeach
                                 </select>
                             </div>
-
                             <div class="mb-3">
                                 <label for="year" class="form-label">Select Year:</label>
                                 <select id="year" name="year" class="form-select">
@@ -68,24 +67,6 @@
                 <div class="col-md-9">
                     <div class="card">
                         <div class="card-header">
-                            Yearly Drug Report
-                        </div>
-                        <div class="card-body">
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Drug Name</th>
-                                        <th>Quantity</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="resultTableBody">
-                                    <!-- Dynamic rows will be inserted here -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header">
                             Stock distributed throughout {{ now()->year }}
                         </div>
                         <div class="card-body">
@@ -93,17 +74,17 @@
                             <canvas id="resultChart" style="margin: 20px;"></canvas>
                         </div>
                     </div>
-
-                    <div class="card">
-                        <div class="card-header">
-                            Stock dispensed throughout {{ now()->year }}
-                        </div>
-                        <div class="card-body">
-                            <!-- Chart Area -->
-                            <canvas id="resultChart2" style="margin-top: 20px;"></canvas>
-                        </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        Stock dispensed throughout {{ now()->year }}
+                    </div>
+                    <div class="card-body">
+                        <!-- Chart Area -->
+                        <canvas id="resultChart2" style="margin-top: 20px;"></canvas>
                     </div>
                 </div>
+            </div>
             </div>
         </div>
     </div>
@@ -125,7 +106,6 @@
                     data: formData,
                     success: function(data) {
                         $('#resultTableBody').html(data.html);
-                        updateChart(data.chartData);
                     },
                     error: function(xhr) {
                         console.error(xhr);
@@ -135,32 +115,13 @@
             });
         });
 
-        function updateChart(chartData) {
-            const ctx = document.getElementById('resultChart').getContext('2d');
-            if (window.myChart) {
-                window.myChart.destroy();
-            }
-            window.myChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: chartData.labels,
-                    datasets: [{
-                        label: 'Quantity Distributed',
-                        data: chartData.values,
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
+
+        function printResults() {
+            const printContents = document.getElementById('printArea').innerHTML;
+            const originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
         }
     </script>
 </x-app-layout>

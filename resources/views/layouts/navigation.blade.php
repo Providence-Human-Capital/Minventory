@@ -56,6 +56,12 @@
                             </x-nav-link>
                             @break
 
+                            @case(null) {{-- When role is null --}}
+                            <script>
+                                window.location.href = "{{ 'auth/login' }}";
+                            </script>
+                            @break
+
                         @default
                             <x-nav-link :href="route('pendingstock')" :active="request()->routeIs('pendingstock')">
                                 {{ __('Pending Stock') }}
