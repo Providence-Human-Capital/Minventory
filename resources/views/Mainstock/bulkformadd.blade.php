@@ -78,7 +78,7 @@
                             <!-- Submit Button -->
                             <input type="submit"
                                 style="background-color: green; color: white; padding: 10px; margin-top: 20px; border: none; border-radius: 5px;"
-                                value="Distribute Bulk">
+                                value="Add Bulk">
                         </form>
                     </div>
                 </div>

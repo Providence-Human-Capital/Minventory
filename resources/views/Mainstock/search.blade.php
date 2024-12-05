@@ -7,6 +7,61 @@
                         Add New Stock Item
                     </button>
                 </div>
+                 {{-- add newStock model design start here --}}
+                 <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModal"
+                 aria-hidden="true">
+                 <div class="modal-dialog" role="document">
+                     <div class="modal-content">
+                         <div class="modal-header" style="padding: 0px;height:50px">
+                             <div style="color:white;width:100%;height:100%;background-color:green;top:0px;text-align:center"
+                                 class="modal-title" id="addModal">
+                                 <p style="padding-top:10px;display:inline">ADD TO STOCK</p>
+                                 <button style="display:inline" type="button" class="close"
+                                     data-dismiss="modal" aria-label="Close">
+                                     <span aria-hidden="true">&times;</span>
+                                 </button>
+                             </div>
+                         </div>
+                         <form method="POST" action="/mainstock" enctype="multipart/form-data">
+                             <div style="padding-left:10px;padding-right:10px;width:100%">
+                                 @csrf
+                                 <div>
+                                     <label for='item_name'>Item Name</label><br>
+                                     <input type="text" id="item_name" name="item_name"
+                                         style="width: 100%;"><br>
+                                     @error('item_name')
+                                         <p style="color:red;size:13px">{{ $message }}</p>
+                                     @enderror
+                                 </div>
+                                 <div>
+                                     <label for='quantity'>Quantity </label><br>
+                                     <input type="number" id="item_quantity" name="item_quantity"
+                                         placeholder="1000" style="width: 100%;"><br>
+                                     @error('item_quantity')
+                                         <p style="color:red;size:13px">{{ $message }}</p>
+                                     @enderror
+                                 </div>
+                                 <div>
+                                     <label for='item_number'>Item Number</label><br>
+                                     <input type="text" id="item_number" name="item_number"
+                                         style="width: 100%;"><br>
+                                     @error('item_number')
+                                         <p style="color:red;size:13px">{{ $message }}</p>
+                                     @enderror
+                                 </div>
+
+
+
+                                 <input type="submit"
+                                     style="background-color: green;color:white;size:10pt;padding:5pt;margin:15pt;border-radius:5px;border-style:outset;border-color:black"
+                                     value="ADD TO STOCK">
+                             </div>
+                         </form>
+
+
+                     </div>
+                 </div>
+             </div>
                 <div class="col-sm">
                     <div style="display:inline">
 
@@ -79,149 +134,6 @@
                                     <td style="padding: 8px;">{{ $searchs->item_number }}</td>
                                     <td style="padding: 8px;">{{ $searchs->item_quantity }}</td>
                                 </tr>
-
-                                {{-- Add Stock Modal --}}
-                                <div class="modal fade" id="addStockModal{{ $searchs->id }}" tabindex="-1"
-                                    role="dialog" aria-labelledby="addStockModalLabel{{ $searchs->id }}"
-                                    aria-hidden="true">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header" style="background-color: green; color: white;">
-                                                <h5 class="modal-title" id="addStockModalLabel{{ $searchs->id }}">
-                                                    ADD TO STOCK
-                                                </h5>
-                                                <button type="button" class="close" data-dismiss="modal"
-                                                    aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <form method="POST" action="/mainstock/{{ $searchs->id }}" enctype="multipart/form-data">
-                                                @csrf
-                                                @method('patch')
-                                                <div class="modal-body">
-                                                    <div class="form-group">
-                                                        <label for="item_name">Item Name</label>
-                                                        <input type="text" id="item_name" name="item_name"
-                                                            value="{{ $searchs->item_name }}" class="form-control">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="item_quantity">Quantity</label>
-                                                        <input type="number" id="item_quantity" name="item_quantity"
-                                                            class="form-control" placeholder="1000">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="item_number">Item Number</label>
-                                                        <input type="text" id="item_number" name="item_number"
-                                                            value="{{ $searchs->item_number }}" class="form-control">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="price">Price</label>
-                                                        <input type="number" id="price" name="price"
-                                                            class="form-control" placeholder="1000">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="expiry_date">Expiry Date</label>
-                                                        <input type="date" id="expiry_date" name="expiry_date"
-                                                            class="form-control">
-                                                    </div>
-                                                    <div>
-                                                        <label for='batch_number'>Batch Number</label><br>
-                                                        <input type="text" id="batch_number" name="batch_number"
-                                                            style="width: 100%;"><br>
-                                                        @error('batch_number')
-                                                            <p style="color:red;size:13px">{{ $message }}</p>
-                                                        @enderror
-                                                    </div>
-                                                    
-                                                    <div>
-                                                        <label for="item_image">Upload Image</label><br>
-                                                        <input type="file" id="item_image" name="item_image" accept="image/*"
-                                                            style="width: 100%;"><br>
-                                                        @error('item_image')
-                                                            <p style="color:red;size:13px">{{ $message }}</p>
-                                                        @enderror
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="submit" class="btn btn-success">ADD TO
-                                                        STOCK</button>
-                                                    <button type="button" class="btn btn-secondary"
-                                                        data-dismiss="modal">Close</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {{-- Distribute Stock Modal --}}
-                                <div class="modal fade" id="distributeStockModal{{ $searchs->id }}" tabindex="-1"
-                                    role="dialog" aria-labelledby="distributeStockModalLabel{{ $searchs->id }}"
-                                    aria-hidden="true">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">Distribute Stock</h5>
-                                                <button type="button" class="close" data-dismiss="modal"
-                                                    aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <form method="POST" action="/mainstock/dis/{{ $searchs->id }}" enctype="multipart/form-data">
-                                                @csrf
-                                                @method('patch')
-                                                <div class="modal-body">
-                                                    <div class="form-group">
-                                                        <label for="item_name">Item Name</label>
-                                                        <input type="text" id="item_name" name="item_name"
-                                                            value="{{ $searchs->item_name }}" class="form-control">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="item_quantity">Quantity</label>
-                                                        <input type="number" id="item_quantity" name="item_quantity"
-                                                            class="form-control" placeholder="1000">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="item_number">Item Number</label>
-                                                        <input type="text" id="item_number" name="item_number"
-                                                            value="{{ $searchs->item_number }}" class="form-control">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="clinics">Choose a Clinic</label>
-                                                        <select name="clinics" id="clinics" class="form-control" required>
-                                                            <?php
-                                                            $clinics = DB::table('clinics')->get('clinic_name');
-                                                            ?>
-
-                                                            <option value="" disabled selected>Select a clinic
-                                                            </option>
-                                                            @foreach ($clinics as $clinic)
-                                                                <option value="{{ $clinic->clinic_name }}">
-                                                                    {{ $clinic->clinic_name }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                        @error('clinics')
-                                                            <p style="color:red;size:13px">{{ $message }}</p>
-                                                        @enderror
-                                                    </div>
-                                                    <div>
-                                                        <label for="item_image">Upload Image</label><br>
-                                                        <input type="file" id="item_image" name="item_image"
-                                                            accept="image/*" style="width: 100%;"><br>
-                                                        @error('item_image')
-                                                            <p style="color:red;size:13px">{{ $message }}</p>
-                                                        @enderror
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="submit" class="btn btn-success">Distribute TO
-                                                        STOCK</button>
-                                                    <button type="button" class="btn btn-secondary"
-                                                        data-dismiss="modal">Close</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
                             @endforeach
                         </tbody>
                     </table>

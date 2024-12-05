@@ -94,10 +94,8 @@ Route::patch('/mainstock/dis/{stock_item}', [requestController::class, 'approver
 Route::post('/sendemail', [MailerController::class, 'sendEmail'])->name('sendEmail');
 //admin options
 Route::get('/admin/allclincistock', [Admincontroller::class, 'allclinicstocks'])->name('getallstocks');
-Route::post('/admin/allclincistock', [Admincontroller::class, 'showclinicchart'])->name('showclinicchart');
-Route::post('/admin/drug-report-data/yearly', [Admincontroller::class, 'yeardrug'])->name('yeardrug');
-Route::get('/admin/drug-report-data', [Admincontroller::class, 'getdrugreport'])->name('getdrugreport');
 Route::get('/admin/drug-report', [Admincontroller::class, 'showDrugReport'])->name('showDrugReport');
+Route::post('/admin/drug-report-data/yearly', [Admincontroller::class, 'globalstats'])->name('globalstats');
 Route::get('/admin/allclincistockbatch', [Admincontroller::class, 'allclinicstocksbatch'])->name('batch');
 Route::post('/admin/selecteclinicbatch', [Admincontroller::class, 'showclinicchartbatch'])->name('batchchart');
 Route::get('/account/Dispense/dispense/save', [DispenseController::class, 'dispensehistoryadmin'])->middleware('auth')->name('dishistoryadmin');

@@ -53,61 +53,6 @@ class Admincontroller extends Controller
         return view('admin.allclinicsstocks');
     }
 
-    public function showclinicchart(Request $request)
-    {
-
-        $clinic = $request->clinics;
-        $month = $request->month;
-        $year = $request->year;
-
-        // Fetch the data from the 'pending_stocks'table
-        $data = DB::table("pending_stocks")
-            ->select(
-                DB::raw('DATE_FORMAT(updated_at, "%M-%y") as date'),
-                DB::raw('SUM(item_quantity) as monthsum'),
-                'item_name',
-                'item_number'
-            )
-            ->where('clinics', 'like', $clinic)
-            ->where('status', 'like', 'Received')
-            ->whereYear('updated_at', $year)
-            ->whereMonth('updated_at', $month)
-            ->groupBy(DB::raw('MONTH(updated_at)'), 'item_name')
-            ->orderBy('updated_at', 'asc')
-            ->get();
-
-        $labels = [];
-        $values = [];
-        $html = '';
-        // Generate table name dynamically from the selected clinic
-        $tableName = preg_replace('/[^a-zA-Z0-9]/', '', $clinic);
-        $tableName = strtolower($tableName) . '_stocks';
-        foreach ($data as $item) {
-            $itemQuantity = DB::table($tableName)->where('item_number', $item->item_number)->value('item_quantity');
-
-            $usage = DB::table('dispenses')
-                ->select(DB::raw('SUM(damount) as monthsum'))
-                ->where('drug', $item->item_name)
-                ->whereYear('dispense_time', $year) // Assuming `dispense_date` is the column for the date
-                ->whereMonth('dispense_time', $month)
-                ->value('monthsum');
-            $fontColor = ($itemQuantity < 100) ? 'red' : 'black';
-            // Append a new row to the HTML table with the data
-            $html .= "<tr><td>{$item->item_name}</td><td>{$item->monthsum}</td><td style='color: {$fontColor};'>{$itemQuantity}</td><td>{$usage}</td></tr>";
-
-            // Populate chart data (labels and values)
-            $labels[] = $item->item_name;
-            $values[] = $item->monthsum;
-        }
-        // Return the HTML table and chart data as a JSON response
-        return response()->json([
-            'html' => $html,
-            'chartData' => [
-                'labels' => $labels,
-                'values' => $values,
-            ]
-        ]);
-    }
 
 
     public function allclinicstocksbatch()
@@ -120,87 +65,140 @@ class Admincontroller extends Controller
         $clinic = $request->clinics;
         $month = $request->month;
         $year = $request->year;
+        $mode = $request->mode; // Get the mode (monthly or yearly)
 
-        // Fetch the data from the 'pending_stocks'table
-        $data = DB::table("pending_stocks")
-            ->select(
-                DB::raw('DATE_FORMAT(updated_at, "%M-%y") as date'),
-                DB::raw('SUM(item_quantity) as monthsum'),
-                'item_name',
-                'item_number',
-                'details'
-            )
+        $tableName = preg_replace('/[^a-zA-Z0-9]/', '', $clinic); // Clean clinic name
+        $tableName = strtolower($tableName) . '_stocks';  // Use clinic name as the table name
+
+        // Fetch the data based on the mode (monthly or yearly)
+        $pendingStocksQuery = DB::table("pending_stocks")
+            ->select('details')
             ->where('clinics', 'like', $clinic)
-            ->where('status', 'like', 'Received')
-            ->whereYear('updated_at', $year)
-            ->whereMonth('updated_at', $month)
-            ->groupBy(DB::raw('MONTH(updated_at)'), 'item_name')
-            ->orderBy('updated_at', 'asc')
-            ->get();
+            ->where('status', 'like', 'Received');
 
-        $labels = [];
-        $values = [];
-        $html = '';
-        // Initialize an empty array for the drug summary
-        $drugSummary = [];
+        // Apply filters based on mode
+        if ($mode === 'monthly') {
+            $pendingStocksQuery->whereYear('updated_at', $year)
+                ->whereMonth('updated_at', $month);
+        } else if ($mode === 'yearly') {
+            $pendingStocksQuery->whereYear('updated_at', $year);
+        }
 
-        // Loop through the records and process each item
-        foreach ($data as $stock) {
-            // Decode the details JSON field to extract drug details
-            $details = json_decode($stock->details);
+        // Get the pending stocks based on the selected filters
+        $pendingStocks = $pendingStocksQuery->get();
 
-            // Check if details are not empty
-            if ($details) {
-                // Loop through each drug detail
-                foreach ($details as $detail) {
-                    $drugName = $detail->item_name;
-                    $drugNumber = $detail->item_number;
-                    $drugQuantity = $detail->item_quantity;
+        // Data extraction from JSON format
+        $extractedStocks = [];
+        foreach ($pendingStocks as $stock) {
+            $details = json_decode($stock->details, true); // Decode JSON details
+            if (is_array($details)) {
+                foreach ($details as $drug) {
+                    $itemNumber = $drug['item_number'];
+                    $itemName = $drug['item_name'];
+                    $quantity = $drug['item_quantity'];
 
-                    // If the drug already exists in the summary, add the quantity
-                    if (isset($drugSummary[$drugNumber])) {
-                        $drugSummary[$drugNumber]['quantity'] += $drugQuantity;
+                    if (isset($extractedStocks[$itemNumber])) {
+                        $extractedStocks[$itemNumber]['quantity'] += $quantity;
                     } else {
-                        // If not, initialize the quantity for the drug
-                        $drugSummary[$drugNumber] = [
-                            'name' => $drugName,  // Store the drug name
-                            'quantity' => $drugQuantity  // Store the quantity
+                        $extractedStocks[$itemNumber] = [
+                            'item_name' => $itemName,
+                            'quantity' => $quantity,
                         ];
                     }
                 }
             }
         }
-        // Process each drug summary to fetch current stock and usage
-        $tableName = preg_replace('/[^a-zA-Z0-9]/', '', $clinic); // Clean clinic name
-        $tableName = strtolower($tableName) . '_stocks';  // Use clinic name as the table name
-        foreach ($drugSummary as $drug => $itemData) {
-            $drugName = $itemData['name'];
-            $itemQuantity = $itemData['quantity'];
 
-            // Fetch the stock for the drug
-            $stock_item = DB::table($tableName)->where('item_number', $drug)->first();
+        // CURRENT stock in clinic 
+        $clinicStocks = DB::table($tableName)
+            ->select('item_name', 'item_number', 'item_quantity as stock_quantity')
+            ->get();
 
+        // Get usage of drugs
+        $dispensesQuery = DB::table('dispenses')
+            ->select(
+                'drug as item_name',
+                'drug_number as item_number',
+                DB::raw('SUM(damount) as dispensed_quantity')
+            )
+            ->where('clinic', 'like', $clinic)
+            ->whereYear('dispense_time', $year);
 
-            if ($stock_item) {
-                $currentStockQuantity = $stock_item->item_quantity;
+        // Apply month filter if in monthly mode
+        if ($mode === 'monthly') {
+            $dispensesQuery->whereMonth('dispense_time', $month);
+        }
 
-                // Get the usage for the drug
-                $usage = DB::table('dispenses')
-                    ->select(DB::raw('SUM(damount) as monthsum'))
-                    ->where('drug_number', $drug)
-                    ->whereYear('dispense_time', $year) // Assuming `dispense_date` is the column for the date
-                    ->whereMonth('dispense_time', $month)
-                    ->value('monthsum') ?? 0;
-                // Add the row to the HTML table
-                $fontColor = ($currentStockQuantity < 100) ? 'red' : 'black';
-                $html .= "<tr><td>{$drugName}</td><td>{$itemQuantity}</td><td style='color: {$fontColor};'>{$currentStockQuantity}</td><td>{$usage}</td></tr>";
+        $dispenses = $dispensesQuery->groupBy('drug_number')->get();
 
-                // Populate chart data (labels and values)
-                $labels[] = $drugName;
-                $values[] = $itemQuantity;
+        $combinedData = [];
+        // Index pending stocks by item_number
+        foreach ($extractedStocks as $itemNumber => $drug) {
+            $combinedData[$itemNumber] = [
+                'item_name' => $drug['item_name'],
+                'sent_quantity' => $drug['quantity'],
+                'current_stock' => 0,
+                'dispensed_quantity' => 0,
+            ];
+        }
+
+        // Merge clinic stocks
+        foreach ($clinicStocks as $clinicStock) {
+            if (!isset($combinedData[$clinicStock->item_number])) {
+                $combinedData[$clinicStock->item_number] = [
+                    'item_name' => $clinicStock->item_name,
+                    'sent_quantity' => 0,
+                    'current_stock' => $clinicStock->stock_quantity,
+                    'dispensed_quantity' => 0,
+                ];
+            } else {
+                $combinedData[$clinicStock->item_number]['current_stock'] = $clinicStock->stock_quantity;
             }
         }
-        // Return the HTML table and chart data as a JSON response
+
+        // Merge dispense data
+        foreach ($dispenses as $dispense) {
+            if (!isset($combinedData[$dispense->item_number])) {
+                $combinedData[$dispense->item_number] = [
+                    'item_name' => $dispense->item_name,
+                    'sent_quantity' => 0,
+                    'current_stock' => 0,
+                    'dispensed_quantity' => $dispense->dispensed_quantity,
+                ];
+            } else {
+                $combinedData[$dispense->item_number]['dispensed_quantity'] = $dispense->dispensed_quantity;
+            }
+        }
+
+        // Prepare HTML and chart data
+        $html = '';
+        $labels = [];
+        $values = [];
+        // Merge dispense data
+        foreach ($combinedData as $drug) {
+            // Calculate stock percentage
+            $sentQuantity = $drug['sent_quantity'];
+            $currentStock = $drug['current_stock'];
+
+            if ($sentQuantity > 0 && ($currentStock / $sentQuantity) < 0.05) {
+                $fontColor = 'red'; // Less than 5% of sent stock
+            } else {
+                $fontColor = 'black';
+            }
+
+            // Add table row
+            $html .= "<tr>
+                    <td>{$drug['item_name']}</td>
+                    <td>{$drug['sent_quantity']}</td>
+                    <td style='color: {$fontColor};'>{$drug['current_stock']}</td>
+                    <td>{$drug['dispensed_quantity']}</td>
+                  </tr>";
+
+            // Prepare chart data
+            $labels[] = $drug['item_name'];
+            $values[] = $drug['sent_quantity'];
+        }
+
         return response()->json([
             'html' => $html,
             'chartData' => [
@@ -210,7 +208,168 @@ class Admincontroller extends Controller
         ]);
     }
 
+    public function globalstats(Request $request)
+    {
+        $month = $request->month;
+        $year = $request->year;
+        $mode = $request->mode;
 
+        // Fetch the data based on the mode (monthly or yearly)
+        $pendingStocksQuery = DB::table("pending_stocks")
+            ->select('details')
+            ->where('status', 'like', 'Received');
+
+        // Apply filters based on mode
+        if ($mode === 'monthly') {
+            $pendingStocksQuery->whereYear('updated_at', $year)
+                ->whereMonth('updated_at', $month);
+        } else if ($mode === 'yearly') {
+            $pendingStocksQuery->whereYear('updated_at', $year);
+        }
+
+        // Get the pending stocks based on the selected filters
+        $pendingStocks = $pendingStocksQuery->get();
+
+        // Data extraction from JSON format
+        $extractedStocks = [];
+        foreach ($pendingStocks as $stock) {
+            $details = json_decode($stock->details, true); // Decode JSON details
+            if (is_array($details)) {
+                foreach ($details as $drug) {
+                    $itemNumber = $drug['item_number'];
+                    $itemName = $drug['item_name'];
+                    $quantity = $drug['item_quantity'];
+
+                    if (isset($extractedStocks[$itemNumber])) {
+                        $extractedStocks[$itemNumber]['quantity'] += $quantity;
+                    } else {
+                        $extractedStocks[$itemNumber] = [
+                            'item_name' => $itemName,
+                            'quantity' => $quantity,
+                        ];
+                    }
+                }
+            }
+        }
+        //exctract all stocks from all clinics
+        $allclinicstock = [];
+        $clinics = Clinic::get();
+
+        foreach ($clinics as $clinic) {
+            $tableName = preg_replace('/[^a-zA-Z0-9]/', '', $clinic->clinic_name); // Clean clinic name
+            $tableName = strtolower($tableName) . '_stocks';  // Use clinic name as the table name
+
+            // CURRENT stock in clinic 
+            $clinicStocks = DB::table($tableName)
+                ->select('item_name', 'item_number', 'item_quantity as stock_quantity')
+                ->get();
+
+            foreach ($clinicStocks as $clinicstock) {
+                $itemNumber = $clinicstock->item_number;
+                if (!isset($allclinicstock[$itemNumber])) {
+                    $allclinicstock[$itemNumber] = [
+                        'item_name' => $clinicstock->item_name,
+                        'current_stock' => $clinicstock->stock_quantity,
+                    ];
+                } else {
+                    $allclinicstock[$itemNumber]['current_stock'] += $clinicstock->stock_quantity;
+                }
+            }
+        }
+
+
+        // Get usage of drugs
+        $dispensesQuery = DB::table('dispenses')
+            ->select(
+                'drug as item_name',
+                'drug_number as item_number',
+                DB::raw('SUM(damount) as dispensed_quantity')
+            )
+            ->whereYear('dispense_time', $year);
+
+        // Apply month filter if in monthly mode
+        if ($mode === 'monthly') {
+            $dispensesQuery->whereMonth('dispense_time', $month);
+        }
+
+        $dispenses = $dispensesQuery->groupBy('drug_number')->get();
+
+        $combinedData = [];
+        // Index pending stocks by item_number
+        foreach ($extractedStocks as $itemNumber => $drug) {
+            $combinedData[$itemNumber] = [
+                'item_name' => $drug['item_name'],
+                'sent_quantity' => $drug['quantity'],
+                'current_stock' => 0,
+                'dispensed_quantity' => 0,
+            ];
+        }
+
+        // Merge clinic stocks
+        foreach ($allclinicstock as $itemNumber => $clinicStock) {
+            if (!isset($combinedData[$itemNumber])) {
+                $combinedData[$itemNumber] = [
+                    'item_name' => $clinicStock['item_name'],
+                    'sent_quantity' => 0,
+                    'current_stock' => $clinicStock['current_stock'],
+                    'dispensed_quantity' => 0,
+                ];
+            } else {
+                $combinedData[$itemNumber]['current_stock'] = $clinicStock['current_stock'];
+            }
+        }
+
+        // Merge dispense data
+        foreach ($dispenses as $dispense) {
+            if (!isset($combinedData[$dispense->item_number])) {
+                $combinedData[$dispense->item_number] = [
+                    'item_name' => $dispense->item_name,
+                    'sent_quantity' => 0,
+                    'current_stock' => 0,
+                    'dispensed_quantity' => $dispense->dispensed_quantity,
+                ];
+            } else {
+                $combinedData[$dispense->item_number]['dispensed_quantity'] = $dispense->dispensed_quantity;
+            }
+        }
+
+        // Prepare HTML and chart data
+        $html = '';
+        $labels = [];
+        $values = [];
+        // Merge dispense data
+        foreach ($combinedData as $drug) {
+            // Calculate stock percentage
+            $sentQuantity = $drug['sent_quantity'];
+            $currentStock = $drug['current_stock'];
+
+            if ($sentQuantity > 0 && ($currentStock / $sentQuantity) < 0.05) {
+                $fontColor = 'red'; // Less than 5% of sent stock
+            } else {
+                $fontColor = 'black';
+            }
+
+            // Add table row
+            $html .= "<tr>
+                    <td>{$drug['item_name']}</td>
+                    <td>{$drug['sent_quantity']}</td>
+                    <td style='color: {$fontColor};'>{$drug['current_stock']}</td>
+                    <td>{$drug['dispensed_quantity']}</td>
+                  </tr>";
+
+            // Prepare chart data
+            $labels[] = $drug['item_name'];
+            $values[] = $drug['sent_quantity'];
+        }
+
+        return response()->json([
+            'html' => $html,
+            'chartData' => [
+                'labels' => $labels,
+                'values' => $values,
+            ]
+        ]);
+    }
 
     public function getcreateclinicform()
     {
@@ -249,201 +408,5 @@ class Admincontroller extends Controller
     public function showDrugReport()
     {
         return view('admin.drugreportpage'); // Replace with the correct path to your Blade file
-    }
-    public function getdrugreport()
-    {
-        $year = now()->year;
-        $ydata = DB::table("pending_stocks")
-            ->select(
-                DB::raw('DATE_FORMAT(updated_at, "%M-%y") as date'),
-                DB::raw('SUM(item_quantity) as yearsum'),
-                'item_name',
-                'item_number',
-                'details'
-            )
-            ->where('status', 'like', 'Received')
-            ->whereYear('updated_at', $year)
-            ->groupBy(DB::raw('MONTH(updated_at)'), 'item_name')
-            ->orderBy('updated_at', 'asc')
-            ->get();
-
-        $labels = [];
-        $values = [];
-        $html = '';
-        $ydrugSummary = [];
-
-        // Process the records
-        foreach ($ydata as $stock) {
-            // Decode the details JSON field
-            $details = json_decode($stock->details);
-
-            // If details are not empty
-            if ($details) {
-                foreach ($details as $detail) {
-                    $drugName = $detail->item_name;
-                    $drugNumber = $detail->item_number;
-                    $drugQuantity = $detail->item_quantity;
-
-                    // Update the drug summary
-                    if (isset($ydrugSummary[$drugNumber])) {
-                        $ydrugSummary[$drugNumber]['quantity'] += $drugQuantity;
-                    } else {
-                        $ydrugSummary[$drugNumber] = [
-                            'name' => $drugName,
-                            'quantity' => $drugQuantity,
-                        ];
-                    }
-                }
-            }
-        }
-
-        // Populate labels, values, and HTML table rows
-        foreach ($ydrugSummary as $drug) {
-            $labels[] = $drug['name'];
-            $values[] = $drug['quantity'];
-            $rawData = array_values($ydrugSummary);
-        }
-
-        $ysenddata = DB::table("dispenses")
-            ->select(
-                DB::raw('DATE_FORMAT(dispense_time, "%M-%y") as date'),
-                DB::raw('SUM(damount) as yearsum'),
-                'drug',
-                'drug_number',
-
-            )
-            ->whereYear('dispense_time', $year)
-            ->groupBy(DB::raw('MONTH(dispense_time)'), 'drug')
-            ->orderBy('drug', 'asc')
-            ->get();
-        foreach ($ysenddata as $data) {
-            $labels2[] = $data->drug;
-            $values2[] = $data->yearsum;
-        }
-
-
-        // Return JSON response
-        return response()->json([
-            'data' => $rawData,
-            'chartData' => [
-                'labels' => $labels,
-                'values' => $values,
-            ],
-            'chartData2' => [
-                'labels' => $labels2,
-                'values' => $values2,
-            ],
-        ]);
-    }
-
-    public function getdrugreportyearly()
-    {
-        return view('admin.drugreportpageoptions');
-    }
-
-    public function yeardrug(Request $request)
-    {
-        // Validate inputs
-        $request->validate([
-            'year' => 'required|integer|min:2000|max:' . date('Y'),
-            'month' => 'nullable|integer|min:1|max:12',
-        ]);
-        $year = $request->year;
-        $month = $request->month;
-
-        // Build the base query for pending stocks
-        $query = DB::table("pending_stocks")
-            ->select(
-                DB::raw('DATE_FORMAT(updated_at, "%M-%y") as date'),
-                DB::raw('SUM(item_quantity) as yearsum'),
-                'item_name',
-                'item_number',
-                'details'
-            )
-            ->where('status', 'like', 'Received')
-            ->whereYear('updated_at', $year);
-
-        // Add month filter if provided
-        if ($month) {
-            $query->whereMonth('updated_at', $month);
-        }
-
-        // Group and order the query
-        $ydata = $query
-            ->groupBy($month ? DB::raw('MONTH(updated_at)') : DB::raw('YEAR(updated_at)'), 'item_name')
-            ->orderBy('updated_at', 'asc')
-            ->get();
-
-        // Process the records for pending stocks
-        $ydrugSummary = [];
-        foreach ($ydata as $stock) {
-            $details = json_decode($stock->details);
-            if ($details) {
-                foreach ($details as $detail) {
-                    $drugNumber = $detail->item_number;
-                    if (isset($ydrugSummary[$drugNumber])) {
-                        $ydrugSummary[$drugNumber]['quantity'] += $detail->item_quantity;
-                    } else {
-                        $ydrugSummary[$drugNumber] = [
-                            'name' => $detail->item_name,
-                            'quantity' => $detail->item_quantity,
-                        ];
-                    }
-                }
-            }
-        }
-
-        // Prepare data for response
-        $labels = [];
-        $values = [];
-        $html = '';
-
-        foreach ($ydrugSummary as $drug) {
-            $labels[] = $drug['name'];
-            $values[] = $drug['quantity'];
-            $html .= "<tr><td>{$drug['name']}</td><td>{$drug['quantity']}</td></tr>";
-        }
-
-        // Fetch dispenses data
-        $dispenseQuery = DB::table("dispenses")
-            ->select(
-                DB::raw('DATE_FORMAT(dispense_time, "%M-%y") as date'),
-                DB::raw('SUM(damount) as yearsum'),
-                'drug',
-                'drug_number'
-            )
-            ->whereYear('dispense_time', $year);
-
-        // Add month filter for dispenses if provided
-        if ($month) {
-            $dispenseQuery->whereMonth('dispense_time', $month);
-        }
-
-        $ysenddata = $dispenseQuery
-            ->groupBy($month ? DB::raw('MONTH(dispense_time)') : DB::raw('YEAR(dispense_time)'), 'drug')
-            ->orderBy('drug', 'asc')
-            ->get();
-
-        $labels2 = [];
-        $values2 = [];
-
-        foreach ($ysenddata as $data) {
-            $labels2[] = $data->drug;
-            $values2[] = $data->yearsum;
-        }
-
-        // Return JSON response
-        return response()->json([
-            'html' => $html,
-            'data' => array_values($ydrugSummary),
-            'chartData' => [
-                'labels' => $labels,
-                'values' => $values,
-            ],
-            'chartData2' => [
-                'labels' => $labels2,
-                'values' => $values2,
-            ],
-        ]);
     }
 }

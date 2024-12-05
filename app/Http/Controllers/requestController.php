@@ -55,11 +55,11 @@ class requestController extends Controller
         $requestedclinic = $requested->clinic;
         $requestedquantity = $requested->item_quantity;
 
-        $maincurrentstock = StockItem::where('item_name', 'like', $requestedname)->get()->first()->item_quantity;
+        $maincurrentstock = StockItem::where('item_number', 'like', $requestednumber)->get()->first()->item_quantity;
         $sentstock = DB::table("pending_stocks")
 
             ->select(DB::raw('DATE_FORMAT(updated_at, "%M-%y") as date'), DB::raw('SUM(item_quantity) as monthsum'))
-            ->where('item_name', 'like', $requestedname)
+            ->where('item_number', 'like', $requestednumber)
             ->where('clinics', 'like', $requestedclinic)
             ->where('status', 'like', 'Received')
             ->groupBy(DB::raw('MONTH(updated_at)'))
