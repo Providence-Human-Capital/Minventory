@@ -130,9 +130,9 @@
                                                     @enderror
                                                 </div>
                                                 <input type="text" id="oldItemNumber" name="oldItemNumber"
-                                                placeholder="1000" style="width: 100%;"
-                                                value="{{ $stocks->item_number }}" hidden>
-                                                
+                                                    placeholder="1000" style="width: 100%;"
+                                                    value="{{ $stocks->item_number }}" hidden>
+
                                                 <p style="margin: 4px">Note: The price you input will be marked up 40%
                                                     before being saved.</p>
                                                 <input type="submit"
@@ -212,7 +212,7 @@
                                                 <p style="color:red;size:13px">{{ $message }}</p>
                                             @enderror
                                         </div>
-                                        
+
 
 
 
