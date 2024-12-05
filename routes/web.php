@@ -46,6 +46,8 @@ Route::get('/mainstock/search', [mainStockController::class,  'searchmain'])->mi
 Route::get('/mainstock', [mainStockController::class, 'showmain'])->middleware('auth')->name('mainstock');
 //update to mainstock
 Route::patch('/mainstock/{stock_item}', [mainStockController::class, 'updatemain'])->middleware('auth')->name('updateStock');
+//delete mainstock
+Route::delete('/mainstock/delete/{id}', [mainStockController::class, 'deletemain'])->name('mainstock.delete');
 //Add new stock item
 Route::post('/mainstock', [mainStockController::class, 'addnewitem'])->middleware('auth')->name('addnewitem');
 //transaction journal search

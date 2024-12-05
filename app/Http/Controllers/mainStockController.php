@@ -10,7 +10,9 @@ use App\Models\StockItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Schema;
 
 class mainStockController extends Controller
 {
@@ -32,24 +34,38 @@ class mainStockController extends Controller
             [
                 'item_name' => 'required',
                 'item_quantity' => 'required',
-                'item_number' => 'required',
             ]
         );
-        $items['item_name'] = $request->item_name;
-        $items['item_number'] = $request->item_number;
-        $items['item_quantity'] = $request->item_quantity;
-        StockItem::create($items);
-        $clinics = Clinic::all();
-        foreach ($clinics as $clinic) {
-            $clinicname = $clinic->clinic_name;
-            $tableName = preg_replace('/[^a-zA-Z0-9]/', '', $clinicname); // Clean clinic name
-            $tableName = strtolower($tableName) . '_stocks';
-            DB::table($tableName)->insert($items);
+        DB::beginTransaction();
+
+        try {
+            $rawName = $request->item_name;
+            $itemNumber = strtoupper(substr(str_replace(' ', '_', $rawName), 0, 4)) . rand(100, 999); // Add 3 random digits
+            $items['item_name'] = $request->item_name;
+            $items['item_number'] = $itemNumber;
+            $items['item_quantity'] = $request->item_quantity;
+            StockItem::create($items);
+            $clinics = Clinic::all();
+            foreach ($clinics as $clinic) {
+                $clinicname = $clinic->clinic_name;
+                $tableName = preg_replace('/[^a-zA-Z0-9]/', '', $clinicname); // Clean clinic name
+                $tableName = strtolower($tableName) . '_stocks';
+                DB::table($tableName)->insert($items);
+            }
+
+            DB::commit();
+
+            return redirect()->route('mainstock')->with('success', 'Product Added.');
+        } catch (\Exception $e) {
+            // Rollback the transaction if any error occurs
+            DB::rollBack();
+
+            // Log the error message for debugging
+            Log::error('Error deleting stock item: ' . $e->getMessage());
+
+            // Redirect with an error message
+            return redirect()->back()->with('error', 'An error occurred while deleting the stock.');
         }
-
-
-
-        return redirect()->route('mainstock')->with('success', 'Product Added.');
     }
     public function searchmain(Request $request)
     {
@@ -64,16 +80,106 @@ class mainStockController extends Controller
         }
     }
 
-    public function updatemain(Request $request, StockItem $stockItem)
+    public function updatemain(Request $request, $id)
     {
-        $request->validate([
-            'price' => 'required',
-
+        $validated = $request->validate([
+            'item_name' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
         ]);
-        $items['price'] = ($request->price * 0.40) + $request->price;
-        $items['user'] = auth()->user()->name;
-        $stockItem->update($items);
-        return redirect()->route('mainstock')->with('success', 'Price Updated.');
+
+        DB::beginTransaction();
+
+        try {
+            $oldItemNumber = $request->oldItemNumber;
+
+            // Find the stock item by ID
+            $stock = StockItem::findOrFail($id);
+            //generate new item number
+            $rawName = $validated['item_name'];
+            do {
+                $itemNumber = strtoupper(substr(str_replace(' ', '_', $rawName), 0, 4)) . rand(100, 999); // Add 3 random digits
+            } while (StockItem::where('item_number', $itemNumber)->exists()); // Ensure it's unique
+            $stock->item_name = $validated['item_name'];
+            $stock->item_number = $itemNumber;
+            $stock->price = $validated['price'] * 1.4; // Mark up price by 40%
+            $stock->save();
+            $clinics = Clinic::get();
+
+            foreach ($clinics as $clinic) {
+                $tableName = preg_replace('/[^a-zA-Z0-9]/', '', $clinic->clinic_name); // Clean clinic name
+                $tableName = strtolower($tableName) . '_stocks';  // Use clinic name as the table name
+
+                // CURRENT stock in clinic 
+                if (Schema::hasTable($tableName)) {
+                    DB::table($tableName)
+                        ->where('item_number', $oldItemNumber)
+                        ->update(['item_number' => $itemNumber]);
+                } else {
+                    Log::warning("Table {$tableName} does not exist.");
+                    continue;
+                }
+            }
+            DB::commit();
+
+            // Redirect with a success message
+            return redirect()->back()->with('success', 'Stock updated successfully.');
+        } catch (\Exception $e) {
+            // Rollback the transaction if any error occurs
+            DB::rollBack();
+
+            // Log the error message for debugging
+            Log::error('Error deleting stock item: ' . $e->getMessage());
+
+            // Redirect with an error message
+            return redirect()->back()->with('error', 'An error occurred while updating the stock.');
+        }
+    }
+
+    // Redirect with a success message
+
+    public function deletemain($id)
+    {
+        // Start a database transaction to ensure atomicity
+        DB::beginTransaction();
+
+        try {
+            // Find the stock item by ID
+            $stock = StockItem::findOrFail($id);
+            $itemNumber = $stock->item_number;
+
+            // Delete the stock item from the StockItem table
+            $stock->delete();
+
+            // Delete from all related clinic stock tables
+            $clinics = Clinic::get();
+            foreach ($clinics as $clinic) {
+                $tableName = preg_replace('/[^a-zA-Z0-9]/', '', $clinic->clinic_name); // Clean clinic name
+                $tableName = strtolower($tableName) . '_stocks'; // Use clinic name as the table name
+
+                // Check if the clinic's stock table exists
+                if (Schema::hasTable($tableName)) {
+                    // Delete the stock item from the clinic's stock table
+                    DB::table($tableName)
+                        ->where('item_number', $itemNumber)
+                        ->delete();
+                }
+            }
+
+            // Commit the transaction if all deletions succeed
+            DB::commit();
+
+            // Redirect with a success message
+            return redirect()->back()->with('success', 'Stock deleted successfully from all clinics.');
+        } catch (\Exception $e) {
+            // Rollback the transaction if any error occurs
+            DB::rollBack();
+
+            // Log the error message for debugging
+            Log::error('Error deleting stock item: ' . $e->getMessage());
+
+            // Redirect with an error message
+            return redirect()->back()->with('error', 'An error occurred while deleting the stock.');
+        }
     }
 
 

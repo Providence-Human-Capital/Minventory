@@ -81,23 +81,25 @@
                                 </td>
                                 <td style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
                                     <button type="button" class="btn btn-primary" data-toggle="modal"
-                                        data-target="#PricechangeModal{{$stocks->id}}"><i class="fas fa-edit">
-                                        </i>
-                                        Edit Price
+                                        data-target="#EditStockModal{{ $stocks->id }}">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <button type="button" class="btn btn-danger" data-toggle="modal"
+                                        data-target="#DeleteStockModal{{ $stocks->id }}">
+                                        <i class="fas fa-trash"></i> Delete
                                     </button>
                                 </td>
-
                             </tr>
 
-                            {{-- addStock model design start here --}}
-                            <div class="modal fade" id="PricechangeModal{{ $stocks->id }}" tabindex="-1" role="dialog"
-                                aria-labelledby="PricechangeModal{{ $stocks->id }}" aria-hidden="true">
+                            {{-- Edit Stock Modal --}}
+                            <div class="modal fade" id="EditStockModal{{ $stocks->id }}" tabindex="-1"
+                                role="dialog" aria-labelledby="EditStockModal{{ $stocks->id }}" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header" style="padding: 0px;height:50px">
-                                            <div style="color:white;width:100%;height:100%;background-color:green;top:0px;text-align:center"
-                                                class="modal-title" id="PricechangeModal{{ $stocks->id }}">
-                                                <p style="padding-top:10px;display:inline">Change Price</p>
+                                            <div style="color:white;width:100%;height:100%;background-color:green;text-align:center"
+                                                class="modal-title" id="EditStockModal{{ $stocks->id }}">
+                                                <p style="padding-top:10px;display:inline">Edit Stock</p>
                                                 <button style="display:inline" type="button" class="close"
                                                     data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
@@ -106,117 +108,70 @@
                                         </div>
                                         <form method="POST" action="/mainstock/{{ $stocks->id }}"
                                             enctype="multipart/form-data">
-                                            <div style="padding-left:10px;padding-right:10px;width:100%">
+                                            <div style="padding: 10px;">
                                                 @csrf
                                                 @method('patch')
                                                 <div>
-                                                    <label for='price'>Price</label><br>
-                                                    <label for="$">
-                                                        <input type="number" id="price" name="price"
-                                                            placeholder="1000" style="width: 100%;" value="{{$stocks->price}}">
-                                                        @error('price')
-                                                            <p style="color:red;size:13px">{{ $message }}</p>
-                                                        @enderror
-                                                    </label><br>
-                                                    <p style="margin: 4px">Note that the price you  input will be marked up 40% then saved.</p>
-
-                                                </div>
-                                                <input type="submit"
-                                                    style="background-color: green;color:white;size:10pt;padding:5pt;margin:15pt;border-radius:5px;border-style:outset;border-color:black"
-                                                    value="ADD TO STOCK">
-                                            </div>
-                                        </form>
-
-
-                                    </div>
-                                </div>
-                            </div>
-
-                            {{-- DistributeStock model design start here --}}
-                            <div class="modal fade" id="distributeStockModal{{ $stocks->id }}" tabindex="-1"
-                                role="dialog" aria-labelledby="distributeStockModalLabel{{ $stocks->id }}"
-                                aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="distributeModalLabel{{ $stocks->id }}">
-                                                Distribute</h5>
-                                            <button type="button" class="close" data-dismiss="modal"
-                                                aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-
-                                        <form method="POST" action="/mainstock/dis/{{ $stocks->id }}"
-                                            enctype="multipart/form-data">
-                                            <div style="padding-left:10px;padding-right:10px;width:100%">
-                                                @csrf
-                                                @method('patch')
-                                                <div>
-                                                    <label for='item_name'>Item Name</label><br>
+                                                    <label for="item_name">Item Name</label><br>
                                                     <input type="text" id="item_name" name="item_name"
-                                                        value="{{ $stocks->item_name }}" style="width: 100%;"><br>
+                                                        placeholder="Item Name" style="width: 100%;"
+                                                        value="{{ $stocks->item_name }}">
                                                     @error('item_name')
                                                         <p style="color:red;size:13px">{{ $message }}</p>
                                                     @enderror
                                                 </div>
                                                 <div>
-                                                    <label for='quantity'>Quantity </label><br>
-                                                    <input type="number" id="item_quantity" name="item_quantity"
-                                                        placeholder="Must not exceed existing Stock"
-                                                        style="width: 100%;" max="{{ $stocks->item_quantity }}"><br>
-                                                    @error('item_quantity')
+                                                    <label for="price">Price</label><br>
+                                                    <input type="number" id="price" name="price"
+                                                        placeholder="1000" style="width: 100%;"
+                                                        value="{{ $stocks->price }}">
+                                                    @error('price')
                                                         <p style="color:red;size:13px">{{ $message }}</p>
                                                     @enderror
                                                 </div>
-                                                <div>
-                                                    <label for='item_number'>Item Number</label><br>
-                                                    <input type="text" id="item_number" name="item_number"
-                                                        value={{ $stocks->item_number }} style="width: 100%;"><br>
-                                                    @error('item_number')
-                                                        <p style="color:red;size:13px">{{ $message }}</p>
-                                                    @enderror
-                                                </div>
-
-                                                <div>
-                                                    <label for="clinics">Choose a Clinic</label><br>
-                                                    <select name="clinics" id="clinics" style="width: 100%;"
-                                                        required>
-                                                        <?php
-                                                        $clinics = DB::table('clinics')->get('clinic_name');
-                                                        ?>
-
-                                                        <option value="" disabled selected>Select a clinic
-                                                        </option>
-                                                        @foreach ($clinics as $clinic)
-                                                            <option value="{{ $clinic->clinic_name }}">
-                                                                {{ $clinic->clinic_name }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select><br>
-                                                    @error('clinics')
-                                                        <p style="color:red;size:13px">{{ $message }}</p>
-                                                    @enderror
-                                                    </label><br>
-
-                                                    <!-- Image Upload -->
-                                                    <div>
-                                                        <label for="item_image">Upload Image</label><br>
-                                                        <input type="file" id="item_image" name="item_image"
-                                                            accept="image/*" style="width: 100%;"><br>
-                                                        @error('item_image')
-                                                            <p style="color:red;size:13px">{{ $message }}</p>
-                                                        @enderror
-                                                    </div>
-
-                                                </div>
-
+                                                <input type="text" id="oldItemNumber" name="oldItemNumber"
+                                                placeholder="1000" style="width: 100%;"
+                                                value="{{ $stocks->item_number }}" hidden>
+                                                
+                                                <p style="margin: 4px">Note: The price you input will be marked up 40%
+                                                    before being saved.</p>
                                                 <input type="submit"
-                                                    style="background-color: green;color:white;size:10pt;padding:5pt;margin:15pt;border-radius:5px;border-style:outset;border-color:black"
-                                                    value="Distribute TO STOCK">
+                                                    style="background-color: green;color:white;padding:5px;margin:15px;border-radius:5px;border-style:outset;border-color:black"
+                                                    value="SAVE CHANGES">
                                             </div>
                                         </form>
+                                    </div>
+                                </div>
+                            </div>
 
+                            {{-- Delete Stock Modal --}}
+                            <div class="modal fade" id="DeleteStockModal{{ $stocks->id }}" tabindex="-1"
+                                role="dialog" aria-labelledby="DeleteStockModal{{ $stocks->id }}"
+                                aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header" style="padding: 0px;height:50px">
+                                            <div style="color:white;width:100%;height:100%;background-color:red;text-align:center"
+                                                class="modal-title" id="DeleteStockModal{{ $stocks->id }}">
+                                                <p style="padding-top:10px;display:inline">Delete Stock</p>
+                                                <button style="display:inline" type="button" class="close"
+                                                    data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <form method="POST" action="{{ route('mainstock.delete', $stocks->id) }}">
+                                            @csrf
+                                            @method('delete')
+                                            <div style="padding: 10px;">
+                                                <p>Are you sure you want to delete this item?</p>
+                                                <strong>Item: {{ $stocks->item_name }}</strong><br>
+                                                <P>NB:Delete this here will delete across all clinic</P>
+                                                <input type="submit"
+                                                    style="background-color: red;color:white;padding:5px;margin:15px;border-radius:5px;border-style:outset;border-color:black"
+                                                    value="DELETE ITEM">
+                                            </div>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -257,14 +212,7 @@
                                                 <p style="color:red;size:13px">{{ $message }}</p>
                                             @enderror
                                         </div>
-                                        <div>
-                                            <label for='item_number'>Item Number</label><br>
-                                            <input type="text" id="item_number" name="item_number"
-                                                style="width: 100%;"><br>
-                                            @error('item_number')
-                                                <p style="color:red;size:13px">{{ $message }}</p>
-                                            @enderror
-                                        </div>
+                                        
 
 
 
