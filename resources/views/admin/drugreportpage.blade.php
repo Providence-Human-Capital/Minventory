@@ -35,6 +35,9 @@
                     <x-nav-link :href="route('batch')" :active="request()->routeIs('batch')">
                         {{ __('Clinic Stats') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('valuereport')" :active="request()->routeIs('valuereport')">
+                        {{ __('Value Stats') }}
+                    </x-nav-link>
                 </div>
                 <div class="col-sm"></div>
                 <div class="col-sm text-end">
@@ -116,6 +119,9 @@
                     <button class="btn btn-primary mb-3" onclick="printResults()">
                         <i class="fa fa-print"></i> Print Results
                     </button>
+                    <!-- CSV Download Button -->
+                    <a href="{{ route('report.download_csv') }}" class="btn btn-success mb-3">Download CSV</a>
+
                     <div id="printArea" class="print-area">
                         <div id="resultContainer">
                             <table class="table table-striped">
@@ -123,8 +129,11 @@
                                     <tr>
                                         <th>Item Name</th>
                                         <th>Quantity Distributed</th>
+                                        <th>Quantity Distributed Value($)</th>
                                         <th>Current Clinic Stock</th>
+                                        <th>Current Clinic Stock Value($)</th>
                                         <th>Total Used</th>
+                                        <th>Total Used Value($)</th>
                                     </tr>
                                 </thead>
                                 <tbody id="resultTableBody">

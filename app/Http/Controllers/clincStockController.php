@@ -73,10 +73,9 @@ class clincStockController extends Controller
                 // Add any other fields as necessary
             ]);;
         $approve = pending_stocks::find($id);
-        $match = Transferrecord::where('drug_name', $approve->item_name)
+        $match = Transferrecord::where('transdetail', $approve->details)
             ->where('sender', $approve->procurer)
-            ->where('drug_amount', $approve->item_quantity)
-            ->where('clinic_to', $approve->clinics)
+            ->where('created_at', $approve->created_at)
             ->first();
         if ($match) {
             $match->receiver = Auth::user()->name;
@@ -221,6 +220,74 @@ class clincStockController extends Controller
         return view('clinicstock.transfers', compact('records', 'drugs'));
     }
 
+    public function gettransferpage()
+    {
+        return view('clinicstock.transferdrug');
+    }
+
+    public function bulktransfer(Request $request)
+    {
+
+        $request->validate([
+            'clinics' => 'required',
+            'drug_name' => 'required|array',
+            'drug_name.*' => 'required|string',
+            'quantity' => 'required|array',
+            'quantity.*' => 'required|integer|min:1',
+            'item_pdf' => 'required|mimes:pdf|max:2048',
+        ]);
+
+        $clinics = $request->clinics;
+        $procurer = auth()->user()->name;
+
+
+        $bulkDetails = [];
+        $totalDrugs = count($request->drug_name);
+
+        foreach ($request->drug_name as $index => $drugName) {
+            $drugQuantity = $request->quantity[$index];
+            $stockItem = StockItem::where('item_number', $drugName)->first();
+            if ($drugQuantity > $stockItem->item_quantity) {
+                // Handle insufficient stock
+                return redirect()->back()->with('error', "Not enough stock for '{$drugName}'. Current stock: {$stockItem->item_quantity}.");
+            }
+
+            // Collect details for the bulk journal and pending stock entries
+            $bulkDetails[] = [
+                'item_name' => $stockItem->item_name,
+                'item_quantity' => $drugQuantity,
+                'item_number' => $drugName
+            ];
+        }
+        if ($request->hasFile('item_pdf')) {
+            $file = $request->file('item_pdf');
+            $fileName = time() . '_' . $file->getClientOriginalName(); // Create a unique file name
+            $file->move(public_path('uploads/pdfs/'), $fileName);
+        }
+
+        Transferrecord::create([
+            'total_items' => $totalDrugs,
+            'sender' => $procurer,
+            'clinic_to' => $clinics,
+            'p_o_d' => 'uploads/pdfs/' . $fileName,
+            'transdetail' => json_encode($bulkDetails), // Store bulk details as JSON
+            'clinic_from' => auth()->user()->clinic,
+            'status' => 'Pending',
+
+        ]);
+
+        // Save pending stock entry
+        pending_stocks::create([
+            'status' => 'Pending',
+            'procurer' => $procurer,
+            'clinics' => $clinics,
+            'total_items' => $totalDrugs,
+            'details' => json_encode($bulkDetails), // Store bulk details as JSON
+        ]);
+
+        return redirect()->back()->with('success', 'Bulk distribution completed successfully!');
+    }
+
     public function savetransfer(Request $request)
 
     {
@@ -300,7 +367,7 @@ class clincStockController extends Controller
         // Get the filtered records
         $results = $query->get();
         session(['search_results' => $results]);
-        return view('clinicstock.transfersearch', compact('records', 'drugs'));
+        return view('clinicstock.transfersearch', compact('results', 'drugs'));
     }
 
     public function exportCsv()
@@ -331,7 +398,7 @@ class clincStockController extends Controller
                 'Received ',
                 'P.O.D',
                 'Transaction Details',
-                
+
             ]);
 
             // Write each result to the CSV
@@ -383,13 +450,13 @@ class clincStockController extends Controller
                 'Requested At',
                 'Handler',
                 'Handled At',
-                
+
             ]);
 
             // Write each result to the CSV
             foreach ($results as $result) {
                 fputcsv($file, [
-                    $result->item_name, 
+                    $result->item_name,
                     $result->item_number,
                     $result->item_quantity,
                     $result->clinic,             // Clinic

@@ -47,6 +47,17 @@ class requestController extends Controller
 
     public function viewrequest(Request $request)
     {
+        $approver =auth()->user()->name;
+        stock_request::where('id', 'like', $request->id)->update(['status'=>'Approved','approver'=>$approver,'date_approved'=> now()]);
+
+        return redirect()->route('mainstock')->with('success', 'Request approved ');
+
+
+
+    }
+
+    public function viewrequest2(Request $request)
+    {
 
         $requested = stock_request::where('id', 'like', $request->id)->get()->first();
         $requestedid = $request->id;
