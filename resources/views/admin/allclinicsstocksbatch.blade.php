@@ -129,7 +129,6 @@
                         <i class="fa fa-print"></i> Print Results
                     </button>
                     <a href="{{ route('report.download_csv') }}" class="btn btn-success mb-3">Download CSV</a>
-
                     <div id="printArea" class="print-area">
                         <div id="resultContainer">
                             <table class="table table-striped">
