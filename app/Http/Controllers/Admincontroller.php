@@ -12,9 +12,12 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Maatwebsite\Excel\Excel as ExcelExcel;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Session;
 use PhpParser\Node\Stmt\Return_;
 use Illuminate\Support\Facades\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use League\Csv\Writer;
+use SplTempFileObject;
 
 class Admincontroller extends Controller
 {
@@ -173,25 +176,29 @@ class Admincontroller extends Controller
             }
         }
 
-        session(['combined_data' => $combinedData]);
 
         // Prepare HTML and chart data
         $html = '';
         $labels = [];
         $values = [];
         // Merge dispense data
-        foreach ($combinedData as $drug) {
+        foreach ($combinedData as $itemNumber => $drug) {
             // Calculate stock percentage
+            // Calculate stock values
             $price = (StockItem::where('item_name', $drug['item_name'])->value('price'));
             $sentQuantity = $drug['sent_quantity'];
-            $sentQuantityvalue = number_format($drug['sent_quantity'] * $price, 2);
+            $sentQuantityvalue = number_format($sentQuantity * $price, 2);
             $currentStock = $drug['current_stock'];
-            $currentStockvalue = number_format($drug['current_stock'] * $price, 2);
+            $currentStockvalue = number_format($currentStock * $price, 2);
             $dispensed_quantity = $drug['dispensed_quantity'];
-            $dispensed_quantitykvalue = number_format($drug['dispensed_quantity'] * $price, 2);
+            $dispensed_quantitykvalue = number_format($dispensed_quantity * $price, 2);
 
+            // Add calculated values to the combinedData
+            $combinedData[$itemNumber]['sentQuantityvalue'] = $sentQuantityvalue;
+            $combinedData[$itemNumber]['currentStockvalue'] = $currentStockvalue;
+            $combinedData[$itemNumber]['dispensed_quantitykvalue'] = $dispensed_quantitykvalue;
 
-            $price = (StockItem::where('item_name', $drug['item_name'])->value('price'));
+            // Check for stock percentage
             if ($sentQuantity > 0 && ($currentStock / $sentQuantity) < 0.05) {
                 $fontColor = 'red'; // Less than 5% of sent stock
             } else {
@@ -200,19 +207,20 @@ class Admincontroller extends Controller
 
             // Add table row
             $html .= "<tr>
-                    <td>{$drug['item_name']}</td>
-                    <td>{$drug['sent_quantity']} </td>
-                    <td>{$sentQuantityvalue} </td>
-                    <td style='color: {$fontColor};'>{$drug['current_stock']}</td>
-                    <td>{$currentStockvalue}</td>
-                    <td>{$drug['dispensed_quantity']}</td>
-                    <td>{$dispensed_quantitykvalue} </td>
-                  </tr>";
+                        <td>{$drug['item_name']}</td>
+                        <td>{$drug['sent_quantity']} </td>
+                        <td>{$sentQuantityvalue} </td>
+                        <td style='color: {$fontColor};'>{$drug['current_stock']}</td>
+                        <td>{$currentStockvalue}</td>
+                        <td>{$drug['dispensed_quantity']}</td>
+                        <td>{$dispensed_quantitykvalue} </td>
+                      </tr>";
 
             // Prepare chart data
             $labels[] = $drug['item_name'];
             $values[] = $drug['sent_quantity'];
         }
+        session(['combined_data' => $combinedData]);
 
         return response()->json([
             'html' => $html,
@@ -348,22 +356,26 @@ class Admincontroller extends Controller
             }
         }
 
-        session(['combined_data' => $combinedData]);
+
         // Prepare HTML and chart data
         $html = '';
         $labels = [];
         $values = [];
         // Merge dispense data
-        foreach ($combinedData as $drug) {
-            // Calculate stock percentage
+        foreach ($combinedData as $itemNumber => $drug) {
+            // Calculate stock values
             $price = (StockItem::where('item_name', $drug['item_name'])->value('price'));
             $sentQuantity = $drug['sent_quantity'];
-            $sentQuantityvalue = number_format($drug['sent_quantity'] * $price, 2);
+            $sentQuantityvalue = number_format($sentQuantity * $price, 2);
             $currentStock = $drug['current_stock'];
-            $currentStockvalue = number_format($drug['current_stock'] * $price, 2);
+            $currentStockvalue = number_format($currentStock * $price, 2);
             $dispensed_quantity = $drug['dispensed_quantity'];
-            $dispensed_quantitykvalue = number_format($drug['dispensed_quantity'] * $price, 2);
+            $dispensed_quantitykvalue = number_format($dispensed_quantity * $price, 2);
 
+            // Add calculated values to the combinedData
+            $combinedData[$itemNumber]['sentQuantityvalue'] = $sentQuantityvalue;
+            $combinedData[$itemNumber]['currentStockvalue'] = $currentStockvalue;
+            $combinedData[$itemNumber]['dispensed_quantitykvalue'] = $dispensed_quantitykvalue;
 
             $price = (StockItem::where('item_name', $drug['item_name'])->value('price'));
             if ($sentQuantity > 0 && ($currentStock / $sentQuantity) < 0.05) {
@@ -388,6 +400,9 @@ class Admincontroller extends Controller
             $values[] = $drug['sent_quantity'];
         }
 
+
+        session(['combined_data' => $combinedData]);
+
         return response()->json([
             'html' => $html,
             'chartData' => [
@@ -400,7 +415,6 @@ class Admincontroller extends Controller
     // Method to handle CSV download
     public function downloadCsv()
     {
-
         $combinedData = session('combined_data');
 
         // Check if combined data is available in the session
@@ -422,17 +436,23 @@ class Admincontroller extends Controller
             fputcsv($file, [
                 'Item Name',
                 'Sent Quantity',
+                'Sent Quantity Value',
                 'Current Stock',
+                'Current Stock Value',
                 'Dispensed Quantity',
+                'Dispensed Quantity Value',
             ]);
 
             // Write each item from combinedData to the CSV
             foreach ($combinedData as $row) {
                 fputcsv($file, [
-                    $row['item_name'],         // Item Name
-                    $row['sent_quantity'],     // Sent Quantity
-                    $row['current_stock'],     // Current Stock
-                    $row['dispensed_quantity'], // Dispensed Quantity
+                    $row['item_name'],                   // Item Name
+                    $row['sent_quantity'],               // Sent Quantity
+                    $row['sentQuantityvalue'],           // Sent Quantity Value
+                    $row['current_stock'],               // Current Stock
+                    $row['currentStockvalue'],           // Current Stock Value
+                    $row['dispensed_quantity'],          // Dispensed Quantity
+                    $row['dispensed_quantitykvalue'],    // Dispensed Quantity Value
                 ]);
             }
 
@@ -442,54 +462,6 @@ class Admincontroller extends Controller
         // Return the CSV response
         return response()->stream($callback, 200, $headers);
     }
-
-    public function downloadrCsv()
-    {
-
-        $combinedData = session('combined_data');
-
-        // Check if combined data is available in the session
-        if (empty($combinedData)) {
-            return back()->with('error', 'No data found to export.');
-        }
-
-        // Set the CSV response headers
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="drug_report.csv"',
-        ];
-
-        // Callback function to generate the CSV
-        $callback = function () use ($combinedData) {
-            $file = fopen('php://output', 'w');
-
-            // Add the CSV headers
-            fputcsv($file, [
-                'Item Name',
-                'Sent Quantity',
-                'Current Stock',
-                'Dispensed Quantity',
-            ]);
-
-            // Write each item from combinedData to the CSV
-            foreach ($combinedData as $row) {
-                fputcsv($file, [
-                    $row['item_name'],         // Item Name
-                    $row['sent_quantity'],     // Sent Quantity
-                    $row['current_stock'],     // Current Stock
-                    $row['dispensed_quantity'], // Dispensed Quantity
-                ]);
-            }
-
-            fclose($file);
-        };
-
-        // Return the CSV response
-        return response()->stream($callback, 200, $headers);
-    }
-
-
-
     public function getcreateclinicform()
     {
         return view('admin.createclinic');
@@ -542,6 +514,7 @@ class Admincontroller extends Controller
 
         // Value of current stock
         $allclinicstock = [];
+        $html = '';
         $clinics = Clinic::get();
         foreach ($clinics as $clinic) {
             $tableName = preg_replace('/[^a-zA-Z0-9]/', '', $clinic->clinic_name); // Clean clinic name
@@ -552,28 +525,154 @@ class Admincontroller extends Controller
                 ->select('item_name', 'item_number', 'item_quantity as stock_quantity')
                 ->get();
 
+            // Initialize clinic's stock data if not already initialized
+            if (!isset($allclinicstock[$clinic->clinic_name])) {
+                $allclinicstock[$clinic->clinic_name] = [
+                    'drugs' => [],           // Store individual drug data
+                    'total_value' => 0,      // Store cumulative value
+                ];
+            }
+
+            // Iterate through each drug in the clinic's stock and add its value
             foreach ($clinicStocks as $clinicstock) {
                 $itemNumber = $clinicstock->item_number;
                 $price = (StockItem::where('item_number', $itemNumber)->value('price'));
-                if (!isset($allclinicstock[$itemNumber])) {
-                    $allclinicstock[$itemNumber] = [
+
+                $drugValue = $clinicstock->stock_quantity * $price; // Calculate value of the current drug
+
+                // Add drug data to clinic's stock
+                if (!isset($allclinicstock[$clinic->clinic_name]['drugs'][$itemNumber])) {
+                    $allclinicstock[$clinic->clinic_name]['drugs'][$itemNumber] = [
                         'item_name' => $clinicstock->item_name,
                         'item_number' => $clinicstock->item_number,
-                        'current_stockvalue' => $clinicstock->stock_quantity * $price,
+                        'current_stockvalue' => $drugValue,
                     ];
                 } else {
-
-                    $allclinicstock[$itemNumber]['current_stockvalue'] += $clinicstock->stock_quantity * $price;
+                    // Update drug value if it already exists
+                    $allclinicstock[$clinic->clinic_name]['drugs'][$itemNumber]['current_stockvalue'] += $drugValue;
                 }
+
+                // Add to the cumulative value for the clinic
+                $allclinicstock[$clinic->clinic_name]['total_value'] += $drugValue;
             }
         }
 
-        dd($allclinicstock);
+        session(['allclinicstockvalue' => $allclinicstock]);
+
+        $chartData = [];
+        foreach ($allclinicstock as $clinicName => $clinicData) {
+
+            $html .= "<tr>
+                    <td>{$clinicName}</td>
+                    <td>$clinicData[total_value]</td></tr>";
+            $chartData[] = [
+                'label' => $clinicName,
+                'value' => $clinicData['total_value'],
+            ];
+        }
 
 
+        return response()->json([
+            'html' => $html,
+            'allclinicstock' => $allclinicstock,
+            'chartData' => $chartData,
+        ]);
+    }
 
 
+    public function downloadclinicCsv()
+    {
+        // Fetch the combined data from session
+        $combinedData = session('combined_data');
 
-        return response()->json(['html' => $html]);
+        // Check if the session data exists
+        if (!$combinedData) {
+            return redirect()->route('batch')->with('error', 'No data available for download.');
+        }
+
+        // Create a CSV writer
+        $csv = Writer::createFromFileObject(new SplTempFileObject(), 'w+');
+
+        // Add header row to the CSV
+        $csv->insertOne([
+            'Item Name',
+            'Quantity Distributed',
+            'Quantity Distributed Value ($)',
+            'Current Clinic Stock',
+            'Current Clinic Stock Value ($)',
+            'Total Used',
+            'Total Used Value ($)'
+        ]);
+
+        // Insert data into the CSV
+        foreach ($combinedData as $drug) {
+            $price = (StockItem::where('item_name', $drug['item_name'])->value('price'));
+
+            $sentQuantity = $drug['sent_quantity'];
+            $sentQuantityValue = number_format($sentQuantity * $price, 2);
+            $currentStock = $drug['current_stock'];
+            $currentStockValue = number_format($currentStock * $price, 2);
+            $dispensedQuantity = $drug['dispensed_quantity'];
+            $dispensedQuantityValue = number_format($dispensedQuantity * $price, 2);
+
+            // Add a row of data
+            $csv->insertOne([
+                $drug['item_name'],
+                $sentQuantity,
+                $sentQuantityValue,
+                $currentStock,
+                $currentStockValue,
+                $dispensedQuantity,
+                $dispensedQuantityValue
+            ]);
+        }
+
+        // Return the CSV response to download
+        $fileName = 'clinic_data_' . now()->format('Y_m_d_H_i_s') . '.csv';
+        return Response::stream(function () use ($csv) {
+            $csv->output();
+        }, 200, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+        ]);
+    }
+
+    public function downloadvalueCsv()
+    {
+        $allclinicstock = session('allclinicstockvalue');
+
+        // Define the headers for the CSV
+        $headers = ['Clinic Name', 'Total Value'];
+    
+        // Open a memory stream to generate the CSV
+        $csvData = fopen('php://temp', 'w');
+    
+        // Add the headers to the CSV file
+        fputcsv($csvData, $headers);
+    
+        // Loop through the clinics and their total value
+        foreach ($allclinicstock as $clinicName => $clinicData) {
+            $row = [
+                $clinicName,
+                $clinicData['total_value'],
+            ];
+            fputcsv($csvData, $row); // Add each clinic's row to the CSV
+        }
+    
+        // Rewind the file pointer to the beginning
+        rewind($csvData);
+    
+        // Set the CSV file name
+        $fileName = 'clinic_stock_report.csv';
+    
+        // Return the response with the CSV data
+        return Response::stream(function () use ($csvData) {
+            while (($data = fgetcsv($csvData)) !== false) {
+                echo implode(',', $data) . "\n";
+            }
+        }, 200, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+        ]);
     }
 }

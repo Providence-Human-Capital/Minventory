@@ -128,15 +128,18 @@
                     <button class="btn btn-primary mb-3" onclick="printResults()">
                         <i class="fa fa-print"></i> Print Results
                     </button>
-                    <a href="{{ route('report.download_csv') }}" class="btn btn-success mb-3">Download CSV</a>
+                    <a href="{{ route('reportclinic.download_csv') }}" class="btn btn-success mb-3">Download CSV</a>
                     <div id="printArea" class="print-area">
                         <div id="resultContainer">
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
-                                        <th>Clinic</th>
+                                        <th>Item Name</th>
+                                        <th>Quantity Distributed</th>
                                         <th>Quantity Distributed Value($)</th>
+                                        <th>Current Clinic Stock</th>
                                         <th>Current Clinic Stock Value($)</th>
+                                        <th>Total Used</th>
                                         <th>Total Used Value($)</th>
                                     </tr>
                                 </thead>

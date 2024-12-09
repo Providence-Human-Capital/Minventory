@@ -81,6 +81,9 @@
                             <x-nav-link :href="route('patientform')" :active="request()->routeIs('patientform')">
                                 {{ __('Patients') }}
                             </x-nav-link>
+                            <x-nav-link :href="route('batch')" :active="request()->routeIs('batch')">
+                                {{ __('Reports') }}
+                            </x-nav-link>
                     @endswitch
                 </div>
                 

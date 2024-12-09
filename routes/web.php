@@ -100,11 +100,16 @@ Route::post('/sendemail', [MailerController::class, 'sendEmail'])->name('sendEma
 //admin options
 Route::get('/admin/allclincistock', [Admincontroller::class, 'allclinicstocks'])->name('getallstocks');
 Route::get('/admin/drug-report', [Admincontroller::class, 'showDrugReport'])->name('showDrugReport');
-Route::post('/admin/drug-report-data/yearly', [Admincontroller::class, 'globalstats'])->name('globalstats');
+Route::post('/admin/drug-report-data/yearly', [Admincontroller::class, 'globalstats'])->name('globalstats');    
 Route::get('/admin/allclincistockbatch', [Admincontroller::class, 'allclinicstocksbatch'])->name('batch');
 Route::post('/admin/selecteclinicbatch', [Admincontroller::class, 'showclinicchartbatch'])->name('batchchart');
 Route::get('/admin/allclincistockvalue', [Admincontroller::class, 'valuereport'])->name('valuereport');
 Route::get('/report/download-csv', [Admincontroller::class, 'downloadCsv'])->name('report.download_csv');
+Route::get('/report/download-csv/clinic', [Admincontroller::class, 'downloadclinicCsv'])->name('reportclinic.download_csv');
+Route::get('/report/download-csv/clinic/value', [Admincontroller::class, 'downloadvalueCsv'])->name('downloadvalueCsv.download_csv');
+
+
+
 Route::post('/admin/selecteclinicvalue', [Admincontroller::class, 'getvaluereport'])->name('getvaluereport');
 Route::get('/account/Dispense/dispense/save', [DispenseController::class, 'dispensehistoryadmin'])->middleware('auth')->name('dishistoryadmin');
 Route::post('/account/Dispense/dispense/his', [DispenseController::class, 'searchhisadmin'])->middleware('auth')->name('searchhisadmin');
