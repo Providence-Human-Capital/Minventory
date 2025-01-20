@@ -35,6 +35,18 @@
                                 <td>
                                     {{ $stock->item_quantity }}
                                 </td>
+                                <td style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">                                  
+                                    <form method="POST" action="{{route('showdispenseform')}}">
+                                           @csrf
+                                                   <input value="{{$stock->item_name}}" id="item_name" name="item_name" hidden>
+                                                   <input value="{{$stock->item_number}}" id="item_number" name="item_number" hidden>
+
+                                           <button type="submit" class="btn btn-success" >
+                                               <i class="fas fa-pills"></i>
+                                            </button>
+                                       
+                                   </form>
+                           </td>
                             </tr>
                         @endforeach
                     </table>

@@ -27,6 +27,11 @@
                 </div>
             @endif
         </div>
+        <div class="m-15" style="float:right;">
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#searchrModal" sty>
+                Search
+            </button>
+        </div>
     </x-slot>
 
 
@@ -38,12 +43,11 @@
                         <button class="btn btn-primary mb-3" onclick="printResults()">
                             <i class="fa fa-print"></i> Print Results
                         </button>
-                    </div>
-                    <div class="m-15" style="float:right;">
-                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#searchrModal" sty>
-                            Search
+                        <button class="btn btn-success mb-3" onclick="location.href='{{ route('dispense.export.csv') }}'">
+                            <i class="fa fa-download"></i> Download CSV
                         </button>
                     </div>
+                    
 
 
                     <div class="py-12">
@@ -57,10 +61,6 @@
                                         <thead>
                                             <tr style="background-color: #f2f2f2;">
                                                 <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">
-                                                    UIN</th>
-                                                <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">
-                                                    Recipient</th>
-                                                <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">
                                                     Drug</th>
                                                 <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">
                                                     Quantity</th>
@@ -72,7 +72,7 @@
                                         </thead>
                                         <tbody>
 
-                                            @if ($clinichis->isEmpty())
+                                            @if ($results->isEmpty())
                                                 <tr>
                                                     <td colspan="9"
                                                         style="text-align: center; padding: 16px; color: red;">
@@ -80,12 +80,8 @@
                                                     </td>
                                                 </tr>
                                             @else
-                                                @foreach ($clinichis as $hisrequest)
+                                                @foreach ($results as $hisrequest)
                                                     <tr>
-                                                        <td style="padding: 12px; border: 1px solid #ddd;">
-                                                            {{ $hisrequest->UIN }}</td>
-                                                        <td style="padding: 12px; border: 1px solid #ddd;">
-                                                            {{ $hisrequest->recipient }}</td>
                                                         <td style="padding: 12px; border: 1px solid #ddd;">
                                                             {{ $hisrequest->drug }}</td>
                                                         <td style="padding: 12px; border: 1px solid #ddd;">

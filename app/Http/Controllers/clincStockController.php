@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\mainstock_journal;
 use App\Models\pending_stocks;
 use App\Models\stock_request;
+use App\Models\StockItem;
 use App\Models\Transferrecord;
 use App\Models\User;
 use Carbon\Carbon;
@@ -46,107 +47,58 @@ class clincStockController extends Controller
 
     public function changestatus(Request $request)
     {
+
+        $request->validate([
+            'item_pdf' => 'required|mimes:pdf|max:2048',
+        ]);
+        if ($request->hasFile('item_pdf')) {
+            $file = $request->file('item_pdf');
+            $fileName = time() . '_' . $file->getClientOriginalName(); // Create a unique file name
+            $file->move(public_path('uploads/pdfs/'), $fileName);
+        }
         $id = $request->id;
         $update['status'] = 'Received';
         $update['reciever'] = Auth::user()->name;
+        $update['p_o_r'] = 'uploads/pdfs/' . $fileName;
         $approved = pending_stocks::where('id', 'like', $id)->get()->first();
-        $journal = mainstock_journal::where('item_number', 'like', $approved->item_number)
+
+        mainstock_journal::where('item_number', 'like', $approved->item_number)
             ->where('clinics', 'like', $approved->clinics)
             ->where('created_at', 'like', $approved->created_at)
             ->where('item_quantity', 'like', $approved->item_quantity)
             ->where('item_number', 'like', $approved->item_number)
             ->update([
                 'recieved_by' => auth()->user()->name,
+                'p_o_r' => 'uploads/pdfs/' . $fileName,
                 // Add any other fields as necessary
             ]);;
         $approve = pending_stocks::find($id);
-        $match = Transferrecord::where('drug_name', $approve->item_name)
+        $match = Transferrecord::where('transdetail', $approve->details)
             ->where('sender', $approve->procurer)
-            ->where('drug_amount', $approve->item_quantity)
-            ->where('clinic_to', $approve->clinics)
+            ->where('created_at', $approve->created_at)
             ->first();
         if ($match) {
             $match->receiver = Auth::user()->name;
             $match->status = 'Received';
             $match->save();
-        } else {
-            return response()->json(['message' => 'No matching record found in transferrecords.'], 404);
         }
         $approve->update($update);
         $addstock = $approve->item_quantity;
-        switch ($approved->clinics) {
-            case '81 Baines Avenue(Harare)':
-                $currenstock = DB::table('avenue81_stocks')->where('item_number', 'like', $approve->item_number)->get()->first()->item_quantity;;
-                $newstock = $addstock + $currenstock;
-                DB::table('avenue81_stocks')
-                    ->where('item_number', 'like', $approve->item_number)
-                    ->update(['avenue81_stocks.item_quantity' => $newstock]);
-                break;
-            case '52 Baines Avenue(Harare)':
-                $currenstock = DB::table('avenue52_stocks')->where('item_number', 'like', $approve->item_number)->get()->first()->item_quantity;;
-                $newstock = $addstock + $currenstock;
-                DB::table('avenue52_stocks')
-                    ->where('item_number', 'like', $approve->item_number)
-                    ->update(['avenue52_stocks.item_quantity' => $newstock]);
-                break;
-            case '64 Cork road Avondale(Harare)':
-                $currenstock = DB::table('avondale64_stocks')->where('item_number', 'like', $approve->item_number)->get()->first()->item_quantity;;
-                $newstock = $addstock + $currenstock;
-                DB::table('avondale64_stocks')
-                    ->where('item_number', 'like', $approve->item_number)
-                    ->update(['avondale64_stocks.item_quantity' => $newstock]);
-                break;
-            case '40 Josiah Chinamano Avenue(Harare)':
-                $currenstock = DB::table('chimano40_stocks')->where('item_number', 'like', $approve->item_number)->get()->first()->item_quantity;;
-                $newstock = $addstock + $currenstock;
-                DB::table('chimano40_stocks')
-                    ->where('item_number', 'like', $approve->item_number)
-                    ->update(['chimano40_stocks.item_quantity' => $newstock]);
-                break;
-            case 'Epworth Clinic(Harare)':
-                $currenstock = DB::table('epworth_stocks')->where('item_number', 'like', $approve->item_number)->get()->first()->item_quantity;;
-                $newstock = $addstock + $currenstock;
-                DB::table('epworth_stocks')
-                    ->where('item_number', 'like', $approve->item_number)
-                    ->update(['epworth_stocks.item_quantity' => $newstock]);
-                break;
-            case 'Fort Street and 9th Avenue(Bulawayo)':
-                $currenstock = DB::table('fortstreet_stocks')->where('item_number', 'like', $approve->item_number)->get()->first()->item_quantity;;
-                $newstock = $addstock + $currenstock;
-                DB::table('fortstreet_stocks')
-                    ->where('item_number', 'like', $approve->item_number)
-                    ->update(['fortstreet_stocks.item_quantity' => $newstock]);
-                break;
-            case 'Royal Arcade Complex(Bulawayo)':
-                $currenstock = DB::table('royalarcade_stocks')->where('item_number', 'like', $approve->item_number)->get()->first()->item_quantity;;
-                $newstock = $addstock + $currenstock;
-                DB::table('royalarcade_stocks')
-                    ->where('item_number', 'like', $approve->item_number)
-                    ->update(['royalarcade_stocks.item_quantity' => $newstock]);
-                break;
-            case '39 6th street(GWERU)':
-                $currenstock = DB::table('street6gweru_stocks')->where('item_number', 'like', $approve->item_number)->get()->first()->item_quantity;;
-                $newstock = $addstock + $currenstock;
-                DB::table('street6gweru_stocks')
-                    ->where('item_number', 'like', $approve->item_number)
-                    ->update(['street6gweru_stocks.item_quantity' => $newstock]);
-                break;
-            case '126 Herbert Chitepo Street(Mutare)':
-                $currenstock = DB::table('chitepo126mutare_stock')->where('item_number', 'like', $approve->item_number)->get()->first()->item_quantity;;
-                $newstock = $addstock + $currenstock;
-                DB::table('chitepo126mutare_stock')
-                    ->where('item_number', 'like', $approve->item_number)
-                    ->update(['chitepo126mutare_stock.item_quantity' => $newstock]);
-                break;
-            case '13 Shuvai Mahofa street(Masvingo)':
-                $currenstock = DB::table('shuvaimahofa13masvingo_stocks')->where('item_number', 'like', $approve->item_number)->get()->first()->item_quantity;;
-                $newstock = $addstock + $currenstock;
-                DB::table('shuvaimahofa13masvingo_stocks')
-                    ->where('item_number', 'like', $approve->item_number)
-                    ->update(['shuvaimahofa13masvingo_stocks.item_quantity' => $newstock]);
-                break;
+        $clinic = $approved->clinics;
+        $tableName = preg_replace('/[^a-zA-Z0-9]/', '', $clinic); // Clean clinic name
+        $tableName = strtolower($tableName) . '_stocks';  // Add suffix for the stock table
+        $details = json_decode($approve->details);
+        foreach ($details as $detail) {
+            $currenstock = DB::table($tableName)->where('item_number', 'like', $detail->item_number)->get()->first()->item_quantity;
+            $addstocks = $detail->item_quantity;
+            $newstock = $addstocks + $currenstock;
+            DB::table($tableName)
+                ->where('item_number', 'like',  $detail->item_number)
+                ->update(['item_quantity' => $newstock]);
+            $stockItem = StockItem::where('item_number', $detail->item_number)->first();
+            $newcentralStock = $stockItem->item_quantity - $detail->item_quantity;
+            $stockItem->update(['item_quantity' => $newcentralStock]);
         }
-
         return redirect()->route('pendingstock')->with('success', 'Stock Received.');
     }
 
@@ -156,48 +108,11 @@ class clincStockController extends Controller
 
         $searchTerm = $request->input('isearch'); // Get the search query from the request
         $pending = [];
-        switch (auth()->user()->clinic) {
-            case '81 Baines Avenue(Harare)':
-                $pending = DB::table('avenue81_stocks')->where('item_name', 'LIKE', "%{$searchTerm}%")->get();
+        $clinic = auth()->user()->clinic;
+        $tableName = preg_replace('/[^a-zA-Z0-9]/', '', $clinic); // Clean clinic name
+        $tableName = strtolower($tableName) . '_stocks';  // Add suffix for the stock table
+        $pending = DB::table($tableName)->where('item_name', 'LIKE', "%{$searchTerm}%")->get();
 
-                break;
-            case '52 Baines Avenue(Harare)':
-                $pending = DB::table('avenue52_stocks')->where('item_name', 'LIKE', "%{$searchTerm}%")->get();
-
-                break;
-            case '64 Cork road Avondale(Harare)':
-                $pending = DB::table('avondale64_stocks')->where('item_name', 'LIKE', "%{$searchTerm}%")->get();
-
-                break;
-            case '40 Josiah Chinamano Avenue(Harare)':
-                $pending = DB::table('chimano40_stocks')->where('item_name', 'LIKE', "%{$searchTerm}%")->get();
-
-                break;
-            case 'Epworth Clinic(Harare)':
-                $pending = DB::table('epworth_stocks')->where('item_name', 'LIKE', "%{$searchTerm}%")->get();
-
-                break;
-            case 'Fort Street and 9th Avenue(Bulawayo)':
-                $pending = DB::table('fortstreet_stocks')->where('item_name', 'LIKE', "%{$searchTerm}%")->get();
-
-                break;
-            case 'Royal Arcade Complex(Bulawayo)':
-                $pending = DB::table('royalarcade_stocks')->where('item_name', 'LIKE', "%{$searchTerm}%")->get();
-
-                break;
-            case '39 6th street(GWERU)':
-                $pending = DB::table('street6gweru_stocks')->where('item_name', 'LIKE', "%{$searchTerm}%")->get();
-
-                break;
-            case '126 Herbert Chitepo Street(Mutare)':
-                $pending = DB::table('chitepo126mutare_stock')->where('item_name', 'LIKE', "%{$searchTerm}%")->get();
-
-                break;
-            case '13 Shuvai Mahofa street(Masvingo)':
-                $pending = DB::table('shuvaimahofa13masvingo_stocks')->where('item_name', 'LIKE', "%{$searchTerm}%")->get();
-
-                break;
-        }
         if ($pending->isEmpty()) {
             return redirect()->route('getclinicstock')->with('error', 'Product could not be found');
         } else {
@@ -207,49 +122,11 @@ class clincStockController extends Controller
     }
     public function getclinicstock()
     {
-
-        switch (auth()->user()->clinic) {
-            case '81 Baines Avenue(Harare)':
-                $clinicstock = DB::table('avenue81_stocks')->get();
-                return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
-                break;
-            case '52 Baines Avenue(Harare)':
-                $clinicstock = DB::table('avenue52_stocks')->get();
-                return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
-                break;
-            case '64 Cork road Avondale(Harare)':
-                $clinicstock = DB::table('avondale64_stocks')->get();
-                return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
-                break;
-            case '40 Josiah Chinamano Avenue(Harare)':
-                $clinicstock = DB::table('chimano40_stocks')->get();
-                return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
-                break;
-            case 'Epworth Clinic(Harare)':
-                $clinicstock = DB::table('epworth_stocks')->get();
-                return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
-                break;
-            case 'Fort Street and 9th Avenue(Bulawayo)':
-                $clinicstock = DB::table('fortstreet_stocks')->get();
-                return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
-                break;
-            case 'Royal Arcade Complex(Bulawayo)':
-                $clinicstock = DB::table('royalarcade_stocks')->get();
-                return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
-                break;
-            case '39 6th street(GWERU)':
-                $clinicstock = DB::table('street6gweru_stocks')->get();
-                return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
-                break;
-            case '126 Herbert Chitepo Street(Mutare)':
-                $clinicstock = DB::table('chitepo126mutare_stock')->get();
-                return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
-                break;
-            case '13 Shuvai Mahofa street(Masvingo)':
-                $clinicstock = DB::table('shuvaimahofa13masvingo_stocks')->get();
-                return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
-                break;
-        }
+        $clinic = auth()->user()->clinic;
+        $tableName = preg_replace('/[^a-zA-Z0-9]/', '', $clinic); // Clean clinic name
+        $tableName = strtolower($tableName) . '_stocks';  // Add suffix for the stock table
+        $clinicstock = DB::table($tableName)->get();
+        return view('clinicstock.clinicstock', ['clinicstock' => $clinicstock]);
     }
 
     public function requeststock()
@@ -260,6 +137,7 @@ class clincStockController extends Controller
 
     public function searchrstock(Request $request)
     {
+
         $drugs = DB::table('stock_items')->select('item_number', 'item_name')->get();
         $request->validate([
             'item_name' => 'nullable|string|max:255',
@@ -271,7 +149,11 @@ class clincStockController extends Controller
         ]);
 
         // Start the query
-        $query = stock_request::query(); // Adjust the model name
+        $query = pending_stocks::query();
+
+        $query->where('clinics', auth()->user()->clinic);
+        $query->where('status', 'like', 'Received');
+
 
         // Apply filters based on input
         if ($request->filled('item_name')) {
@@ -290,19 +172,22 @@ class clincStockController extends Controller
             $query->where('status', 'like', '%' . $request->status . '%');
         }
 
-        if ($request->filled('transaction_date_from')) {
-            $query->where('date_requested', '>=', $request->transaction_date_from);
+        if ($request->filled('transaction_date_from') && $request->filled('transaction_date_to')) {
+            $query->whereRaw('DATE(updated_at) BETWEEN ? AND ?', [
+                $request->transaction_date_from,
+                $request->transaction_date_to
+            ]);
+        } elseif ($request->filled('transaction_date_from')) {
+            $query->whereRaw('DATE(updated_at) >= ?', [$request->transaction_date_from]);
+        } elseif ($request->filled('transaction_date_to')) {
+            $query->whereRaw('DATE(updated_at) <= ?', [$request->transaction_date_to]);
         }
 
-        if ($request->filled('transaction_date_to')) {
-            $query->where('date_requested', '<=', $request->transaction_date_to);
-        }
 
-        // Execute the query and get the results
         $results = $query->get();
+        session(['search_results' => $results]);
 
-        // Return the results to a view or as a JSON response
-        return view('clinicstock.receivedstocksearch', compact('results', 'drugs')); // Adjust view name as needed
+        return view('clinicstock.receivedstocksearch', compact('results', 'drugs'));
     }
 
     public function saverequest(Request $request)
@@ -335,6 +220,74 @@ class clincStockController extends Controller
         return view('clinicstock.transfers', compact('records', 'drugs'));
     }
 
+    public function gettransferpage()
+    {
+        return view('clinicstock.transferdrug');
+    }
+
+    public function bulktransfer(Request $request)
+    {
+
+        $request->validate([
+            'clinics' => 'required',
+            'drug_name' => 'required|array',
+            'drug_name.*' => 'required|string',
+            'quantity' => 'required|array',
+            'quantity.*' => 'required|integer|min:1',
+            'item_pdf' => 'required|mimes:pdf|max:2048',
+        ]);
+
+        $clinics = $request->clinics;
+        $procurer = auth()->user()->name;
+
+
+        $bulkDetails = [];
+        $totalDrugs = count($request->drug_name);
+
+        foreach ($request->drug_name as $index => $drugName) {
+            $drugQuantity = $request->quantity[$index];
+            $stockItem = StockItem::where('item_number', $drugName)->first();
+            if ($drugQuantity > $stockItem->item_quantity) {
+                // Handle insufficient stock
+                return redirect()->back()->with('error', "Not enough stock for '{$drugName}'. Current stock: {$stockItem->item_quantity}.");
+            }
+
+            // Collect details for the bulk journal and pending stock entries
+            $bulkDetails[] = [
+                'item_name' => $stockItem->item_name,
+                'item_quantity' => $drugQuantity,
+                'item_number' => $drugName
+            ];
+        }
+        if ($request->hasFile('item_pdf')) {
+            $file = $request->file('item_pdf');
+            $fileName = time() . '_' . $file->getClientOriginalName(); // Create a unique file name
+            $file->move(public_path('uploads/pdfs/'), $fileName);
+        }
+
+        Transferrecord::create([
+            'total_items' => $totalDrugs,
+            'sender' => $procurer,
+            'clinic_to' => $clinics,
+            'p_o_d' => 'uploads/pdfs/' . $fileName,
+            'transdetail' => json_encode($bulkDetails), // Store bulk details as JSON
+            'clinic_from' => auth()->user()->clinic,
+            'status' => 'Pending',
+
+        ]);
+
+        // Save pending stock entry
+        pending_stocks::create([
+            'status' => 'Pending',
+            'procurer' => $procurer,
+            'clinics' => $clinics,
+            'total_items' => $totalDrugs,
+            'details' => json_encode($bulkDetails), // Store bulk details as JSON
+        ]);
+
+        return redirect()->back()->with('success', 'Bulk distribution completed successfully!');
+    }
+
     public function savetransfer(Request $request)
 
     {
@@ -353,128 +306,171 @@ class clincStockController extends Controller
         $pending['clinics'] = $request->clinic_to;
         pending_stocks::create($pending);
         $removestock = $request->drug_amount;
-        switch (auth()->user()->clinic) {
-            case '81 Baines Avenue(Harare)':
-                $currenstock = DB::table('avenue81_stocks')->where('item_number', 'like', $request->item_number)->get()->first()->item_quantity;;
-                $newstock = $currenstock - $removestock;
-                DB::table('avenue81_stocks')
-                    ->where('item_number', 'like', $request->item_number)
-                    ->update(['avenue81_stocks.item_quantity' => $newstock]);
-                break;
-            case '52 Baines Avenue(Harare)':
-                $currenstock = DB::table('avenue52_stocks')->where('item_number', 'like', $request->item_number)->get()->first()->item_quantity;;
-                $newstock = $currenstock - $removestock;
-                DB::table('avenue52_stocks')
-                    ->where('item_number', 'like', $request->item_number)
-                    ->update(['avenue52_stocks.item_quantity' => $newstock]);
-                break;
-            case '64 Cork road Avondale(Harare)':
-                $currenstock = DB::table('avondale64_stocks')->where('item_number', 'like', $request->item_number)->get()->first()->item_quantity;;
-                $newstock = $currenstock - $removestock;
-                DB::table('avondale64_stocks')
-                    ->where('item_number', 'like', $request->item_number)
-                    ->update(['avondale64_stocks.item_quantity' => $newstock]);
-                break;
-            case '40 Josiah Chinamano Avenue(Harare)':
-                $currenstock = DB::table('chimano40_stocks')->where('item_number', 'like', $request->item_number)->get()->first()->item_quantity;;
-                $newstock = $currenstock - $removestock;
-                DB::table('chimano40_stocks')
-                    ->where('item_number', 'like', $request->item_number)
-                    ->update(['chimano40_stocks.item_quantity' => $newstock]);
-                break;
-            case 'Epworth Clinic(Harare)':
-                $currenstock = DB::table('epworth_stocks')->where('item_number', 'like', $request->item_number)->get()->first()->item_quantity;;
-                $newstock = $currenstock - $removestock;
-                DB::table('epworth_stocks')
-                    ->where('item_number', 'like', $request->item_number)
-                    ->update(['epworth_stocks.item_quantity' => $newstock]);
-                break;
-            case 'Fort Street and 9th Avenue(Bulawayo)':
-                $currenstock = DB::table('fortstreet_stocks')->where('item_number', 'like', $request->item_number)->get()->first()->item_quantity;;
-                $newstock = $currenstock - $removestock;
-                DB::table('fortstreet_stocks')
-                    ->where('item_number', 'like', $request->item_number)
-                    ->update(['fortstreet_stocks.item_quantity' => $newstock]);
-                break;
-            case 'Royal Arcade Complex(Bulawayo)':
-                $currenstock = DB::table('royalarcade_stocks')->where('item_number', 'like', $request->item_number)->get()->first()->item_quantity;;
-                $newstock = $currenstock - $removestock;
-                DB::table('royalarcade_stocks')
-                    ->where('item_number', 'like', $request->item_number)
-                    ->update(['royalarcade_stocks.item_quantity' => $newstock]);
-                break;
-            case '39 6th street(GWERU)':
-                $currenstock = DB::table('street6gweru_stocks')->where('item_number', 'like', $request->item_number)->get()->first()->item_quantity;;
-                $newstock = $currenstock - $removestock;
-                DB::table('street6gweru_stocks')
-                    ->where('item_number', 'like', $request->item_number)
-                    ->update(['street6gweru_stocks.item_quantity' => $newstock]);
-                break;
-            case '126 Herbert Chitepo Street(Mutare)':
-                $currenstock = DB::table('chitepo126mutare_stock')->where('item_number', 'like', $request->item_number)->get()->first()->item_quantity;;
-                $newstock = $currenstock - $removestock;
-                DB::table('chitepo126mutare_stock')
-                    ->where('item_number', 'like', $request->item_number)
-                    ->update(['chitepo126mutare_stock.item_quantity' => $newstock]);
-                break;
-            case '13 Shuvai Mahofa street(Masvingo)':
-                $currenstock = DB::table('shuvaimahofa13masvingo_stocks')->where('item_number', 'like', $request->item_number)->get()->first()->item_quantity;;
-                $newstock = $currenstock - $removestock;
-                DB::table('shuvaimahofa13masvingo_stocks')
-                    ->where('item_number', 'like', $request->item_number)
-                    ->update(['shuvaimahofa13masvingo_stocks.item_quantity' => $newstock]);
-                break;
-        }
 
+        $clinic = auth()->user()->clinic;
+        $tableName = preg_replace('/[^a-zA-Z0-9]/', '', $clinic); // Clean clinic name
+        $tableName = strtolower($tableName) . '_stocks';  // Add suffix for the stock table
+        $currenstock = DB::table($tableName)->where('item_number', 'like', $request->item_number)->get()->first()->item_quantity;
+        $newstock = $currenstock - $removestock;
+        DB::table($tableName)
+            ->where('item_number', 'like', $request->item_number)
+            ->update(['item_quantity' => $newstock]);
 
         redirect()->route('stocktransfer')->with('success', 'Transfer sent');
     }
 
 
 
-public function searchtransfer(Request $request)
-{
+    public function searchtransfer(Request $request)
+    {
 
-    $drugs = DB::table('stock_items')->select('item_number', 'item_name')->get();
-    $query = Transferrecord::query();  // Start with the base query for DrugTransfer
+        $drugs = DB::table('stock_items')->select('item_number', 'item_name')->get();
+        $query = Transferrecord::query();  // Start with the base query for DrugTransfer
 
-    // Apply filters based on the input parameters
-    if ($request->filled('drug_name')) {
-        $query->where('drug_name', 'like', '%' . $request->drug_name . '%');
-    }
-    if ($request->filled('clinic_from')) {
-        $query->where('clinic_from', 'like', '%' . $request->clinic_from . '%');
-    }
-    if ($request->filled('sender')) {
-        $query->where('sender', 'like', '%' . $request->sender . '%');
-    }
-    if ($request->filled('drug_amount')) {
-        $query->where('drug_amount', '=', $request->drug_amount);
-    }
-    if ($request->filled('clinic_to') ) {
-        $query->where('clinic_to', 'like', '%' . $request->clinic_to . '%');
-    }
-    if ($request->filled('receiver') ) {
-        $query->where('receiver', 'like', '%' . $request->receiver . '%');
-    }
-    if ($request->filled('send_at_start') && $request->filled('send_at_end')) {
-        // Ensure the date format matches the database's format
-        $query->whereBetween('created_at', [
-            $request->send_at_start . ' 00:00:00',
-            $request->send_at_end . ' 23:59:59'
-        ]);
+        // Apply filters based on the input parameters
+        if ($request->filled('drug_name')) {
+            $query->where('drug_name', 'like', '%' . $request->drug_name . '%');
+        }
+        if ($request->filled('clinic_from')) {
+            $query->where('clinic_from', 'like', '%' . $request->clinic_from . '%');
+        }
+        if ($request->filled('sender')) {
+            $query->where('sender', 'like', '%' . $request->sender . '%');
+        }
+        if ($request->filled('drug_amount')) {
+            $query->where('drug_amount', '=', $request->drug_amount);
+        }
+        if ($request->filled('clinic_to')) {
+            $query->where('clinic_to', 'like', '%' . $request->clinic_to . '%');
+        }
+        if ($request->filled('receiver')) {
+            $query->where('receiver', 'like', '%' . $request->receiver . '%');
+        }
+        if ($request->filled('status')) {
+            $query->where('status', 'like', '%' . $request->status . '%');
+        }
+        if ($request->filled('send_at_start') && $request->filled('send_at_end')) {
+            $query->whereBetween(DB::raw('DATE(updated_at)'), [$request->send_at_start, $request->send_at_end]);
+        } elseif ($request->filled('send_at_start')) {
+            $query->where(DB::raw('DATE(updated_at)'), '>=', $request->send_at_start);
+        } elseif ($request->filled('send_at_end')) {
+            $query->where(DB::raw('DATE(updated_at)'), '<=', $request->send_at_end);
+        }
+
+        if ($request->filled('received_at_start') && $request->filled('received_at_end')) {
+            $query->whereBetween(DB::raw('DATE(updated_at)'), [$request->received_at_start, $request->received_at_end]);
+        } elseif ($request->filled('received_at_start')) {
+            $query->where(DB::raw('DATE(updated_at)'), '>=', $request->received_at_start);
+        } elseif ($request->filled('received_at_end')) {
+            $query->where(DB::raw('DATE(updated_at)'), '<=', $request->received_at_end);
+        }
+        // Get the filtered records
+        $results = $query->get();
+        session(['search_results' => $results]);
+        return view('clinicstock.transfersearch', compact('results', 'drugs'));
     }
 
-    // Date range for 'updated_at' (Received At)
-    if ($request->filled('received_at_start') && $request->filled('received_at_end')) {
-        $query->whereBetween('updated_at', [
-            $request->received_at_start . ' 00:00:00',
-            $request->received_at_end . ' 23:59:59'
-        ]);
-    }
-    // Get the filtered records
-    $records = $query->get();
-    return view('clinicstock.transfersearch', compact('records','drugs'));
-}
+    public function exportCsv()
+    {
+        $results = session('search_results', []);
 
+        if (empty($results)) {
+            return back()->with('error', 'No search results found to export.');
+        }
+
+        // Generate CSV response
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="search_results.csv"',
+        ];
+
+        $callback = function () use ($results) {
+            $file = fopen('php://output', 'w');
+
+
+            // Add the CSV headers
+            fputcsv($file, [
+                'Clinic',
+                'Status',
+                'Received By',
+                'Requested At',
+                'Procurer',
+                'Received ',
+                'P.O.D',
+                'Transaction Details',
+
+            ]);
+
+            // Write each result to the CSV
+            foreach ($results as $result) {
+                fputcsv($file, [
+                    $result->clinics,           // Clinic
+                    $result->status,           // Status
+                    $result->reciever,      // Received By
+                    $result->created_at,     // Requested At
+                    $result->procurer,
+                    $result->updated_at,
+                    $result->p_o_d,            // P.O.D (Proof of Delivery)
+                    json_decode($result->transaction_details), // Transaction Details in JSON format
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    public function exportrCsv()
+    {
+        $results = session('search_results', []);
+
+        if (empty($results)) {
+            return back()->with('error', 'No search results found to export.');
+        }
+
+        // Generate CSV response
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="search_results.csv"',
+        ];
+
+        $callback = function () use ($results) {
+            $file = fopen('php://output', 'w');
+
+
+            // Add the CSV headers
+            fputcsv($file, [
+                'Item_name',
+                'Item_number',
+                'Quantity',
+                'Clinic',
+                'Status',
+                'Requester',
+                'Requested At',
+                'Handler',
+                'Handled At',
+
+            ]);
+
+            // Write each result to the CSV
+            foreach ($results as $result) {
+                fputcsv($file, [
+                    $result->item_name,
+                    $result->item_number,
+                    $result->item_quantity,
+                    $result->clinic,             // Clinic
+                    $result->status,           // Status
+                    $result->requester,      // Received By
+                    $result->date_requested,     // Requested At
+                    $result->approver,
+                    $result->date_approved,
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
 }

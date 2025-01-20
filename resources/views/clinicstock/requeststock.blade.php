@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="py-1" style="float:left;">
+        <div class="py-1" style="float:right;padding:10px">
             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#searchrModal">
                 Search
             </button>
@@ -49,49 +49,74 @@
                                 <div class="p-6 text-gray-900 dark:text-gray-100 dark:bg-gray-800">
                                     <table class=" dark:bg-gray-800 dark:text-gray-200 table table-striped table-bordered">
                                         <thead>
-                                            <tr class="bg-gray-400 dark:bg-zinc-900 dark:text-white text-black">
-                                                <th>Item Name</th>
-                                                <th>Item Number</th>
-                                                <th>Quantity</th>
-                                                <th>Clinic</th>
-                                                <th>Status</th>
-                                                <th>Requester</th>
-                                                <th>Requested At</th>
-                                                <th>Handled By</th>
-                                                <th>Handled At</th>
+
+                                            <tr style="background-color: #f2f2f2;">
+                                                <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">
+                                                    Item Name</th>
+                                                <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">
+                                                    Item Number</th>
+                                                <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">
+                                                    Quantity</th>
+                                                <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">
+                                                    Clinic</th>
+                                                <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">
+                                                    Status</th>
+                                                <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">
+                                                    Requester</th>
+                                                <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">
+                                                    Requested At</th>
+                                                <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">
+                                                    Handled By</th>
+                                                <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">
+                                                    Handled At</th>
+
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php 
+                                            <?php
                                             $mypendingrequest = DB::table('stock_requests')
-                                                ->where('requester', '=', auth()->user()->name)
+                                                ->where('clinic', '=', auth()->user()->clinic)
                                                 ->get();
                                             ?>
-                                            
+
                                             @if ($mypendingrequest->isEmpty())
                                                 <tr>
-                                                    <td colspan="9" style="text-align: center; padding: 16px;" class="text-red-700 dark:text-red-500">
+
+                                                    <td colspan="9"
+                                                        style="text-align: center; padding: 16px; color: red;">
+
                                                         No pending requests available.
                                                     </td>
                                                 </tr>
                                             @else
                                                 @foreach ($mypendingrequest as $prequest)
-                                                    <tr class="dark:bg-gray-700 bg-gray-300 dark:text-gray-200">
-                                                        <td>{{ $prequest->item_name }}</td>
-                                                        <td>{{ $prequest->item_number }}</td>
-                                                        <td>{{ $prequest->item_quantity }}</td>
-                                                        <td>{{ $prequest->clinic }}</td>
-                                                        <td>{{ $prequest->status }}</td>
-                                                        <td>{{ $prequest->requester }}</td>
-                                                        <td>{{ $prequest->created_at }}</td>
-                                                        <td>{{ $prequest->approver }}</td>
-                                                        <td>{{ $prequest->date_approved }}</td>
+
+                                                    <tr>
+                                                        <td style="padding: 12px; border: 1px solid #ddd;">
+                                                            {{ $prequest->item_name }}</td>
+                                                        <td style="padding: 12px; border: 1px solid #ddd;">
+                                                            {{ $prequest->item_number }}</td>
+                                                        <td style="padding: 12px; border: 1px solid #ddd;">
+                                                            {{ $prequest->item_quantity }}</td>
+                                                        <td style="padding: 12px; border: 1px solid #ddd;">
+                                                            {{ $prequest->clinic }}</td>
+                                                        <td style="padding: 12px; border: 1px solid #ddd;">
+                                                            {{ $prequest->status }}</td>
+                                                        <td style="padding: 12px; border: 1px solid #ddd;">
+                                                            {{ $prequest->requester }}</td>
+                                                        <td style="padding: 12px; border: 1px solid #ddd;">
+                                                            {{ $prequest->created_at }}</td>
+                                                        <td style="padding: 12px; border: 1px solid #ddd;">
+                                                            {{ $prequest->approver }}</td>
+                                                        <td style="padding: 12px; border: 1px solid #ddd;">
+                                                            {{ $prequest->date_approved }}</td>
+
                                                     </tr>
                                                 @endforeach
                                             @endif
                                         </tbody>
                                     </table>
-                                    
+
                                 </div>
                             </div>
                         </div>
@@ -200,26 +225,13 @@
                                             <div class="col-md-6">
                                                 <label for="clinics" class="form-label">Choose a Clinic</label>
                                                 <select name="clinics" id="clinics" class="form-select">
-                                                    <option value="">Select a clinic</option>
-                                                    <option value="81 Baines Avenue(Harare)">81 Baines Avenue (Harare)
-                                                    </option>
-                                                    <option value="52 Baines Avenue(Harare)">52 Baines Avenue (Harare)
-                                                    </option>
-                                                    <option value="64 Cork road Avondale(Harare)">64 Cork Road Avondale
-                                                        (Harare)</option>
-                                                    <option value="40 Josiah Chinamano Avenue(Harare)">40 Josiah
-                                                        Chinamano Avenue (Harare)</option>
-                                                    <option value="Epworth Clinic(Harare)">Epworth Clinic (Harare)
-                                                    </option>
-                                                    <option value="Fort Street and 9th Avenue(Bulawayo)">Fort Street
-                                                        and 9th Avenue (Bulawayo)</option>
-                                                    <option value="Royal Arcade Complex(Bulawayo)">Royal Arcade Complex
-                                                        (Bulawayo)</option>
-                                                    <option value="39 6th street(GWERU)">39 6th Street (Gweru)</option>
-                                                    <option value="126 Herbert Chitepo Street(Mutare)">126 Herbert
-                                                        Chitepo Street (Mutare)</option>
-                                                    <option value="13 Shuvai Mahofa street(Masvingo)">13 Shuvai Mahofa
-                                                        Street (Masvingo)</option>
+                                                    <option value="" disabled selected>Select a clinic</option>
+                                                    <?php 
+                                                    $clinics =DB::table('clinics')->get('clinic_name')?>
+                                                    @foreach ($clinics as $clinic)
+                                                        <option value="{{ $clinic->clinic_name }}">
+                                                            {{ $clinic->clinic_name }}</option>
+                                                    @endforeach
                                                 </select>
                                                 @error('clinics')
                                                     <div class="text-danger mt-1">{{ $message }}</div>

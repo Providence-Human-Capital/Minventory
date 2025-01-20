@@ -13,8 +13,8 @@
         <!-- Email Address -->
         <div class="mt-4">
             <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required
-                autocomplete="username" />
+            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')"
+                required autocomplete="username" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
@@ -34,17 +34,13 @@
         <div class="mt-4">
             <x-input-label for="clinic" :value="__('Clinic')" />
             <select name="clinic" id="clinic" style="width: 100%;">
-                <option></option>
-                <option value="81 Baines Avenue(Harare)">81 Baines Avenue(Harare)</option>
-                <option value="52 Baines Avenue(Harare)">52 Baines Avenue(Harare)</option>
-                <option value="64 Cork road Avondale(Harare)">64 Cork road Avondale(Harare)</option>
-                <option value="40 Josiah Chinamano Avenue(Harare)">40 Josiah Chinamano Avenue(Harare)</option>
-                <option value="Epworth Clinic(Harare)">Epworth Clinic(Harare)</option>
-                <option value="Fort Street and 9th Avenue(Bulawayo)">Fort Street and 9th Avenue(Bulawayo)</option>
-                <option value="Royal Arcade Complex(Bulawayo)">Royal Arcade Complex(Bulawayo)</option>
-                <option value="39 6th street(GWERU)">39 6th street(GWERU)</option>
-                <option value="126 Herbert Chitepo Street(Mutare)">126 Herbert Chitepo Street(Mutare)</option>
-                <option value="13 Shuvai Mahofa street(Masvingo)">13 Shuvai Mahofa street(Masvingo)</option>
+                <option value="" disabled selected>Select a clinic</option>
+                <?php
+                $clinics = DB::table('clinics')->get('clinic_name');
+                ?>
+                @foreach ($clinics as $clinic)
+                    <option value="{{ $clinic->clinic_name }}">{{ $clinic->clinic_name }}</option>
+                @endforeach
             </select><br>
 
             <x-input-error :messages="$errors->get('clinic')" class="mt-2" />

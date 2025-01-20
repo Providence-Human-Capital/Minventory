@@ -1,4 +1,5 @@
 <nav x-data="{ open: false }" class="bg-white dark:bg-red-800 border-b border-gray-100 dark:border-gray-700">
+    
     <!-- Primary Navigation Menu -->
     <div class="dark:bg-emerald-950 bg-green-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
@@ -34,6 +35,9 @@
                             <x-nav-link :href="route('getuseroptions')" :active="request()->routeIs('getuseroptions')">
                                 {{ __('Users') }}
                             </x-nav-link>
+                            <x-nav-link :href="route('getcreateclinicform')" :active="request()->routeIs('getcreateclinicform')">
+                                {{ __('Create Clinic') }}
+                            </x-nav-link>
                             @break
 
                         @case('Accountant')
@@ -46,6 +50,18 @@
                             <x-nav-link :href="route('mainstock')" :active="request()->routeIs('mainstock')">
                                 {{ __('Main Stock') }}
                             </x-nav-link>
+                            <x-nav-link :href="route('batch')" :active="request()->routeIs('batch')">
+                                {{ __('Reports') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('dishistoryadmin')" :active="request()->routeIs('dishistoryadmin')">
+                                {{ __('Dispense History') }}
+                            </x-nav-link>
+                            @break
+
+                            @case(null) {{-- When role is null --}}
+                            <script>
+                                window.location.href = "{{ 'auth/login' }}";
+                            </script>
                             @break
 
                         @default
@@ -67,8 +83,12 @@
                             <x-nav-link :href="route('patientform')" :active="request()->routeIs('patientform')">
                                 {{ __('Patients') }}
                             </x-nav-link>
+                            <x-nav-link :href="route('batch')" :active="request()->routeIs('batch')">
+                                {{ __('Reports') }}
+                            </x-nav-link>
                     @endswitch
                 </div>
+                
             </div>
 
             <!-- User Settings Dropdown -->

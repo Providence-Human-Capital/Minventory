@@ -53,46 +53,18 @@
                                 <td>
                                     {{ $stock->item_quantity }}
                                 </td>
-                                <td>
-                                    <a><i class="fas fa-hand-holding-medical"></i></a>
-                                <td style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#searchrModal{{$stock->item_number}}">
-                                            <i class="fas fa-pills"></i>
-                                         </button>
 
-                                    {{--modal desgin--}}
-                                    <div class="modal fade" id="searchrModal{{$stock->item_number}}" tabindex="-1" role="dialog" aria-labelledby="searchrModalLabel{{$stock->item_number}}" aria-hidden="true">
-                                        <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header" style="background-color: green; color: white;">
-                                                    <h5 class="modal-title" id="searchrModalLabel{{$stock->item_number}}">Enter UIN</h5>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                
-                                                <form method="POST" action="{{route('showdispenseform')}}">
-                                                    <div class="modal-body">
-                                                        @csrf
-                                                        <div class="container">
-                                                            <div class="row mb-3">
-                                                                <div class="col">
-                                                                    <label for="uin">UIN</label>
-                                                                    <input type="text" id="uin" name="uin" class="form-control" placeholder="Enter UIN">
-                                                                </div>
-                                                                <input value="{{$stock->item_name}}" id="item_name" name="item_name" hidden>
-                                                                <input value="{{$stock->item_number}}" id="item_number" name="item_number" hidden>
-                                                            </div>
-                                                            
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="submit" class="btn btn-primary" style="width: 100%;">Search</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <td style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">                                  
+                                         <form method="POST" action="{{route('showdispenseform')}}">
+                                                @csrf
+                                                        <input value="{{$stock->item_name}}" id="item_name" name="item_name" hidden>
+                                                        <input value="{{$stock->item_number}}" id="item_number" name="item_number" hidden>
+    
+                                                <button type="submit" class="btn btn-success" >
+                                                    <i class="fas fa-pills"></i>
+                                                 </button>
+                                            
+                                        </form>
 
                                 </td>
                                   
