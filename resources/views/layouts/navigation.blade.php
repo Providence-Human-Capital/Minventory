@@ -7,8 +7,10 @@
             <div class="flex items-center">
                 <!-- Logo -->
                 <a href="{{ route('dashboard') }}">
-                    <img src='PHC_Logo_White.png' alt="Logo" style="width:110px;height:60px" class="ml-2 dark:block">
-                    <img src='blimage-9129-370-photo.png' alt="Logo" style="width:110px;height:60px" class="ml-2 mb-14 dark:hidden">
+                    <!-- <img src='PHC_Logo_White.png' alt="Logo" style="width:110px;height:60px" class="ml-2 dark:block"> -->
+                    <img src="{{asset('PHC_Logo_White.png') }}" alt="Logo" style="width:110px;height:60px" class="ml-2 dark:block">
+                    <!-- <img src='blimage-9129-370-photo.png' alt="Logo" style="width:110px;height:60px" class="ml-2 mb-14 dark:hidden"> -->
+                    <img src="{{asset('blimage-9129-370-photo.png') }}" alt="Logo" style="width:110px;height:60px" class="ml-2 mb-14 dark:hidden">
                 </a>
 
                 <!-- Navigation Links -->

@@ -108,13 +108,15 @@
 
     </x-slot>
 
+
     <div class="py-6"> <!-- Reduced outer padding -->
         <div class="max-w-full mx-auto sm:px-4 lg:px-6"> <!-- Reduced padding for the container -->
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-4 text-gray-900 dark:text-gray-100"> <!-- Reduced inner padding -->
                     <div class="py-6">
+
                         <!-- Button to print results -->
-                        <button class="btn btn-primary mb-3" onclick="printResults()">
+                        <button class="btn bg-green-500 mb-3" onclick="printResults()">
                             <i class="fa fa-print"></i> Print Results
                         </button>
                         <button class="btn btn-success mb-3" onclick="location.href='{{ route('transactions.export.csv') }}'">
@@ -133,6 +135,7 @@
                                             <table class="table table-striped table-bordered w-full">
                                                 <thead>
                                                     <tr>
+
 
                                                         <th>Clinic</th>
                                                         <th>Date of Transaction</th>
@@ -287,6 +290,7 @@
                                     </div>
                                 @endif
                             </center>
+
                         </div>
 
 

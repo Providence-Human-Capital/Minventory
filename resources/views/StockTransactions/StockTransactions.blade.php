@@ -3,7 +3,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm">
-                    <h2 class="font-semibold text-xl text-black dark:text-gray-700 leading-tight mt-2">
+                    <h2 class="font-semibold text-xl text-black dark:text-gray-100 leading-tight mt-2">
                         {{ __('Main Stock Transactions') }}
                     </h2>
                 </div>
@@ -281,7 +281,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary" style="width: 100%;">Search</button>
+                        <button type="submit" class="btn bg-green-700 text-white dark:bg-green-500" style="width: 100%;">Search</button>
                     </div>
                 </form>
             </div>

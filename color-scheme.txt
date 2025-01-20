@@ -1,0 +1,15 @@
+navbar-dark: dark:bg-emerald-950
+dark-buttons: dark:bg-green-500
+
+
+light-navbar: bg-green-50
+light-button: bg-green-700
+
+REJECT-NAVBAR: dark:bg-red-800 bg-red-200
+REJECT-BUTTON: bg-red-700 dark:bg-red-500
+
+DISTRIBUTE-NAVBAR: dark:bg-blue-900 bg-blue-200
+DISTRIBUTE-BUTTON: bg-blue-700 dark:bg-blue-500
+
+ADDSTOCK-NAVBAR: dark:bg-green-900 bg-green-200
+ADDSTOCK-BUTTON: bg-green-700 dark:bg-green-500

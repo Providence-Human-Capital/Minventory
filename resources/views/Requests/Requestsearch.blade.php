@@ -87,9 +87,11 @@
     <div class="modal fade" id="searchrModal" tabindex="-1" role="dialog" aria-labelledby="searchrModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
+
             <div class="modal-content">
                 <div class="modal-header"
                     style="height: 50px; background-color: green; color: white; text-align: center;">
+
                     <h5 class="modal-title" id="searchrModalLabel">SEARCH</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -164,13 +166,14 @@
                         </div>
 
                         <div class="text-center">
-                            <button type="submit" class="btn btn-primary" style="width: 70%;">Search</button>
+                            <button type="submit" class="btn bg-green-700 text-white dark:bg-green-500" style="width: 70%;">Search</button>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+
 
 
 
@@ -186,10 +189,12 @@
                     <i class="fa fa-download"></i> Download CSV
                 </button>
                 <div class="p-6 text-gray-900 dark:text-gray-100">
+
                     <div id="printArea" class="print-area">
 
-                        <table style="border-collapse: collapse; width: 100%; margin-top: 20px;">
+                        <table class=" dark:bg-gray-800 dark:text-gray-200 table table-striped table-bordered">
                             <thead>
+
                                 <tr style="background-color: #f2f2f2;">
                                     <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Item Name</th>
                                     <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Item Number
@@ -204,10 +209,13 @@
                                     </th>
                                     <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Handled At
                                     </th>
+
                                 </tr>
                             </thead>
                             <tbody>
+
                                 @foreach ($results as $request)
+
                                     <tr>
                                         <td style="padding: 12px; border: 1px solid #ddd;">{{ $request->item_name }}
                                         </td>
@@ -226,6 +234,7 @@
                                         <td style="padding: 12px; border: 1px solid #ddd;">
                                             {{ $request->date_approved }}</td>
                                     </tr>
+
                                 @endforeach
                             </tbody>
                         </table>

@@ -56,30 +56,31 @@
     {{-- modal design search --}}
     <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header" style="height: 50px; background-color: green; color: white; text-align: center;">
+            <div class="modal-content dark:bg-gray-800 dark:text-white">
+                <div class="modal-header dark:bg-emerald-950 bg-green-200 dark:text-white">
                     <h5 class="modal-title" id="searchModalLabel">SEARCH</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close dark:text-white" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <form method="POST" action="{{ route('searchrequests') }}">
-                    <div class="container p-4">
+                    <div class="modal-body">
                         @csrf
                         <h5 class="mb-4">Search Stock Transactions</h5>
     
                         <div class="row mb-3">
-                            <div class="col-md-6">
+                            <div class="col">
                                 <label for="item_name" class="form-label">Item Name</label>
-                                <input type="text" id="item_name" name="item_name" placeholder="Enter Item Name" class="form-control form-control-lg">
+                                <input type="text" id="item_name" name="item_name" placeholder="Enter Item Name" class="form-control form-control-lg dark:bg-gray-700 dark:text-white" style="border-radius: 9px">
                             </div>
-                            <div class="col-md-6">
+                            <div class="col">
                                 <label for="item_number" class="form-label">Item Number</label>
-                                <input type="text" id="item_number" name="item_number" placeholder="Enter Item Number" class="form-control form-control-lg">
+                                <input type="text" id="item_number" name="item_number" placeholder="Enter Item Number" class="form-control form-control-lg dark:bg-gray-700 dark:text-white" style="border-radius: 9px">
                             </div>
                         </div>
     
                         <div class="row mb-3">
+
                             <div class="col-md-4">
                                 <label for="clinics" class="form-label">Choose a Clinic</label>
                                 <select name="clinics" id="clinics" class="form-select form-select-lg">
@@ -91,46 +92,48 @@
                                             @foreach ($clinics as $clinic)
                                             <option value="{{$clinic->clinic_name}}">{{$clinic->clinic_name}}</option>
                                             @endforeach
+
                                 </select>
                                 @error('clinics')
                                     <div class="text-danger mt-1">{{ $message }}</div>
                                 @enderror
                             </div>
-                        </div>
-    
-                        <div class="row mb-3">
-                            <div class="col-md-4">
+
+                            <div class="col">
                                 <label for="requester" class="form-label">Requester</label>
-                                <input type="text" id="requester" name="requester" placeholder="Enter Requester Name" class="form-control form-control-lg">
-                            </div>
-                            <div class="col-md-4">
-                                <label for="handler" class="form-label">Handler</label>
-                                <input type="text" id="handler" name="handler" placeholder="Enter Handler Name" class="form-control form-control-lg">
-                            </div>
-                            <div class="col-md-4">
-                                <label for="status" class="form-label">Status</label>
-                                <input type="text" id="status" name="status" placeholder="Enter Status" class="form-control form-control-lg">
+                                <input type="text" id="requester" name="requester" placeholder="Enter Requester Name" class="form-control form-control-lg dark:bg-gray-700 dark:text-white" style="border-radius: 9px">
                             </div>
                         </div>
     
                         <div class="row mb-3">
-                            <div class="col-md-8">
+                            <div class="col">
+                                <label for="handler" class="form-label">Handler</label>
+                                <input type="text" id="handler" name="handler" placeholder="Enter Handler Name" class="form-control dark:bg-gray-700 dark:text-white" style="border-radius: 9px">
+                            </div>
+                            <div class="col">
+                                <label for="status" class="form-label">Status</label>
+                                <input type="text" id="status" name="status" placeholder="Enter Status" class="form-control dark:bg-gray-700 dark:text-white" style="border-radius: 9px">
+                            </div>
+                        </div>
+    
+                        <div class="row mb-3 mt-3">
+                            <div class="col">
                                 <label for="transaction_date" class="form-label">Transaction Date</label>
                                 <div class="d-flex justify-content-between">
-                                    <div class="w-50 pe-2">
+                                    <div class="col">
                                         <label for="transaction_date_from" class="form-label">From</label>
-                                        <input type="date" id="transaction_date_from" name="transaction_date_from" class="form-control form-control-lg">
+                                        <input type="date" id="transaction_date_from" name="transaction_date_from" class="form-control dark:bg-gray-700 dark:text-white" style="border-radius: 9px">
                                     </div>
-                                    <div class="w-50 ps-2">
+                                    <div class="col">
                                         <label for="transaction_date_to" class="form-label">To</label>
-                                        <input type="date" id="transaction_date_to" name="transaction_date_to" class="form-control form-control-lg">
+                                        <input type="date" id="transaction_date_to" name="transaction_date_to" class="form-control dark:bg-gray-700 dark:text-white" style="border-radius: 9px">
                                     </div>
                                 </div>
                             </div>
                         </div>
     
-                        <div class="text-center">
-                            <button type="submit" class="btn btn-primary" style="width: 70%;">Search</button>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn bg-green-700 text-white dark:bg-green-500 dark:text-black" style="width: 100%;">Search</button>
                         </div>
                     </div>
                 </form>
@@ -140,36 +143,38 @@
     
     
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <table style="border-collapse: collapse;width: 100%;">
-
-                        <tr style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Item
+                <div class="p-6 text-gray-900 dark:bg-gray-800">
+                    <table class="dark:bg-gray-800 dark:text-gray-200 table table-striped table-bordered">
+<thead>
+                        <tr class="bg-gray-400 dark:bg-zinc-900 dark:text-white text-black">
+                            <th>Item
                                 Name</th>
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Item
+                            <th>Item
                                 Number
                             </th>
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                            <th>
                                 Quantity</th>
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Clinic</th>
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Status
+                            <th>Clinic</th>
+                            <th>Status
                             </th>
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                            <th>
                                 Requester</th>
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                            <th>
                                 Requested at:
                             </th>
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                            <th>
                               Handled by
                             </th>
-                            <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                            <th>
                                 Handled at:
                             </th>
                         </tr>
-                        <tr>
-                            @foreach ($requests as $request)
+                        </thead>
+                        
+                        @foreach ($requests as $request)
+                        <tr class="dark:bg-gray-700 bg-gray-300 dark:text-gray-200">
                             <th>{{$request->item_name}}</th>
                             <th>{{$request->item_number}}</th>
                             <th>{{$request->item_quantity}}</th>

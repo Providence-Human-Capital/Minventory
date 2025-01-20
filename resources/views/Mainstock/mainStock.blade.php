@@ -1,11 +1,13 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="container">
+        <div class="container" class="bg-black">
             <div class="row">
                 <div class="col-sm">
+
                     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addModal">
                         Add New Stock Item
                     </button>
+
                 </div>
                 <div class="col-sm">
                     <div style="display:inline">
@@ -23,7 +25,7 @@
                 <div class="col-sm">
                     <form action="{{ route('searchmainstock') }}" method="GET">
                         <input type="text" name="isearch" id="isearch" value="{{ old('isearch') }}">
-                        <button type="submit">Search</button>
+                        <button type="submit" class="btn btn-success">Search</button>
                     </form>
                 </div>
             </div>
@@ -54,6 +56,7 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <table style="border-collapse: collapse;width: 100%;">
                         <tr style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
@@ -62,20 +65,22 @@
                             <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Quantity</th>
                             <th style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">Price</th>
 
-                        </tr>
 
+                        </tr>
+                        </thead>
 
                         @foreach ($stock as $stocks)
-                            <tr style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
-                                <td style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                            <tr class="dark:bg-gray-700 bg-gray-300 dark:text-gray-200">
+                                <td >
                                     {{ $stocks->item_name }}
                                 </td>
-                                <td style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                <td >
                                     {{ $stocks->item_number }}
                                 </td>
-                                <td style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
+                                <td >
                                     {{ $stocks->item_quantity }}
                                 </td>
+
                                 <td style="padding: 8px;text-align: left;border-bottom: 1px solid #DDD;">
                                     {{ $stocks->price }}
                                 </td>
@@ -88,6 +93,7 @@
                                         data-target="#DeleteStockModal{{ $stocks->id }}">
                                         <i class="fas fa-trash"></i> Delete
                                     </button>
+
                                 </td>
                             </tr>
 
@@ -95,17 +101,19 @@
                             <div class="modal fade" id="EditStockModal{{ $stocks->id }}" tabindex="-1"
                                 role="dialog" aria-labelledby="EditStockModal{{ $stocks->id }}" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
+
                                     <div class="modal-content">
                                         <div class="modal-header" style="padding: 0px;height:50px">
                                             <div style="color:white;width:100%;height:100%;background-color:green;text-align:center"
                                                 class="modal-title" id="EditStockModal{{ $stocks->id }}">
                                                 <p style="padding-top:10px;display:inline">Edit Stock</p>
                                                 <button style="display:inline" type="button" class="close"
+
                                                     data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
-                                            </div>
                                         </div>
+
                                         <form method="POST" action="/mainstock/{{ $stocks->id }}"
                                             enctype="multipart/form-data">
                                             <div style="padding: 10px;">
@@ -116,11 +124,13 @@
                                                     <input type="text" id="item_name" name="item_name"
                                                         placeholder="Item Name" style="width: 100%;"
                                                         value="{{ $stocks->item_name }}">
+
                                                     @error('item_name')
                                                         <p style="color:red;size:13px">{{ $message }}</p>
                                                     @enderror
                                                 </div>
                                                 <div>
+
                                                     <label for="price">Price</label><br>
                                                     <input type="number" id="price" name="price"
                                                         placeholder="1000" style="width: 100%;"
@@ -138,6 +148,7 @@
                                                 <input type="submit"
                                                     style="background-color: green;color:white;padding:5px;margin:15px;border-radius:5px;border-style:outset;border-color:black"
                                                     value="SAVE CHANGES">
+
                                             </div>
                                         </form>
                                     </div>
@@ -149,6 +160,7 @@
                                 role="dialog" aria-labelledby="DeleteStockModal{{ $stocks->id }}"
                                 aria-hidden="true">
                                 <div class="modal-dialog" role="document">
+
                                     <div class="modal-content">
                                         <div class="modal-header" style="padding: 0px;height:50px">
                                             <div style="color:white;width:100%;height:100%;background-color:red;text-align:center"
@@ -170,6 +182,7 @@
                                                 <input type="submit"
                                                     style="background-color: red;color:white;padding:5px;margin:15px;border-radius:5px;border-style:outset;border-color:black"
                                                     value="DELETE ITEM">
+
                                             </div>
                                         </form>
                                     </div>
@@ -182,32 +195,31 @@
                     <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModal"
                         aria-hidden="true">
                         <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header" style="padding: 0px;height:50px">
-                                    <div style="color:white;width:100%;height:100%;background-color:green;top:0px;text-align:center"
-                                        class="modal-title" id="addModal">
-                                        <p style="padding-top:10px;display:inline">ADD TO STOCK</p>
-                                        <button style="display:inline" type="button" class="close"
+                            <div class="modal-content dark:bg-gray-800 dark:text-white">
+                                <div class="modal-header dark:bg-green-900 bg-green-200 dark:text-white">
+                                        <h5 class="modal-title" id="searchModalLabel">ADD TO STOCK</h5>
+                                        <button style="display:inline" type="button" class="close dark:text-white"
                                             data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
-                                    </div>
                                 </div>
+
                                 <form method="POST" action="/mainstock" enctype="multipart/form-data">
+
                                     <div style="padding-left:10px;padding-right:10px;width:100%">
                                         @csrf
                                         <div>
                                             <label for='item_name'>Item Name</label><br>
-                                            <input type="text" id="item_name" name="item_name"
-                                                style="width: 100%;"><br>
+                                            <input type="text" id="item_name" name="item_name" class="form-control form-control-lg dark:bg-gray-700 dark:text-white"
+                                                style="border-radius: 9px;"><br>
                                             @error('item_name')
                                                 <p style="color:red;size:13px">{{ $message }}</p>
                                             @enderror
                                         </div>
                                         <div>
                                             <label for='quantity'>Quantity </label><br>
-                                            <input type="number" id="item_quantity" name="item_quantity"
-                                                placeholder="1000" style="width: 100%;"><br>
+                                            <input type="number" id="item_quantity" name="item_quantity" class="form-control form-control-lg dark:bg-gray-700 dark:text-white"
+                                                placeholder="1000" style="border-radius: 9px;"><br>
                                             @error('item_quantity')
                                                 <p style="color:red;size:13px">{{ $message }}</p>
                                             @enderror
@@ -216,9 +228,11 @@
 
 
 
-                                        <input type="submit"
-                                            style="background-color: green;color:white;size:10pt;padding:5pt;margin:15pt;border-radius:5px;border-style:outset;border-color:black"
-                                            value="ADD TO STOCK">
+
+
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn bg-green-700 dark:bg-green-500 text-white dark:text-black" style="width: 100%;">Search</button>
+                                        </div>
                                     </div>
                                 </form>
 

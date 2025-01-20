@@ -10,10 +10,10 @@
                 {{ __('Received Stock') }}
             </x-nav-link>
         </div>
-        <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" style="display:inline;float:right">
+        <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex " style="display:inline;float:right">
             <form action="{{ route('searchpstock') }}" method="GET">
                 <input type="text" name="ssearch" id="ssearch" value="{{ old('ssearch') }}">
-                <button type="submit">Search</button>
+                <button type="submit" class="btn btn-success ">Search</button>
             </form>
         </div>
     </x-slot>
@@ -36,13 +36,16 @@
     </center>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 ">
+        <div class="max-w-8xl mx-auto sm:px-6 lg:px-8 ">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     {{ __('Pending stocks') }}
+
                     @if ($pstocks->isEmpty())
-                        <p>No pending request</p>
+                        <p class="text-center">No pending requests</p>
                     @else
+
                         <center>
                             <table style="border-collapse: collapse;width: 100%;">
 
@@ -159,6 +162,7 @@
                                                             <input type="submit" class="btn btn-success "
                                                                 value="Received" style="margin: 6pt">
                                                         </form>
+
 
 
                                                     </div>

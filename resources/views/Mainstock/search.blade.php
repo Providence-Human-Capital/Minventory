@@ -66,9 +66,11 @@
                     </div>
                 </div>
                 <div class="col-sm">
+
                     <form action="{{ route('searchmainstock') }}" method="GET">
                         <input type="text" name="isearch" id="isearch" value="{{ old('isearch') }}">
                         <button type="submit">Search</button>
+
                     </form>
                 </div>
             </div>
@@ -95,8 +97,8 @@
             @endif
         </div>
     </center>
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-12 text-gray-900">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 text-gray-900">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     @if ($errors->any())
@@ -109,16 +111,19 @@
                         </div>
                     @endif
 
+
                     <table style="border-collapse: collapse;width: 100%;">
                         <thead>
                             <tr style="text-align: left; border-bottom: 1px solid #DDD;">
                                 <th style="padding: 8px;">Item Name</th>
                                 <th style="padding: 8px;">Item Number</th>
                                 <th style="padding: 8px;">Quantity</th>
+
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($search as $searchs)
+
                                 <tr style="border-bottom: 1px solid #DDD;">
                                     <td style="padding: 8px;">{{ $searchs->item_name }}</td>
                                     <td style="padding: 8px;">{{ $searchs->item_number }}</td>
@@ -134,6 +139,7 @@
                                         <button type="button" class="btn btn-danger" data-toggle="modal"
                                             data-target="#DeleteStockModal{{ $searchs->id }}">
                                             <i class="fas fa-trash"></i> Delete
+
                                         </button>
                                     </td>
                                 </tr>
